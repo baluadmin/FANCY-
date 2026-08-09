@@ -125,7 +125,6 @@ if not st.session_state.logged_in_user:
 db_path = "./chroma_db"
 
 try:
-  # Streamlit Secrets-ிலிருந்து API Key பாதுகாப்பாக எடுக்கப்படுகிறது
   api_key_input = st.secrets["GOOGLE_API_KEY"]
   client = genai.Client(api_key=api_key_input)
   chroma_client = chromadb.PersistentClient(path=db_path)
@@ -313,7 +312,7 @@ else:
           full_prompt = user_prompt + context_memory
 
           response = client.models.generate_content(
-              model="gemini-2.5-flash",
+              model="gemini-3.5-flash-lite",  # <--- ஸ்கிரீன்ஷாட்டில் உள்ள சரியான மாடல் பெயர்
               contents=full_prompt,
               config=types.GenerateContentConfig(
                   tools=[
@@ -365,7 +364,7 @@ else:
                   " language naturally."
               )
               final_response = client.models.generate_content(
-                  model="gemini-2.5-flash", contents=followup_prompt
+                  model="gemini-3.5-flash-lite", contents=followup_prompt
               )
               final_reply = final_response.text
           else:
