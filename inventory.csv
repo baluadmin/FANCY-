@@ -1,0 +1,7 @@
+Item_ID,Item_Name,Category,Stock_Quantity,Price_INR,Supplier
+ITM001,Organic Green Tea,Groceries,120,250,Nature Farms
+ITM002,Almond Nuts 500g,Dry Fruits,85,600,Healthy Nuts Co
+ITM003,Millets Health Mix,Health Food,150,350,Madura's Plate
+ITM004,Fresh Mixed Fruits Box,Fruits,45,400,Local Orchard
+ITM005,Cold Pressed Coconut Oil,Oils,60,450,Pure Organic
+ITM006,Organic Honey 250ml,Sweeteners,95,300,Bee Farms
