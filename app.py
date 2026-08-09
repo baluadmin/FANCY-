@@ -121,7 +121,7 @@ if not st.session_state.logged_in_user:
   st.stop()
 
 
-# 3. Gemini API Configuration & Database Setup (Using Streamlit Secrets for Security)
+# 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
 
 try:
