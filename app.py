@@ -112,7 +112,7 @@ if not st.session_state.logged_in_user:
 
 
 # 3. Gemini API Configuration & Database Setup
-api_key_input = "AQ.Ab8RN6J2iGPdmyLNINqUNwHIGcm8w55REPyRAtlvEQtwfmuO6A"
+api_key_input = "AQ.Ab8RN6JFg57u2ZTzI-bvhxWXrIozB4L7dsdM-ekArZftAzqBIw"
 db_path = "./chroma_db"
 
 try:
