@@ -257,23 +257,35 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Safely extract product names from inventory.csv (checking name/product column)
+    # Safely extract product names (avoiding ID columns)
     inventory_items = []
     if os.path.exists("inventory.csv"):
         try:
             inv_df = pd.read_csv("inventory.csv")
-            # Look for a column containing product names
-            col_candidates = [c for c in inv_df.columns if any(k in c.lower() for k in ["product", "item", "name", "title"])]
-            if col_candidates:
-                inventory_items = inv_df[col_candidates[0]].tolist()
-            elif len(inv_df.columns) > 1:
-                inventory_items = inv_df.iloc[:, 1].tolist()  # skip ID column and take 2nd column
+            # Find column containing product names
+            name_cols = [c for c in inv_df.columns if any(k in c.lower() for k in ["product", "item", "name", "title", "goods"])]
+            if name_cols:
+                inventory_items = inv_df[name_cols[0]].dropna().tolist()
             else:
-                inventory_items = inv_df.iloc[:, 0].tolist()
+                # Fallback: look for the column with string/text values instead of IDs
+                for col in inv_df.columns:
+                    if inv_df[col].dtype == object and not inv_df[col].str.startswith("ITM").all():
+                        inventory_items = inv_df[col].dropna().tolist()
+                        break
+                if not inventory_items and len(inv_df.columns) > 1:
+                    inventory_items = inv_df.iloc[:, 1].dropna().tolist()
         except Exception:
-            inventory_items = ["Organic Green Tea", "Almond Nuts 500g", "Millets Health Mix", "Fresh Mixed Fruits Box", "Cold Pressed Coconut Oil", "Organic Honey 250ml"]
-    else:
-        inventory_items = ["Organic Green Tea", "Almond Nuts 500g", "Millets Health Mix", "Fresh Mixed Fruits Box", "Cold Pressed Coconut Oil", "Organic Honey 250ml"]
+            inventory_items = []
+            
+    if not inventory_items:
+        inventory_items = [
+            "Organic Green Tea", 
+            "Almond Nuts 500g", 
+            "Millets Health Mix", 
+            "Fresh Mixed Fruits Box", 
+            "Cold Pressed Coconut Oil", 
+            "Organic Honey 250ml"
+        ]
 
     # Customer UI Layout
     col_main, col_cart = st.columns([2, 1])
@@ -282,7 +294,7 @@ else:
         st.markdown("### 🛒 Quick Select Store Items")
         st.caption("Select weight/quantity for each item below:")
 
-        # Render individual product selectors
+        # Render individual product selectors with proper name text
         for idx, prod in enumerate(inventory_items):
             with st.container():
                 st.write(f"**{prod}**")
