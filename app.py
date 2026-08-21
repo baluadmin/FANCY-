@@ -38,7 +38,7 @@ if "cart" not in st.session_state:
     st.session_state.cart = []
 
 
-# --- OWNER SECURE LOGIN FLOW (Kept secure with Admin Password & OTP) ---
+# --- OWNER SECURE LOGIN FLOW ---
 if role == "Owner / Admin":
     st.sidebar.subheader("👑 Owner Secure Login")
 
@@ -92,7 +92,7 @@ if role == "Owner / Admin":
             st.session_state.clear()
             st.rerun()
 
-# --- CUSTOMER LOGIN FLOW (Direct Login without OTP) ---
+# --- CUSTOMER LOGIN FLOW ---
 else:
     st.sidebar.subheader("🛍️ Customer Direct Login")
 
@@ -168,11 +168,11 @@ def search_knowledge_base(query: str) -> str:
         return f"Error during search: {e}"
 
 
-def add_to_cart(product_name: str, quantity: int = 1) -> str:
-    """Add a product or service item into the shopping cart."""
-    st.session_state.cart.append({"product": product_name, "quantity": quantity})
+def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
+    """Add a product or service item into the shopping cart with custom quantity/weight (e.g. 500g, 2kg)."""
+    st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
     st.session_state.last_booked_item = product_name
-    return f"Added {quantity}x '{product_name}' to your cart successfully!"
+    return f"Added '{product_name}' (Qty/Weight: {quantity}) to your cart successfully!"
 
 
 def calculate_total_price(price: float, quantity: int, discount_percentage: float = 0.0) -> str:
@@ -193,7 +193,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
 
-    cart_summary = ", ".join([f"{item['quantity']}x {item['product']}" for item in st.session_state.cart])
+    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
     # Save to orders
@@ -265,10 +265,32 @@ else:
     col_main, col_cart = st.columns([2, 1])
 
     with col_cart:
-        st.markdown("### 🛒 Your Cart")
+        st.markdown("### 🛒 Quick Add Product (Grams / Kg)")
+        
+        # Quick Add Manual Form with Unit Selectors
+        with st.form("quick_add_form"):
+            quick_product = st.text_input("Product Name:")
+            col_q1, col_q2 = st.columns(2)
+            with col_q1:
+                qty_number = st.number_input("Amount", min_value=0.1, value=1.0, step=0.5)
+            with col_q2:
+                qty_unit = st.selectbox("Unit", ["g", "kg", "ml", "L", "Units"])
+            
+            add_btn = st.form_submit_button("Add to Cart")
+            if add_btn:
+                if quick_product.strip():
+                    full_qty_str = f"{qty_number} {qty_unit}"
+                    st.session_state.cart.append({"product": quick_product.strip(), "quantity": full_qty_str})
+                    st.success(f"Added {full_qty_str} of {quick_product}!")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Enter a product name.")
+
+        st.markdown("---")
+        st.markdown("### 🛒 Current Cart Items")
         if st.session_state.cart:
             for idx, item in enumerate(st.session_state.cart):
-                st.write(f"- **{item['product']}** (Qty: {item['quantity']})")
+                st.write(f"- **{item['product']}** ({item['quantity']})")
                 if st.button(f"Remove Item {idx+1}", key=f"remove_{idx}"):
                     st.session_state.cart.pop(idx)
                     st.rerun()
@@ -293,10 +315,10 @@ else:
                     else:
                         st.warning("⚠️ Please provide delivery address and secondary contact number.")
         else:
-            st.info("Your cart is empty. Ask the assistant to add items.")
+            st.info("Your cart is empty. Use the quick add form above or chat with the AI.")
 
     with col_main:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items, add to cart, or chat with the AI.")
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items or chat with the AI.")
 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -305,7 +327,7 @@ else:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
-        if user_prompt := st.chat_input("Ask about inventory, add items to cart, or type in your language..."):
+        if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
             st.session_state.messages.append({"role": "user", "content": user_prompt})
             with st.chat_message("user"):
                 st.markdown(user_prompt)
@@ -331,7 +353,7 @@ else:
                                 system_instruction=(
                                     "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
                                     "1. Detect user language and ALWAYS respond in that same language. "
-                                    "2. Use the 'add_to_cart' tool when a user wishes to buy or add products. "
+                                    "2. Use the 'add_to_cart' tool when a user wishes to buy or add products, accepting custom quantities/weights like '500g' or '2kg'. "
                                     "3. Guide users to manage their cart and complete checkout using the cart panel. "
                                     "4. When feedback is provided, use 'add_product_review' and warmly thank the customer."
                                 ),
