@@ -257,14 +257,18 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Load inventory items dynamically from inventory.csv for individual selectors
+    # Safely extract product names from inventory.csv (checking name/product column)
     inventory_items = []
     if os.path.exists("inventory.csv"):
         try:
             inv_df = pd.read_csv("inventory.csv")
-            if "Product" in inv_df.columns:
-                inventory_items = inv_df["Product"].tolist()
-            elif len(inv_df.columns) > 0:
+            # Look for a column containing product names
+            col_candidates = [c for c in inv_df.columns if any(k in c.lower() for k in ["product", "item", "name", "title"])]
+            if col_candidates:
+                inventory_items = inv_df[col_candidates[0]].tolist()
+            elif len(inv_df.columns) > 1:
+                inventory_items = inv_df.iloc[:, 1].tolist()  # skip ID column and take 2nd column
+            else:
                 inventory_items = inv_df.iloc[:, 0].tolist()
         except Exception:
             inventory_items = ["Organic Green Tea", "Almond Nuts 500g", "Millets Health Mix", "Fresh Mixed Fruits Box", "Cold Pressed Coconut Oil", "Organic Honey 250ml"]
@@ -290,7 +294,7 @@ else:
                 
                 if st.button(f"Add to Cart", key=f"add_btn_{idx}"):
                     full_qty = f"{qty_val} {unit_val}"
-                    st.session_state.cart.append({"product": prod, "quantity": full_qty})
+                    st.session_state.cart.append({"product": str(prod), "quantity": full_qty})
                     st.success(f"Added {full_qty} of {prod}!")
                     st.rerun()
                 st.markdown("---")
