@@ -38,6 +38,10 @@ if "customer_otp_sent" not in st.session_state:
     st.session_state.customer_otp_sent = False
 if "customer_gen_otp" not in st.session_state:
     st.session_state.customer_gen_otp = None
+if "temp_cust_name" not in st.session_state:
+    st.session_state.temp_cust_name = ""
+if "temp_cust_phone" not in st.session_state:
+    st.session_state.temp_cust_phone = ""
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
@@ -79,7 +83,7 @@ if role == "Owner / Admin":
                 "3. Enter 6-digit OTP:", max_chars=6, type="password", key="owner_otp_input"
             )
             if st.sidebar.button("Confirm OTP & Login"):
-                if entered_otp == st.session_state.generated_otp:
+                if entered_otp.strip() == str(st.session_state.generated_otp).strip():
                     st.session_state.logged_in_user = "Owner"
                     st.session_state.user_role = "Owner"
                     st.session_state.password_verified = False
@@ -102,8 +106,8 @@ else:
 
     if st.session_state.user_role != "Customer":
         if not st.session_state.customer_otp_sent:
-            cust_name = st.sidebar.text_input("1. Enter Your Name:")
-            cust_phone = st.sidebar.text_input("2. Enter Mobile Number:", max_chars=10)
+            cust_name = st.sidebar.text_input("1. Enter Your Name:", key="cust_name_input")
+            cust_phone = st.sidebar.text_input("2. Enter Mobile Number:", max_chars=10, key="cust_phone_input")
             
             if st.sidebar.button("Send OTP"):
                 if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
@@ -118,19 +122,27 @@ else:
                 else:
                     st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
         else:
+            st.sidebar.write(f"OTP sent to: **{st.session_state.temp_cust_phone}**")
             entered_cust_otp = st.sidebar.text_input(
                 "3. Enter 6-digit OTP:", max_chars=6, type="password", key="cust_otp_input"
             )
-            if st.sidebar.button("Verify OTP & Login"):
-                if entered_cust_otp == st.session_state.customer_gen_otp:
-                    st.session_state.logged_in_user = st.session_state.temp_cust_name
-                    st.session_state.user_phone = st.session_state.temp_cust_phone
-                    st.session_state.user_role = "Customer"
+            
+            col_otp1, col_otp2 = st.sidebar.columns(2)
+            with col_otp1:
+                if st.button("Verify OTP & Login"):
+                    if entered_cust_otp.strip() == str(st.session_state.customer_gen_otp).strip():
+                        st.session_state.logged_in_user = st.session_state.temp_cust_name
+                        st.session_state.user_phone = st.session_state.temp_cust_phone
+                        st.session_state.user_role = "Customer"
+                        st.session_state.customer_otp_sent = False
+                        st.sidebar.success("✅ Login Successful!")
+                        st.rerun()
+                    else:
+                        st.sidebar.error("❌ Invalid OTP. Please try again.")
+            with col_otp2:
+                if st.button("Resend"):
                     st.session_state.customer_otp_sent = False
-                    st.sidebar.success("✅ Login Successful!")
                     st.rerun()
-                else:
-                    st.sidebar.error("❌ Invalid OTP.")
 
     if st.session_state.user_role == "Customer":
         st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
@@ -141,7 +153,7 @@ else:
 
 # Stop execution if not logged in
 if not st.session_state.logged_in_user:
-    st.warning("⚠️ Please complete the login and OTP authentication via sidebar.")
+    st.warning("⚠️ Please complete the login and OTP authentication via sidebar to access the portal.")
     st.stop()
 
 
@@ -313,10 +325,10 @@ else:
                     else:
                         st.warning("⚠️ Please provide delivery address and secondary contact number.")
         else:
-            st.info("Your cart is currently empty. Ask the assistant to add items.")
+            st.info("Your cart is empty. Ask the assistant to add items.")
 
     with col_main:
-        st.write(f"Welcome, **{logged_in_user := st.session_state.logged_in_user}**! Search items or chat with the AI.")
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items, add to cart, or chat with the AI.")
 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -352,7 +364,7 @@ else:
                                     "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
                                     "1. Detect user language and ALWAYS respond in that same language. "
                                     "2. Use the 'add_to_cart' tool when a user wishes to buy or add products. "
-                                    "3. Guide users to review their cart and fill out address, alternative contact number, description, and share live location during checkout. "
+                                    "3. Guide users to manage their cart and complete checkout using the cart panel. "
                                     "4. When feedback is provided, use 'add_product_review' and warmly thank the customer."
                                 ),
                             ),
@@ -370,6 +382,7 @@ else:
                                     tool_result = search_knowledge_base(**tool_args)
                                 elif tool_name == "add_to_cart":
                                     tool_result = add_to_cart(**tool_args)
+                                    st.rerun()  # Rerun to instantly update cart sidebar view
                                 elif tool_name == "calculate_total_price":
                                     tool_result = calculate_total_price(**tool_args)
                                 elif tool_name == "process_cart_checkout":
