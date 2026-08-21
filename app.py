@@ -354,7 +354,7 @@ else:
                         full_prompt = user_prompt + context_memory
 
                         response = client.models.generate_content(
-                            model="gemini-2.5-flash",  # Safe fallback model name
+                            model="gemini-2.5-flash",
                             contents=full_prompt,
                             config=types.GenerateContentConfig(
                                 tools=[
