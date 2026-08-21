@@ -407,29 +407,30 @@ else:
 
             st.markdown("---")
             
-            # Display Chat History
-            if "messages" in st.session_state:
-                for message in st.session_state.messages:
-                    with st.chat_message(message["role"]):
-                        st.markdown(message["content"])
-                        
-                        if message["role"] == "assistant":
-                            for p_idx, prod in enumerate(product_records):
-                                if prod['name'].lower() in message["content"].lower():
-                                    with st.container():
-                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
-                                        with ai_q_col:
-                                            aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
-                                        with ai_b_col:
-                                            st.write("")
-                                            if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
-                                                full_aq_str = f"{aq_val} {au_val}"
-                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                st.success(f"Added {full_aq_str} of {prod['name']}!")
-                                                st.rerun()
+            # Display Chat History inside a separate scrolling container
+            with st.container(height=500, border=True):
+                if "messages" in st.session_state:
+                    for message in st.session_state.messages:
+                        with st.chat_message(message["role"]):
+                            st.markdown(message["content"])
+                            
+                            if message["role"] == "assistant":
+                                for p_idx, prod in enumerate(product_records):
+                                    if prod['name'].lower() in message["content"].lower():
+                                        with st.container():
+                                            st.markdown(f"👉 **Quick Add: {prod['name']}**")
+                                            ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                            with ai_q_col:
+                                                aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
+                                            with ai_u_col:
+                                                au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
+                                            with ai_b_col:
+                                                st.write("")
+                                                if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
+                                                    full_aq_str = f"{aq_val} {au_val}"
+                                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
+                                                    st.success(f"Added {full_aq_str} of {prod['name']}!")
+                                                    st.rerun()
 
     else:
         # Cart & Checkout Full View
