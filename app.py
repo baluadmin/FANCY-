@@ -156,6 +156,33 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
+# Load inventory items for interactive chat rendering
+inventory_df = None
+product_list = []
+if os.path.exists("inventory.csv"):
+    try:
+        inventory_df = pd.read_csv("inventory.csv")
+        name_cols = [c for c in inventory_df.columns if any(k in c.lower() for k in ["product", "item", "name", "title"])]
+        if name_cols:
+            product_list = inventory_df[name_cols[0]].dropna().tolist()
+        elif len(inventory_df.columns) > 1:
+            product_list = inventory_df.iloc[:, 1].dropna().tolist()
+        else:
+            product_list = inventory_df.iloc[:, 0].dropna().tolist()
+    except Exception:
+        product_list = []
+
+if not product_list:
+    product_list = [
+        "Organic Green Tea", 
+        "Almond Nuts 500g", 
+        "Millets Health Mix", 
+        "Fresh Mixed Fruits Box", 
+        "Cold Pressed Coconut Oil", 
+        "Organic Honey 250ml"
+    ]
+
+
 # 4. Define Tools
 def search_knowledge_base(query: str) -> str:
     """Search inventory data, stock details, and products from the vector database."""
@@ -257,61 +284,11 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Safely extract product names (avoiding ID columns)
-    inventory_items = []
-    if os.path.exists("inventory.csv"):
-        try:
-            inv_df = pd.read_csv("inventory.csv")
-            # Find column containing product names
-            name_cols = [c for c in inv_df.columns if any(k in c.lower() for k in ["product", "item", "name", "title", "goods"])]
-            if name_cols:
-                inventory_items = inv_df[name_cols[0]].dropna().tolist()
-            else:
-                # Fallback: look for the column with string/text values instead of IDs
-                for col in inv_df.columns:
-                    if inv_df[col].dtype == object and not inv_df[col].str.startswith("ITM").all():
-                        inventory_items = inv_df[col].dropna().tolist()
-                        break
-                if not inventory_items and len(inv_df.columns) > 1:
-                    inventory_items = inv_df.iloc[:, 1].dropna().tolist()
-        except Exception:
-            inventory_items = []
-            
-    if not inventory_items:
-        inventory_items = [
-            "Organic Green Tea", 
-            "Almond Nuts 500g", 
-            "Millets Health Mix", 
-            "Fresh Mixed Fruits Box", 
-            "Cold Pressed Coconut Oil", 
-            "Organic Honey 250ml"
-        ]
-
-    # Customer UI Layout
+    # Customer UI Layout (Main chat & Pure Cart on Right)
     col_main, col_cart = st.columns([2, 1])
 
     with col_cart:
-        st.markdown("### 🛒 Quick Select Store Items")
-        st.caption("Select weight/quantity for each item below:")
-
-        # Render individual product selectors with proper name text
-        for idx, prod in enumerate(inventory_items):
-            with st.container():
-                st.write(f"**{prod}**")
-                c1, c2 = st.columns([1, 1])
-                with c1:
-                    qty_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"qty_{idx}")
-                with c2:
-                    unit_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"unit_{idx}")
-                
-                if st.button(f"Add to Cart", key=f"add_btn_{idx}"):
-                    full_qty = f"{qty_val} {unit_val}"
-                    st.session_state.cart.append({"product": str(prod), "quantity": full_qty})
-                    st.success(f"Added {full_qty} of {prod}!")
-                    st.rerun()
-                st.markdown("---")
-
-        st.markdown("### 🛍️ Current Cart Items")
+        st.markdown("### 🛒 Shopping Cart")
         if st.session_state.cart:
             for c_idx, item in enumerate(st.session_state.cart):
                 st.write(f"- **{item['product']}** ({item['quantity']})")
@@ -339,10 +316,10 @@ else:
                     else:
                         st.warning("⚠️ Please provide delivery address and secondary contact number.")
         else:
-            st.info("Your cart is empty. Use the product selectors above.")
+            st.info("Your cart is empty. Ask the assistant to list products or chat to buy items.")
 
     with col_main:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items or chat with the AI.")
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Ask to view products or type your request.")
 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -419,3 +396,24 @@ else:
 
                     except Exception as e:
                         st.error(f"Error: {e}")
+
+        # If the user asks to list items or search products, render product purchase selectors directly below chat
+        if any(keyword in user_prompt.lower() for keyword in ["list", "product", "item", "show", "store", "buy", "tea", "oil"]):
+            st.markdown("---")
+            st.subheader("📦 Select Quantities & Add to Cart")
+            for idx, prod in enumerate(product_list):
+                with st.container():
+                    col_p1, col_p2, col_p3 = st.columns([2, 1, 1])
+                    with col_p1:
+                        st.write(f"**{prod}**")
+                    with col_p2:
+                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"chat_qty_{idx}")
+                    with col_p3:
+                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"chat_unit_{idx}")
+                    
+                    if st.button("Add to Cart", key=f"chat_add_{idx}"):
+                        full_q_str = f"{q_val} {u_val}"
+                        st.session_state.cart.append({"product": str(prod), "quantity": full_q_str})
+                        st.success(f"Added {full_q_str} of {prod} to cart!")
+                        st.rerun()
+                    st.markdown("---")
