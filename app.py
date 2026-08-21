@@ -12,7 +12,7 @@ import streamlit as st
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
-    layout="centered",
+    layout="wide",
 )
 
 st.title("🔐 Enterprise AI Assistant (Portal)")
@@ -172,12 +172,12 @@ if os.path.exists("inventory.csv"):
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Organic Green Tea", "price": "₹250", "stock": "120 units"},
-        {"id": "ITM002", "name": "Almond Nuts 500g", "price": "₹600", "stock": "85 units"},
-        {"id": "ITM003", "name": "Millets Health Mix", "price": "₹350", "stock": "150 units"},
-        {"id": "ITM004", "name": "Fresh Mixed Fruits Box", "price": "₹400", "stock": "45 units"},
-        {"id": "ITM005", "name": "Cold Pressed Coconut Oil", "price": "₹450", "stock": "60 units"},
-        {"id": "ITM006", "name": "Organic Honey 250ml", "price": "₹300", "stock": "95 units"},
+        {"id": "ITM001", "name": "Organic Green Tea", "price": "120", "stock": "250"},
+        {"id": "ITM002", "name": "Almond Nuts 500g", "price": "85", "stock": "600"},
+        {"id": "ITM003", "name": "Millets Health Mix", "price": "150", "stock": "350"},
+        {"id": "ITM004", "name": "Fresh Mixed Fruits Box", "price": "200", "stock": "180"},
+        {"id": "ITM005", "name": "Cold Pressed Coconut Oil", "price": "450", "stock": "90"},
+        {"id": "ITM006", "name": "Organic Honey 250ml", "price": "300", "stock": "110"},
     ]
 
 
@@ -282,43 +282,77 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Customer UI Layout (Main chat & Pure Cart on Right)
-    col_main, col_cart = st.columns([2, 1])
+    # Swapped Layout: Search & Add Products on Left, AI Chat & Cart on Right
+    col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
-    with col_cart:
-        st.markdown("### 🛒 Shopping Cart")
-        if st.session_state.cart:
-            for c_idx, item in enumerate(st.session_state.cart):
-                st.write(f"- **{item['product']}** ({item['quantity']})")
-                if st.button(f"Remove {c_idx+1}", key=f"rem_{c_idx}"):
-                    st.session_state.cart.pop(c_idx)
-                    st.rerun()
-            
-            st.markdown("---")
-            st.subheader("📍 Secure Checkout Form")
-            with st.form("checkout_form"):
-                checkout_address = st.text_area("Delivery Address:")
-                secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
-                product_desc = st.text_area("Product Specifications / Custom Description:")
-                payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-                live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+    with col_search:
+        st.markdown("### 🔍 Search & Add Products")
+        search_query = st.text_input("Type product name to search (e.g., Tea, Almond, Oil):", "").lower().strip()
+
+        filtered_products = [
+            p for p in product_records 
+            if search_query in p['name'].lower() or search_query in p['id'].lower()
+        ] if search_query else product_records
+
+        if filtered_products:
+            for idx, prod in enumerate(filtered_products):
+                st.markdown(f"**{prod['id']} - {prod['name']}**")
+                st.caption(f"Price: {prod['price']} | Stock: {prod['stock']}")
                 
-                submit_checkout = st.form_submit_button("Complete Order & Pay")
-                if submit_checkout:
-                    if checkout_address and secondary_phone:
-                        result_msg = process_cart_checkout(
-                            checkout_address, secondary_phone, product_desc, payment_method, live_location
-                        )
-                        st.success(result_msg)
-                        st.rerun()
-                    else:
-                        st.warning("⚠️ Please provide delivery address and secondary contact number.")
+                q_col, u_col = st.columns(2)
+                with q_col:
+                    q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
+                with u_col:
+                    u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
+                
+                if st.button("Add to Cart", key=f"search_add_{idx}"):
+                    full_q_str = f"{q_val} {u_val}"
+                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                    st.success(f"Added {full_q_str} of {prod['name']}!")
+                    st.rerun()
+                st.markdown("---")
         else:
-            st.info("Your cart is empty. Search products and add them below.")
+            st.info("No matching products found.")
 
-    with col_main:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items below or chat with the AI.")
+    with col_ai:
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Chat with the AI or manage your cart below.")
 
+        # Cart and Checkout Section on top of AI Chat or right side of AI
+        with st.expander("🛒 View Cart & Secure Checkout", expanded=True):
+            if st.session_state.cart:
+                for c_idx, item in enumerate(st.session_state.cart):
+                    col_c1, col_c2 = st.columns([3, 1])
+                    with col_c1:
+                        st.write(f"- **{item['product']}** ({item['quantity']})")
+                    with col_c2:
+                        if st.button("Remove", key=f"rem_{c_idx}"):
+                            st.session_state.cart.pop(c_idx)
+                            st.rerun()
+                
+                st.markdown("---")
+                st.subheader("📍 Secure Checkout Form")
+                with st.form("checkout_form"):
+                    checkout_address = st.text_area("Delivery Address:")
+                    secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+                    product_desc = st.text_area("Product Specifications / Custom Description:")
+                    payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
+                    live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+                    
+                    submit_checkout = st.form_submit_button("Complete Order & Pay")
+                    if submit_checkout:
+                        if checkout_address and secondary_phone:
+                            result_msg = process_cart_checkout(
+                                checkout_address, secondary_phone, product_desc, payment_method, live_location
+                            )
+                            st.success(result_msg)
+                            st.rerun()
+                        else:
+                            st.warning("⚠️ Please provide delivery address and secondary contact number.")
+            else:
+                st.info("Your cart is empty. Add products from the left search panel.")
+
+        st.markdown("---")
+        st.markdown("### 💬 AI Assistant Chat")
         if "messages" not in st.session_state:
             st.session_state.messages = []
 
@@ -394,38 +428,3 @@ else:
 
                     except Exception as e:
                         st.error(f"Error: {e}")
-
-        # Search Bar for Store Items
-        st.markdown("---")
-        st.subheader("🔍 Search & Add Products")
-        search_query = st.text_input("Type product name to search (e.g., Tea, Almond, Oil):", "").lower().strip()
-
-        # Filter products based on search query
-        filtered_products = [
-            p for p in product_records 
-            if search_query in p['name'].lower() or search_query in p['id'].lower()
-        ] if search_query else product_records
-
-        if filtered_products:
-            for idx, prod in enumerate(filtered_products):
-                col_info, col_controls = st.columns([1.2, 1.8], vertical_alignment="center")
-                
-                with col_info:
-                    st.markdown(f"**{prod['id']} - {prod['name']}**")
-                    st.caption(f"Price: {prod['price']} | Stock: {prod['stock']}")
-                    
-                with col_controls:
-                    q_col, u_col = st.columns(2)
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
-                    
-                    if st.button("Add to Cart", key=f"search_add_{idx}"):
-                        full_q_str = f"{q_val} {u_val}"
-                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added {full_q_str} of {prod['name']}!")
-                        st.rerun()
-                st.markdown("---")
-        else:
-            st.info("No matching products found. Try a different search keyword.")
