@@ -306,37 +306,40 @@ else:
         col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
         with col_search:
-            st.markdown("### 🔍 Search & Add Products")
-            search_query = st.text_input("Type product name to search:", "", key="home_search_input").lower().strip()
+            with st.container(height=650, border=True):
+                st.markdown("### 🔍 Search & Add Products")
+                search_query = st.text_input("Type product name to search:", "").lower().strip()
 
-            filtered_products = [
-                p for p in product_records 
-                if search_query in p['name'].lower() or search_query in p['id'].lower()
-            ] if search_query else product_records
+                filtered_products = [
+                    p for p in product_records 
+                    if search_query in p['name'].lower() or search_query in p['id'].lower()
+                ] if search_query else product_records
 
-            if filtered_products:
-                for idx, prod in enumerate(filtered_products):
-                    st.markdown(f"**{prod['id']} - {prod['name']}**")
-                    st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
-                    
-                    q_col, u_col = st.columns(2)
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
-                    
-                    if st.button("Add to Cart", key=f"search_add_{idx}"):
-                        full_q_str = f"{q_val} {u_val}"
-                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added {full_q_str} of {prod['name']}!")
-                        st.rerun()
-                    st.markdown("---")
-            else:
-                st.info("No matching products found.")
+                if filtered_products:
+                    for idx, prod in enumerate(filtered_products):
+                        st.markdown(f"**{prod['id']} - {prod['name']}**")
+                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                        
+                        q_col, u_col = st.columns(2)
+                        with q_col:
+                            q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
+                        with u_col:
+                            u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
+                        
+                        if st.button("Add to Cart", key=f"search_add_{idx}"):
+                            full_q_str = f"{q_val} {u_val}"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success(f"Added {full_q_str} of {prod['name']}!")
+                            st.rerun()
+                        st.markdown("---")
+                else:
+                    st.info("No matching products found.")
 
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
-            user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="single_ai_input")
+            
+            # Separate Top AI Search Box
+            user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="top_ai_search_input")
             
             if user_prompt:
                 msg_id = len(st.session_state.get("messages", []))
@@ -351,7 +354,7 @@ else:
                         full_prompt = user_prompt + context_memory
 
                         response = client.models.generate_content(
-                            model="gemini-3.5-flash-lite",
+                            model="gemini-3.5-flash-lite",  # Switched to gemini-3.5-flash-lite for higher free tier limits (500 RPD)
                             contents=full_prompt,
                             config=types.GenerateContentConfig(
                                 tools=[
@@ -404,29 +407,30 @@ else:
 
             st.markdown("---")
             
-            # Display Chat History
-            if "messages" in st.session_state:
-                for message in st.session_state.messages:
-                    with st.chat_message(message["role"]):
-                        st.markdown(message["content"])
-                        
-                        if message["role"] == "assistant":
-                            for p_idx, prod in enumerate(product_records):
-                                if prod['name'].lower() in message["content"].lower():
-                                    with st.container():
-                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
-                                        with ai_q_col:
-                                            aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"single_ai_q_{message.get('id', 0)}_{p_idx}")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"single_ai_u_{message.get('id', 0)}_{p_idx}")
-                                        with ai_b_col:
-                                            st.write("")
-                                            if st.button("Add to Cart", key=f"single_ai_btn_{message.get('id', 0)}_{p_idx}"):
-                                                full_aq_str = f"{aq_val} {au_val}"
-                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                st.success(f"Added {full_aq_str} of {prod['name']}!")
-                                                st.rerun()
+            # Display Chat History inside a separate scrolling container
+            with st.container(height=500, border=True):
+                if "messages" in st.session_state:
+                    for message in st.session_state.messages:
+                        with st.chat_message(message["role"]):
+                            st.markdown(message["content"])
+                            
+                            if message["role"] == "assistant":
+                                for p_idx, prod in enumerate(product_records):
+                                    if prod['name'].lower() in message["content"].lower():
+                                        with st.container():
+                                            st.markdown(f"👉 **Quick Add: {prod['name']}**")
+                                            ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                            with ai_q_col:
+                                                aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
+                                            with ai_u_col:
+                                                au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
+                                            with ai_b_col:
+                                                st.write("")
+                                                if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
+                                                    full_aq_str = f"{aq_val} {au_val}"
+                                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
+                                                    st.success(f"Added {full_aq_str} of {prod['name']}!")
+                                                    st.rerun()
 
     else:
         # Cart & Checkout Full View
