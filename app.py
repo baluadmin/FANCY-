@@ -36,6 +36,8 @@ if "generated_otp" not in st.session_state:
     st.session_state.generated_otp = None
 if "cart" not in st.session_state:
     st.session_state.cart = []
+if "show_product_selectors" not in st.session_state:
+    st.session_state.show_product_selectors = False
 
 
 # --- OWNER SECURE LOGIN FLOW ---
@@ -157,7 +159,6 @@ load_inventory_to_chroma()
 
 
 # Load inventory items for interactive chat rendering
-inventory_df = None
 product_list = []
 if os.path.exists("inventory.csv"):
     try:
@@ -330,6 +331,11 @@ else:
 
         if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
             st.session_state.messages.append({"role": "user", "content": user_prompt})
+            
+            # Check if user asked to list or show products
+            if any(k in user_prompt.lower() for k in ["list", "product", "item", "show", "store", "buy", "tea", "oil", "nuts", "mix"]):
+                st.session_state.show_product_selectors = True
+
             with st.chat_message("user"):
                 st.markdown(user_prompt)
 
@@ -397,8 +403,8 @@ else:
                     except Exception as e:
                         st.error(f"Error: {e}")
 
-        # If the user asks to list items or search products, render product purchase selectors directly below chat
-        if any(keyword in user_prompt.lower() for keyword in ["list", "product", "item", "show", "store", "buy", "tea", "oil"]):
+        # Render interactive product selectors directly below chat if activated
+        if st.session_state.get("show_product_selectors", False):
             st.markdown("---")
             st.subheader("📦 Select Quantities & Add to Cart")
             for idx, prod in enumerate(product_list):
