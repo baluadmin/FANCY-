@@ -36,6 +36,8 @@ if "generated_otp" not in st.session_state:
     st.session_state.generated_otp = None
 if "cart" not in st.session_state:
     st.session_state.cart = []
+if "show_cart_modal" not in st.session_state:
+    st.session_state.show_cart_modal = False
 
 
 # --- OWNER SECURE LOGIN FLOW ---
@@ -156,7 +158,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load detailed product records for searching and inline catalog matching
+# Load product records
 product_records = []
 if os.path.exists("inventory.csv"):
     try:
@@ -282,10 +284,55 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Main Split Layout
+    # Top Header bar with Cart Icon button
+    top_col1, top_col2 = st.columns([5, 1])
+    with top_col1:
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
+    with top_col2:
+        cart_count = len(st.session_state.cart)
+        if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+            st.session_state.show_cart_modal = not st.session_state.show_cart_modal
+
+    # Collapsible Cart & Checkout Drawer
+    if st.session_state.show_cart_modal:
+        with st.expander("📦 Shopping Cart & Secure Checkout", expanded=True):
+            if st.session_state.cart:
+                for c_idx, item in enumerate(st.session_state.cart):
+                    cc1, cc2 = st.columns([3, 1])
+                    with cc1:
+                        st.write(f"- **{item['product']}** ({item['quantity']})")
+                    with cc2:
+                        if st.button("Remove", key=f"rem_modal_{c_idx}"):
+                            st.session_state.cart.pop(c_idx)
+                            st.rerun()
+                
+                st.markdown("---")
+                st.subheader("📍 Secure Checkout Form")
+                with st.form("checkout_form_modal"):
+                    checkout_address = st.text_area("Delivery Address:")
+                    secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+                    product_desc = st.text_area("Product Specifications / Custom Description:")
+                    payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
+                    live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+                    
+                    submit_checkout = st.form_submit_button("Complete Order & Pay")
+                    if submit_checkout:
+                        if checkout_address and secondary_phone:
+                            result_msg = process_cart_checkout(
+                                checkout_address, secondary_phone, product_desc, payment_method, live_location
+                            )
+                            st.success(result_msg)
+                            st.session_state.show_cart_modal = False
+                            st.rerun()
+                        else:
+                            st.warning("⚠️ Please provide delivery address and secondary contact number.")
+            else:
+                st.info("Your cart is empty. Add products from the search panel on the left.")
+        st.markdown("---")
+
+    # Main Split Layout (Left: Search & Catalog, Right: AI Chat)
     col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
-    # --- LEFT SIDE: Search & Quick Add Catalog ---
     with col_search:
         with st.container(height=650, border=True):
             st.markdown("### 🔍 Search & Add Products")
@@ -316,45 +363,8 @@ else:
             else:
                 st.info("No matching products found.")
 
-    # --- RIGHT SIDE: Cart, Checkout & AI Chat ---
     with col_ai:
         with st.container(height=650, border=True):
-            st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
-
-            with st.expander("🛒 View Cart & Secure Checkout", expanded=True):
-                if st.session_state.cart:
-                    for c_idx, item in enumerate(st.session_state.cart):
-                        col_c1, col_c2 = st.columns([3, 1])
-                        with col_c1:
-                            st.write(f"- **{item['product']}** ({item['quantity']})")
-                        with col_c2:
-                            if st.button("Remove", key=f"rem_{c_idx}"):
-                                st.session_state.cart.pop(c_idx)
-                                st.rerun()
-                    
-                    st.markdown("---")
-                    st.subheader("📍 Secure Checkout Form")
-                    with st.form("checkout_form"):
-                        checkout_address = st.text_area("Delivery Address:")
-                        secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
-                        product_desc = st.text_area("Product Specifications / Custom Description:")
-                        payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-                        live_location = st.text_input("Live Location Link (Google Maps Share URL):")
-                        
-                        submit_checkout = st.form_submit_button("Complete Order & Pay")
-                        if submit_checkout:
-                            if checkout_address and secondary_phone:
-                                result_msg = process_cart_checkout(
-                                    checkout_address, secondary_phone, product_desc, payment_method, live_location
-                                )
-                                st.success(result_msg)
-                                st.rerun()
-                            else:
-                                st.warning("⚠️ Please provide delivery address and secondary contact number.")
-                else:
-                    st.info("Your cart is empty. Add products from the left panel or chat below.")
-
-            st.markdown("---")
             st.markdown("### 💬 AI Assistant Chat")
             if "messages" not in st.session_state:
                 st.session_state.messages = []
@@ -363,7 +373,6 @@ else:
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
                     
-                    # If assistant lists products, render inline Qty/Unit and Add to Cart selectors right below the message
                     if message["role"] == "assistant":
                         for p_idx, prod in enumerate(product_records):
                             if prod['name'].lower() in message["content"].lower():
@@ -375,7 +384,7 @@ else:
                                     with ai_u_col:
                                         au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
                                     with ai_b_col:
-                                        st.write("") # spacing alignment
+                                        st.write("")
                                         if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
                                             full_aq_str = f"{aq_val} {au_val}"
                                             st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
@@ -409,7 +418,7 @@ else:
                                     system_instruction=(
                                         "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
                                         "1. Detect user language and ALWAYS respond in that same language. "
-                                        "2. When listing products, mention their exact names clearly so customers can easily select quantities."
+                                        "2. When listing products, mention their exact names clearly."
                                     ),
                                 ),
                             )
