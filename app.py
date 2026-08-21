@@ -302,7 +302,7 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        # Main Split Layout (Left: Search & Catalog, Right: AI Chat)
+        # Main Split Layout (Left: Search & Catalog, Right: AI Search & Chat)
         col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
         with col_search:
@@ -336,101 +336,100 @@ else:
                     st.info("No matching products found.")
 
         with col_ai:
-            # Removed fixed height container so st.chat_input stays fixed naturally at bottom
-            st.markdown("### 💬 AI Assistant Chat")
-            if "messages" not in st.session_state:
-                st.session_state.messages = []
-
-            for message in st.session_state.messages:
-                with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
-                    
-                    if message["role"] == "assistant":
-                        for p_idx, prod in enumerate(product_records):
-                            if prod['name'].lower() in message["content"].lower():
-                                with st.container():
-                                    st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                    ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
-                                    with ai_q_col:
-                                        aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
-                                    with ai_u_col:
-                                        au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
-                                    with ai_b_col:
-                                        st.write("")
-                                        if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
-                                            full_aq_str = f"{aq_val} {au_val}"
-                                            st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                            st.success(f"Added {full_aq_str} of {prod['name']}!")
-                                            st.rerun()
-
-            if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
-                msg_id = len(st.session_state.messages)
+            st.markdown("### 💬 AI Assistant Search & Chat")
+            
+            # Separate Top AI Search Box
+            user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="top_ai_search_input")
+            
+            if user_prompt:
+                msg_id = len(st.session_state.get("messages", []))
+                if "messages" not in st.session_state:
+                    st.session_state.messages = []
+                
                 st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
-                with st.chat_message("user"):
-                    st.markdown(user_prompt)
+                
+                with st.spinner("AI Assistant is processing..."):
+                    try:
+                        context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
+                        full_prompt = user_prompt + context_memory
 
-                with st.chat_message("assistant"):
-                    with st.spinner("AI Assistant is processing..."):
-                        try:
-                            context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
-                            full_prompt = user_prompt + context_memory
-
-                            response = client.models.generate_content(
-                                model="gemini-3.6-flash",
-                                contents=full_prompt,
-                                config=types.GenerateContentConfig(
-                                    tools=[
-                                        search_knowledge_base,
-                                        add_to_cart,
-                                        calculate_total_price,
-                                        process_cart_checkout,
-                                        add_product_review,
-                                    ],
-                                    temperature=0.3,
-                                    system_instruction=(
-                                        "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
-                                        "1. Detect user language and ALWAYS respond in that same language. "
-                                        "2. When listing products, mention their exact names clearly."
-                                    ),
+                        response = client.models.generate_content(
+                            model="gemini-3.6-flash",
+                            contents=full_prompt,
+                            config=types.GenerateContentConfig(
+                                tools=[
+                                    search_knowledge_base,
+                                    add_to_cart,
+                                    calculate_total_price,
+                                    process_cart_checkout,
+                                    add_product_review,
+                                ],
+                                temperature=0.3,
+                                system_instruction=(
+                                    "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
+                                    "1. Detect user language and ALWAYS respond in that same language. "
+                                    "2. When listing products, mention their exact names clearly."
                                 ),
-                            )
+                            ),
+                        )
 
-                            final_reply = ""
-                            if response.function_calls:
-                                for function_call in response.function_calls:
-                                    tool_name = function_call.name
-                                    tool_args = function_call.args
+                        final_reply = ""
+                        if response.function_calls:
+                            for function_call in response.function_calls:
+                                tool_name = function_call.name
+                                tool_args = function_call.args
 
-                                    st.caption(f"🔧 Tool Executed: `{tool_name}`")
+                                if tool_name == "search_knowledge_base":
+                                    tool_result = search_knowledge_base(**tool_args)
+                                elif tool_name == "add_to_cart":
+                                    tool_result = add_to_cart(**tool_args)
+                                    st.rerun()
+                                elif tool_name == "calculate_total_price":
+                                    tool_result = calculate_total_price(**tool_args)
+                                elif tool_name == "process_cart_checkout":
+                                    tool_result = process_cart_checkout(**tool_args)
+                                elif tool_name == "add_product_review":
+                                    tool_result = add_product_review(**tool_args)
+                                else:
+                                    tool_result = "Tool not found."
 
-                                    if tool_name == "search_knowledge_base":
-                                        tool_result = search_knowledge_base(**tool_args)
-                                    elif tool_name == "add_to_cart":
-                                        tool_result = add_to_cart(**tool_args)
-                                        st.rerun()
-                                    elif tool_name == "calculate_total_price":
-                                        tool_result = calculate_total_price(**tool_args)
-                                    elif tool_name == "process_cart_checkout":
-                                        tool_result = process_cart_checkout(**tool_args)
-                                    elif tool_name == "add_product_review":
-                                        tool_result = add_product_review(**tool_args)
-                                    else:
-                                        tool_result = "Tool not found."
+                                followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
+                                final_response = client.models.generate_content(
+                                    model="gemini-3.6-flash", contents=followup_prompt
+                                )
+                                final_reply = final_response.text
+                        else:
+                            final_reply = response.text
 
-                                    followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
-                                    final_response = client.models.generate_content(
-                                        model="gemini-3.6-flash", contents=followup_prompt
-                                    )
-                                    final_reply = final_response.text
-                            else:
-                                final_reply = response.text
+                        st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
+                    except Exception as e:
+                        st.error(f"Error: {e}")
 
-                            st.markdown(final_reply)
-                            st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
-                            st.rerun()
-
-                        except Exception as e:
-                            st.error(f"Error: {e}")
+            st.markdown("---")
+            
+            # Display Chat History
+            if "messages" in st.session_state:
+                for message in st.session_state.messages:
+                    with st.chat_message(message["role"]):
+                        st.markdown(message["content"])
+                        
+                        if message["role"] == "assistant":
+                            for p_idx, prod in enumerate(product_records):
+                                if prod['name'].lower() in message["content"].lower():
+                                    with st.container():
+                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
+                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                        with ai_q_col:
+                                            aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
+                                        with ai_u_col:
+                                            au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
+                                        with ai_b_col:
+                                            st.write("")
+                                            if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
+                                                full_aq_str = f"{aq_val} {au_val}"
+                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
+                                                st.success(f"Added {full_aq_str} of {prod['name']}!")
+                                                st.rerun()
 
     else:
         # Cart & Checkout Full View
