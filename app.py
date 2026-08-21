@@ -303,40 +303,37 @@ else:
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
         # Main Split Layout (Left: Search & Catalog, Right: AI Search & Chat)
-        col_search, col_ai = st.columns(2, gap="large")
+        col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
-        # --- LEFT WINDOW CONTAINER ---
         with col_search:
-            with st.container(height=650, border=True):
-                st.markdown("### 🔍 Search & Add Products")
-                search_query = st.text_input("Type product name to search:", "", key="home_search_input").lower().strip()
+            st.markdown("### 🔍 Search & Add Products")
+            search_query = st.text_input("Type product name to search:", "", key="home_search_input").lower().strip()
 
-                filtered_products = [
-                    p for p in product_records 
-                    if search_query in p['name'].lower() or search_query in p['id'].lower()
-                ] if search_query else product_records
+            filtered_products = [
+                p for p in product_records 
+                if search_query in p['name'].lower() or search_query in p['id'].lower()
+            ] if search_query else product_records
 
-                if filtered_products:
-                    for idx, prod in enumerate(filtered_products):
-                        st.markdown(f"**{prod['id']} - {prod['name']}**")
-                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
-                        
-                        q_col, u_col = st.columns(2)
-                        with q_col:
-                            q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
-                        with u_col:
-                            u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
-                        
-                        if st.button("Add to Cart", key=f"search_add_{idx}"):
-                            full_q_str = f"{q_val} {u_val}"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success(f"Added {full_q_str} of {prod['name']}!")
-                            st.rerun()
-                        st.markdown("---")
-                else:
-                    st.info("No matching products found.")
+            if filtered_products:
+                for idx, prod in enumerate(filtered_products):
+                    st.markdown(f"**{prod['id']} - {prod['name']}**")
+                    st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                    
+                    q_col, u_col = st.columns(2)
+                    with q_col:
+                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
+                    with u_col:
+                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
+                    
+                    if st.button("Add to Cart", key=f"search_add_{idx}"):
+                        full_q_str = f"{q_val} {u_val}"
+                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                        st.success(f"Added {full_q_str} of {prod['name']}!")
+                        st.rerun()
+                    st.markdown("---")
+            else:
+                st.info("No matching products found.")
 
-        # --- RIGHT WINDOW STATIC PANEL ---
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
             user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="single_ai_input")
@@ -407,7 +404,7 @@ else:
 
             st.markdown("---")
             
-            # Display Chat History statically (without inner scroll container)
+            # Display Chat History
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
