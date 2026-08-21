@@ -34,19 +34,11 @@ if "otp_sent" not in st.session_state:
     st.session_state.otp_sent = False
 if "generated_otp" not in st.session_state:
     st.session_state.generated_otp = None
-if "customer_otp_sent" not in st.session_state:
-    st.session_state.customer_otp_sent = False
-if "customer_gen_otp" not in st.session_state:
-    st.session_state.customer_gen_otp = None
-if "temp_cust_name" not in st.session_state:
-    st.session_state.temp_cust_name = ""
-if "temp_cust_phone" not in st.session_state:
-    st.session_state.temp_cust_phone = ""
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
 
-# --- OWNER SECURE LOGIN FLOW ---
+# --- OWNER SECURE LOGIN FLOW (Kept secure with Admin Password & OTP) ---
 if role == "Owner / Admin":
     st.sidebar.subheader("👑 Owner Secure Login")
 
@@ -100,47 +92,25 @@ if role == "Owner / Admin":
             st.session_state.clear()
             st.rerun()
 
-# --- CUSTOMER LOGIN FLOW WITH OTP ---
+# --- CUSTOMER LOGIN FLOW (Direct Login without OTP) ---
 else:
-    st.sidebar.subheader("🛍️ Customer Secure Login")
+    st.sidebar.subheader("🛍️ Customer Direct Login")
 
     if st.session_state.user_role != "Customer":
-        # Step 1: Input Name & Phone to Send OTP
-        if not st.session_state.customer_otp_sent:
-            with st.sidebar.form("customer_login_form"):
-                cust_name = st.text_input("1. Enter Your Name:")
-                cust_phone = st.text_input("2. Enter Mobile Number:", max_chars=10)
-                send_otp_btn = st.form_submit_button("Send OTP")
+        with st.sidebar.form("customer_direct_login"):
+            cust_name = st.text_input("Enter Your Name:")
+            cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
+            login_btn = st.form_submit_button("Login")
 
-                if send_otp_btn:
-                    if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                        otp = str(random.randint(100000, 999999))
-                        st.session_state.customer_gen_otp = otp
-                        st.session_state.customer_otp_sent = True
-                        st.session_state.temp_cust_name = cust_name.strip()
-                        st.session_state.temp_cust_phone = cust_phone.strip()
-                        st.rerun()
-                    else:
-                        st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
-
-        # Step 2: Verify OTP
-        else:
-            st.sidebar.success("✅ OTP generated successfully!")
-            st.sidebar.info(f"🔑 [Test SMS OTP]: {st.session_state.customer_gen_otp}")
-            
-            with st.sidebar.form("customer_verify_form"):
-                entered_cust_otp = st.text_input("3. Enter 6-digit OTP:", max_chars=6, type="password")
-                verify_btn = st.form_submit_button("Verify OTP & Login")
-
-                if verify_btn:
-                    if entered_cust_otp.strip() == str(st.session_state.customer_gen_otp).strip():
-                        st.session_state.logged_in_user = st.session_state.temp_cust_name
-                        st.session_state.user_phone = st.session_state.temp_cust_phone
-                        st.session_state.user_role = "Customer"
-                        st.session_state.customer_otp_sent = False
-                        st.rerun()
-                    else:
-                        st.error("❌ Invalid OTP. Try again.")
+            if login_btn:
+                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                    st.session_state.logged_in_user = cust_name.strip()
+                    st.session_state.user_phone = cust_phone.strip()
+                    st.session_state.user_role = "Customer"
+                    st.success("✅ Login Successful!")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
 
     if st.session_state.user_role == "Customer":
         st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
@@ -151,7 +121,7 @@ else:
 
 # Stop execution if not logged in
 if not st.session_state.logged_in_user:
-    st.warning("⚠️ Please complete the login and OTP authentication via sidebar to access the portal.")
+    st.warning("⚠️ Please log in via the sidebar to access the portal.")
     st.stop()
 
 
@@ -347,7 +317,7 @@ else:
                         full_prompt = user_prompt + context_memory
 
                         response = client.models.generate_content(
-                            model="gemini-3.6-flash",  # Updated to gemini-3.6-flash
+                            model="gemini-3.6-flash",
                             contents=full_prompt,
                             config=types.GenerateContentConfig(
                                 tools=[
@@ -380,7 +350,7 @@ else:
                                     tool_result = search_knowledge_base(**tool_args)
                                 elif tool_name == "add_to_cart":
                                     tool_result = add_to_cart(**tool_args)
-                                    st.rerun()  # Rerun to instantly update cart sidebar view
+                                    st.rerun()
                                 elif tool_name == "calculate_total_price":
                                     tool_result = calculate_total_price(**tool_args)
                                 elif tool_name == "process_cart_checkout":
@@ -392,7 +362,7 @@ else:
 
                                 followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
                                 final_response = client.models.generate_content(
-                                    model="gemini-3.6-flash", contents=followup_prompt  # Updated to gemini-3.6-flash
+                                    model="gemini-3.6-flash", contents=followup_prompt
                                 )
                                 final_reply = final_response.text
                         else:
