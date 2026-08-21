@@ -36,8 +36,6 @@ if "generated_otp" not in st.session_state:
     st.session_state.generated_otp = None
 if "cart" not in st.session_state:
     st.session_state.cart = []
-if "show_product_selectors" not in st.session_state:
-    st.session_state.show_product_selectors = True  # Enabled by default for convenience
 
 
 # --- OWNER SECURE LOGIN FLOW ---
@@ -158,8 +156,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load detailed inventory data for inline mapping
-inventory_df = None
+# Load detailed inventory data for searchable product list
 product_records = []
 if os.path.exists("inventory.csv"):
     try:
@@ -317,10 +314,10 @@ else:
                     else:
                         st.warning("⚠️ Please provide delivery address and secondary contact number.")
         else:
-            st.info("Your cart is empty. Browse items and add to cart below.")
+            st.info("Your cart is empty. Search products and add them below.")
 
     with col_main:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Browse store items below or chat with the AI.")
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items below or chat with the AI.")
 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -398,27 +395,37 @@ else:
                     except Exception as e:
                         st.error(f"Error: {e}")
 
-        # Inline Store Catalog with Side-by-Side Qty/Unit Selectors matching your layout
+        # Search Bar for Store Items
         st.markdown("---")
-        st.subheader("📦 Store Catalog & Quick Add")
-        
-        for idx, prod in enumerate(product_records):
-            col_info, col_controls = st.columns([1.2, 1.8], vertical_alignment="center")
-            
-            with col_info:
-                st.markdown(f"**{prod['id']} - {prod['name']}**")
-                st.caption(f"Price: {prod['price']} | Stock: {prod['stock']}")
+        st.subheader("🔍 Search & Add Products")
+        search_query = st.text_input("Type product name to search (e.g., Tea, Almond, Oil):", "").lower().strip()
+
+        # Filter products based on search query
+        filtered_products = [
+            p for p in product_records 
+            if search_query in p['name'].lower() or search_query in p['id'].lower()
+        ] if search_query else product_records
+
+        if filtered_products:
+            for idx, prod in enumerate(filtered_products):
+                col_info, col_controls = st.columns([1.2, 1.8], vertical_alignment="center")
                 
-            with col_controls:
-                q_col, u_col = st.columns(2)
-                with q_col:
-                    q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"inline_qty_{idx}")
-                with u_col:
-                    u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"inline_unit_{idx}")
-                
-                if st.button("Add to Cart", key=f"inline_add_{idx}"):
-                    full_q_str = f"{q_val} {u_val}"
-                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                    st.success(f"Added {full_q_str} of {prod['name']}!")
-                    st.rerun()
-            st.markdown("---")
+                with col_info:
+                    st.markdown(f"**{prod['id']} - {prod['name']}**")
+                    st.caption(f"Price: {prod['price']} | Stock: {prod['stock']}")
+                    
+                with col_controls:
+                    q_col, u_col = st.columns(2)
+                    with q_col:
+                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
+                    with u_col:
+                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
+                    
+                    if st.button("Add to Cart", key=f"search_add_{idx}"):
+                        full_q_str = f"{q_val} {u_val}"
+                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                        st.success(f"Added {full_q_str} of {prod['name']}!")
+                        st.rerun()
+                st.markdown("---")
+        else:
+            st.info("No matching products found. Try a different search keyword.")
