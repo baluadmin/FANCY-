@@ -156,7 +156,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load detailed inventory data for searchable product list
+# Load detailed product records for searching and inline catalog matching
 product_records = []
 if os.path.exists("inventory.csv"):
     try:
@@ -172,12 +172,12 @@ if os.path.exists("inventory.csv"):
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Organic Green Tea", "price": "120", "stock": "250"},
-        {"id": "ITM002", "name": "Almond Nuts 500g", "price": "85", "stock": "600"},
-        {"id": "ITM003", "name": "Millets Health Mix", "price": "150", "stock": "350"},
-        {"id": "ITM004", "name": "Fresh Mixed Fruits Box", "price": "200", "stock": "180"},
-        {"id": "ITM005", "name": "Cold Pressed Coconut Oil", "price": "450", "stock": "90"},
-        {"id": "ITM006", "name": "Organic Honey 250ml", "price": "300", "stock": "110"},
+        {"id": "ITM001", "name": "Organic Green Tea", "price": "250", "stock": "120"},
+        {"id": "ITM002", "name": "Almond Nuts 500g", "price": "600", "stock": "85"},
+        {"id": "ITM003", "name": "Millets Health Mix", "price": "350", "stock": "150"},
+        {"id": "ITM004", "name": "Fresh Mixed Fruits Box", "price": "400", "stock": "45"},
+        {"id": "ITM005", "name": "Cold Pressed Coconut Oil", "price": "450", "stock": "60"},
+        {"id": "ITM006", "name": "Organic Honey 250ml", "price": "300", "stock": "95"},
     ]
 
 
@@ -282,10 +282,10 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Main split layout columns
+    # Main Split Layout
     col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
-    # --- LEFT SIDE CONTAINER (Search & Catalog with Independent Scroll) ---
+    # --- LEFT SIDE: Search & Quick Add Catalog ---
     with col_search:
         with st.container(height=650, border=True):
             st.markdown("### 🔍 Search & Add Products")
@@ -316,7 +316,7 @@ else:
             else:
                 st.info("No matching products found.")
 
-    # --- RIGHT SIDE CONTAINER (Cart, Checkout & AI Chat with Independent Scroll) ---
+    # --- RIGHT SIDE: Cart, Checkout & AI Chat ---
     with col_ai:
         with st.container(height=650, border=True):
             st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
@@ -352,7 +352,7 @@ else:
                             else:
                                 st.warning("⚠️ Please provide delivery address and secondary contact number.")
                 else:
-                    st.info("Your cart is empty. Add products from the left panel.")
+                    st.info("Your cart is empty. Add products from the left panel or chat below.")
 
             st.markdown("---")
             st.markdown("### 💬 AI Assistant Chat")
@@ -362,9 +362,29 @@ else:
             for message in st.session_state.messages:
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
+                    
+                    # If assistant lists products, render inline Qty/Unit and Add to Cart selectors right below the message
+                    if message["role"] == "assistant":
+                        for p_idx, prod in enumerate(product_records):
+                            if prod['name'].lower() in message["content"].lower():
+                                with st.container():
+                                    st.markdown(f"👉 **Quick Add: {prod['name']}**")
+                                    ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                    with ai_q_col:
+                                        aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
+                                    with ai_u_col:
+                                        au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
+                                    with ai_b_col:
+                                        st.write("") # spacing alignment
+                                        if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
+                                            full_aq_str = f"{aq_val} {au_val}"
+                                            st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
+                                            st.success(f"Added {full_aq_str} of {prod['name']}!")
+                                            st.rerun()
 
             if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
-                st.session_state.messages.append({"role": "user", "content": user_prompt})
+                msg_id = len(st.session_state.messages)
+                st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
                 with st.chat_message("user"):
                     st.markdown(user_prompt)
 
@@ -389,9 +409,7 @@ else:
                                     system_instruction=(
                                         "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
                                         "1. Detect user language and ALWAYS respond in that same language. "
-                                        "2. Use the 'add_to_cart' tool when a user wishes to buy or add products. "
-                                        "3. Guide users to manage their cart and complete checkout using the cart panel. "
-                                        "4. When feedback is provided, use 'add_product_review' and warmly thank the customer."
+                                        "2. When listing products, mention their exact names clearly so customers can easily select quantities."
                                     ),
                                 ),
                             )
@@ -427,7 +445,8 @@ else:
                                 final_reply = response.text
 
                             st.markdown(final_reply)
-                            st.session_state.messages.append({"role": "assistant", "content": final_reply})
+                            st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
+                            st.rerun()
 
                         except Exception as e:
                             st.error(f"Error: {e}")
