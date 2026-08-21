@@ -110,7 +110,7 @@ else:
                     st.success("✅ Login Successful!")
                     st.rerun()
                 else:
-                    st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
+                    st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
 
     if st.session_state.user_role == "Customer":
         st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
@@ -196,7 +196,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
-    # Save to orders
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -204,7 +203,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
             writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
         writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
 
-    # Save to payments
     pay_exists = os.path.isfile("payments.csv")
     with open("payments.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -212,9 +210,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
             writer.writerow(["Timestamp", "Customer Name", "Items", "Method", "Transaction ID"])
         writer.writerow([timestamp, customer_name, cart_summary, payment_method, txn_id])
 
-    # Clear cart after checkout
     st.session_state.cart = []
-
     return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id}). Please leave your rating and review!"
 
 
@@ -261,38 +257,50 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
+    # Load inventory items dynamically from inventory.csv for individual selectors
+    inventory_items = []
+    if os.path.exists("inventory.csv"):
+        try:
+            inv_df = pd.read_csv("inventory.csv")
+            if "Product" in inv_df.columns:
+                inventory_items = inv_df["Product"].tolist()
+            elif len(inv_df.columns) > 0:
+                inventory_items = inv_df.iloc[:, 0].tolist()
+        except Exception:
+            inventory_items = ["Organic Green Tea", "Almond Nuts 500g", "Millets Health Mix", "Fresh Mixed Fruits Box", "Cold Pressed Coconut Oil", "Organic Honey 250ml"]
+    else:
+        inventory_items = ["Organic Green Tea", "Almond Nuts 500g", "Millets Health Mix", "Fresh Mixed Fruits Box", "Cold Pressed Coconut Oil", "Organic Honey 250ml"]
+
     # Customer UI Layout
     col_main, col_cart = st.columns([2, 1])
 
     with col_cart:
-        st.markdown("### 🛒 Quick Add Product (Grams / Kg)")
-        
-        # Quick Add Manual Form with Unit Selectors
-        with st.form("quick_add_form"):
-            quick_product = st.text_input("Product Name:")
-            col_q1, col_q2 = st.columns(2)
-            with col_q1:
-                qty_number = st.number_input("Amount", min_value=0.1, value=1.0, step=0.5)
-            with col_q2:
-                qty_unit = st.selectbox("Unit", ["g", "kg", "ml", "L", "Units"])
-            
-            add_btn = st.form_submit_button("Add to Cart")
-            if add_btn:
-                if quick_product.strip():
-                    full_qty_str = f"{qty_number} {qty_unit}"
-                    st.session_state.cart.append({"product": quick_product.strip(), "quantity": full_qty_str})
-                    st.success(f"Added {full_qty_str} of {quick_product}!")
-                    st.rerun()
-                else:
-                    st.warning("⚠️ Enter a product name.")
+        st.markdown("### 🛒 Quick Select Store Items")
+        st.caption("Select weight/quantity for each item below:")
 
-        st.markdown("---")
-        st.markdown("### 🛒 Current Cart Items")
+        # Render individual product selectors
+        for idx, prod in enumerate(inventory_items):
+            with st.container():
+                st.write(f"**{prod}**")
+                c1, c2 = st.columns([1, 1])
+                with c1:
+                    qty_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"qty_{idx}")
+                with c2:
+                    unit_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"unit_{idx}")
+                
+                if st.button(f"Add to Cart", key=f"add_btn_{idx}"):
+                    full_qty = f"{qty_val} {unit_val}"
+                    st.session_state.cart.append({"product": prod, "quantity": full_qty})
+                    st.success(f"Added {full_qty} of {prod}!")
+                    st.rerun()
+                st.markdown("---")
+
+        st.markdown("### 🛍️ Current Cart Items")
         if st.session_state.cart:
-            for idx, item in enumerate(st.session_state.cart):
+            for c_idx, item in enumerate(st.session_state.cart):
                 st.write(f"- **{item['product']}** ({item['quantity']})")
-                if st.button(f"Remove Item {idx+1}", key=f"remove_{idx}"):
-                    st.session_state.cart.pop(idx)
+                if st.button(f"Remove {c_idx+1}", key=f"rem_{c_idx}"):
+                    st.session_state.cart.pop(c_idx)
                     st.rerun()
             
             st.markdown("---")
@@ -315,7 +323,7 @@ else:
                     else:
                         st.warning("⚠️ Please provide delivery address and secondary contact number.")
         else:
-            st.info("Your cart is empty. Use the quick add form above or chat with the AI.")
+            st.info("Your cart is empty. Use the product selectors above.")
 
     with col_main:
         st.write(f"Welcome, **{st.session_state.logged_in_user}**! Search items or chat with the AI.")
@@ -353,7 +361,7 @@ else:
                                 system_instruction=(
                                     "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
                                     "1. Detect user language and ALWAYS respond in that same language. "
-                                    "2. Use the 'add_to_cart' tool when a user wishes to buy or add products, accepting custom quantities/weights like '500g' or '2kg'. "
+                                    "2. Use the 'add_to_cart' tool when a user wishes to buy or add products. "
                                     "3. Guide users to manage their cart and complete checkout using the cart panel. "
                                     "4. When feedback is provided, use 'add_product_review' and warmly thank the customer."
                                 ),
