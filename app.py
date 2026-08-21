@@ -37,7 +37,7 @@ if "generated_otp" not in st.session_state:
 if "cart" not in st.session_state:
     st.session_state.cart = []
 if "show_product_selectors" not in st.session_state:
-    st.session_state.show_product_selectors = False
+    st.session_state.show_product_selectors = True  # Enabled by default for convenience
 
 
 # --- OWNER SECURE LOGIN FLOW ---
@@ -158,29 +158,29 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load inventory items for interactive chat rendering
-product_list = []
+# Load detailed inventory data for inline mapping
+inventory_df = None
+product_records = []
 if os.path.exists("inventory.csv"):
     try:
         inventory_df = pd.read_csv("inventory.csv")
-        name_cols = [c for c in inventory_df.columns if any(k in c.lower() for k in ["product", "item", "name", "title"])]
-        if name_cols:
-            product_list = inventory_df[name_cols[0]].dropna().tolist()
-        elif len(inventory_df.columns) > 1:
-            product_list = inventory_df.iloc[:, 1].dropna().tolist()
-        else:
-            product_list = inventory_df.iloc[:, 0].dropna().tolist()
+        for _, row in inventory_df.iterrows():
+            item_id = str(row.iloc[0]) if len(row) > 0 else "Item"
+            prod_name = str(row.iloc[1]) if len(row) > 1 else item_id
+            price = str(row.iloc[3]) if len(row) > 3 else "0"
+            stock = str(row.iloc[4]) if len(row) > 4 else "0"
+            product_records.append({"id": item_id, "name": prod_name, "price": price, "stock": stock})
     except Exception:
-        product_list = []
+        product_records = []
 
-if not product_list:
-    product_list = [
-        "Organic Green Tea", 
-        "Almond Nuts 500g", 
-        "Millets Health Mix", 
-        "Fresh Mixed Fruits Box", 
-        "Cold Pressed Coconut Oil", 
-        "Organic Honey 250ml"
+if not product_records:
+    product_records = [
+        {"id": "ITM001", "name": "Organic Green Tea", "price": "₹250", "stock": "120 units"},
+        {"id": "ITM002", "name": "Almond Nuts 500g", "price": "₹600", "stock": "85 units"},
+        {"id": "ITM003", "name": "Millets Health Mix", "price": "₹350", "stock": "150 units"},
+        {"id": "ITM004", "name": "Fresh Mixed Fruits Box", "price": "₹400", "stock": "45 units"},
+        {"id": "ITM005", "name": "Cold Pressed Coconut Oil", "price": "₹450", "stock": "60 units"},
+        {"id": "ITM006", "name": "Organic Honey 250ml", "price": "₹300", "stock": "95 units"},
     ]
 
 
@@ -317,10 +317,10 @@ else:
                     else:
                         st.warning("⚠️ Please provide delivery address and secondary contact number.")
         else:
-            st.info("Your cart is empty. Ask the assistant to list products or chat to buy items.")
+            st.info("Your cart is empty. Browse items and add to cart below.")
 
     with col_main:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Ask to view products or type your request.")
+        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Browse store items below or chat with the AI.")
 
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -331,11 +331,6 @@ else:
 
         if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
             st.session_state.messages.append({"role": "user", "content": user_prompt})
-            
-            # Check if user asked to list or show products
-            if any(k in user_prompt.lower() for k in ["list", "product", "item", "show", "store", "buy", "tea", "oil", "nuts", "mix"]):
-                st.session_state.show_product_selectors = True
-
             with st.chat_message("user"):
                 st.markdown(user_prompt)
 
@@ -403,23 +398,27 @@ else:
                     except Exception as e:
                         st.error(f"Error: {e}")
 
-        # Render interactive product selectors directly below chat if activated
-        if st.session_state.get("show_product_selectors", False):
+        # Inline Store Catalog with Side-by-Side Qty/Unit Selectors matching your layout
+        st.markdown("---")
+        st.subheader("📦 Store Catalog & Quick Add")
+        
+        for idx, prod in enumerate(product_records):
+            col_info, col_controls = st.columns([1.2, 1.8], vertical_alignment="center")
+            
+            with col_info:
+                st.markdown(f"**{prod['id']} - {prod['name']}**")
+                st.caption(f"Price: {prod['price']} | Stock: {prod['stock']}")
+                
+            with col_controls:
+                q_col, u_col = st.columns(2)
+                with q_col:
+                    q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"inline_qty_{idx}")
+                with u_col:
+                    u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"inline_unit_{idx}")
+                
+                if st.button("Add to Cart", key=f"inline_add_{idx}"):
+                    full_q_str = f"{q_val} {u_val}"
+                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                    st.success(f"Added {full_q_str} of {prod['name']}!")
+                    st.rerun()
             st.markdown("---")
-            st.subheader("📦 Select Quantities & Add to Cart")
-            for idx, prod in enumerate(product_list):
-                with st.container():
-                    col_p1, col_p2, col_p3 = st.columns([2, 1, 1])
-                    with col_p1:
-                        st.write(f"**{prod}**")
-                    with col_p2:
-                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"chat_qty_{idx}")
-                    with col_p3:
-                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"chat_unit_{idx}")
-                    
-                    if st.button("Add to Cart", key=f"chat_add_{idx}"):
-                        full_q_str = f"{q_val} {u_val}"
-                        st.session_state.cart.append({"product": str(prod), "quantity": full_q_str})
-                        st.success(f"Added {full_q_str} of {prod} to cart!")
-                        st.rerun()
-                    st.markdown("---")
