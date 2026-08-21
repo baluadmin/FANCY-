@@ -105,44 +105,41 @@ else:
     st.sidebar.subheader("🛍️ Customer Secure Login")
 
     if st.session_state.user_role != "Customer":
-        if not st.session_state.customer_otp_sent:
-            cust_name = st.sidebar.text_input("1. Enter Your Name:", key="cust_name_input")
-            cust_phone = st.sidebar.text_input("2. Enter Mobile Number:", max_chars=10, key="cust_phone_input")
-            
-            if st.sidebar.button("Send OTP"):
+        # Form to input name, phone and trigger OTP
+        with st.sidebar.form("customer_login_form"):
+            cust_name = st.text_input("1. Enter Your Name:")
+            cust_phone = st.text_input("2. Enter Mobile Number:", max_chars=10)
+            send_otp_btn = st.form_submit_button("Send OTP")
+
+            if send_otp_btn:
                 if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
                     otp = str(random.randint(100000, 999999))
                     st.session_state.customer_gen_otp = otp
                     st.session_state.customer_otp_sent = True
                     st.session_state.temp_cust_name = cust_name.strip()
                     st.session_state.temp_cust_phone = cust_phone.strip()
-                    st.sidebar.success("✅ OTP Sent Successfully!")
-                    st.sidebar.info(f"🔑 [Test SMS OTP]: {otp}")
-                    st.rerun()
+                    st.success("✅ OTP generated successfully!")
                 else:
-                    st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-        else:
-            st.sidebar.write(f"OTP sent to: **{st.session_state.temp_cust_phone}**")
-            entered_cust_otp = st.sidebar.text_input(
-                "3. Enter 6-digit OTP:", max_chars=6, type="password", key="cust_otp_input"
-            )
+                    st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
+
+        # If OTP is sent, show the verification form
+        if st.session_state.customer_otp_sent:
+            st.sidebar.info(f"🔑 [Test SMS OTP]: {st.session_state.customer_gen_otp}")
             
-            col_otp1, col_otp2 = st.sidebar.columns(2)
-            with col_otp1:
-                if st.button("Verify OTP & Login"):
+            with st.sidebar.form("customer_verify_form"):
+                entered_cust_otp = st.text_input("3. Enter 6-digit OTP:", max_chars=6, type="password")
+                verify_btn = st.form_submit_button("Verify OTP & Login")
+
+                if verify_btn:
                     if entered_cust_otp.strip() == str(st.session_state.customer_gen_otp).strip():
                         st.session_state.logged_in_user = st.session_state.temp_cust_name
                         st.session_state.user_phone = st.session_state.temp_cust_phone
                         st.session_state.user_role = "Customer"
                         st.session_state.customer_otp_sent = False
-                        st.sidebar.success("✅ Login Successful!")
+                        st.success("✅ Login Successful!")
                         st.rerun()
                     else:
-                        st.sidebar.error("❌ Invalid OTP. Please try again.")
-            with col_otp2:
-                if st.button("Resend"):
-                    st.session_state.customer_otp_sent = False
-                    st.rerun()
+                        st.error("❌ Invalid OTP. Try again.")
 
     if st.session_state.user_role == "Customer":
         st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
