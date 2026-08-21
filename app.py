@@ -282,149 +282,152 @@ if st.session_state.user_role == "Owner":
         st.info("No reviews found.")
 
 else:
-    # Swapped Layout: Search & Add Products on Left, AI Chat & Cart on Right
+    # Main split layout columns
     col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
+    # --- LEFT SIDE CONTAINER (Search & Catalog with Independent Scroll) ---
     with col_search:
-        st.markdown("### 🔍 Search & Add Products")
-        search_query = st.text_input("Type product name to search (e.g., Tea, Almond, Oil):", "").lower().strip()
+        with st.container(height=650, border=True):
+            st.markdown("### 🔍 Search & Add Products")
+            search_query = st.text_input("Type product name to search:", "").lower().strip()
 
-        filtered_products = [
-            p for p in product_records 
-            if search_query in p['name'].lower() or search_query in p['id'].lower()
-        ] if search_query else product_records
+            filtered_products = [
+                p for p in product_records 
+                if search_query in p['name'].lower() or search_query in p['id'].lower()
+            ] if search_query else product_records
 
-        if filtered_products:
-            for idx, prod in enumerate(filtered_products):
-                st.markdown(f"**{prod['id']} - {prod['name']}**")
-                st.caption(f"Price: {prod['price']} | Stock: {prod['stock']}")
-                
-                q_col, u_col = st.columns(2)
-                with q_col:
-                    q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
-                with u_col:
-                    u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
-                
-                if st.button("Add to Cart", key=f"search_add_{idx}"):
-                    full_q_str = f"{q_val} {u_val}"
-                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                    st.success(f"Added {full_q_str} of {prod['name']}!")
-                    st.rerun()
-                st.markdown("---")
-        else:
-            st.info("No matching products found.")
-
-    with col_ai:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**! Chat with the AI or manage your cart below.")
-
-        # Cart and Checkout Section on top of AI Chat or right side of AI
-        with st.expander("🛒 View Cart & Secure Checkout", expanded=True):
-            if st.session_state.cart:
-                for c_idx, item in enumerate(st.session_state.cart):
-                    col_c1, col_c2 = st.columns([3, 1])
-                    with col_c1:
-                        st.write(f"- **{item['product']}** ({item['quantity']})")
-                    with col_c2:
-                        if st.button("Remove", key=f"rem_{c_idx}"):
-                            st.session_state.cart.pop(c_idx)
-                            st.rerun()
-                
-                st.markdown("---")
-                st.subheader("📍 Secure Checkout Form")
-                with st.form("checkout_form"):
-                    checkout_address = st.text_area("Delivery Address:")
-                    secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
-                    product_desc = st.text_area("Product Specifications / Custom Description:")
-                    payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-                    live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+            if filtered_products:
+                for idx, prod in enumerate(filtered_products):
+                    st.markdown(f"**{prod['id']} - {prod['name']}**")
+                    st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
                     
-                    submit_checkout = st.form_submit_button("Complete Order & Pay")
-                    if submit_checkout:
-                        if checkout_address and secondary_phone:
-                            result_msg = process_cart_checkout(
-                                checkout_address, secondary_phone, product_desc, payment_method, live_location
-                            )
-                            st.success(result_msg)
-                            st.rerun()
-                        else:
-                            st.warning("⚠️ Please provide delivery address and secondary contact number.")
+                    q_col, u_col = st.columns(2)
+                    with q_col:
+                        q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
+                    with u_col:
+                        u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
+                    
+                    if st.button("Add to Cart", key=f"search_add_{idx}"):
+                        full_q_str = f"{q_val} {u_val}"
+                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                        st.success(f"Added {full_q_str} of {prod['name']}!")
+                        st.rerun()
+                    st.markdown("---")
             else:
-                st.info("Your cart is empty. Add products from the left search panel.")
+                st.info("No matching products found.")
 
-        st.markdown("---")
-        st.markdown("### 💬 AI Assistant Chat")
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
+    # --- RIGHT SIDE CONTAINER (Cart, Checkout & AI Chat with Independent Scroll) ---
+    with col_ai:
+        with st.container(height=650, border=True):
+            st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
 
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-        if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
-            st.session_state.messages.append({"role": "user", "content": user_prompt})
-            with st.chat_message("user"):
-                st.markdown(user_prompt)
-
-            with st.chat_message("assistant"):
-                with st.spinner("AI Assistant is processing..."):
-                    try:
-                        context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
-                        full_prompt = user_prompt + context_memory
-
-                        response = client.models.generate_content(
-                            model="gemini-3.6-flash",
-                            contents=full_prompt,
-                            config=types.GenerateContentConfig(
-                                tools=[
-                                    search_knowledge_base,
-                                    add_to_cart,
-                                    calculate_total_price,
-                                    process_cart_checkout,
-                                    add_product_review,
-                                ],
-                                temperature=0.3,
-                                system_instruction=(
-                                    "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
-                                    "1. Detect user language and ALWAYS respond in that same language. "
-                                    "2. Use the 'add_to_cart' tool when a user wishes to buy or add products. "
-                                    "3. Guide users to manage their cart and complete checkout using the cart panel. "
-                                    "4. When feedback is provided, use 'add_product_review' and warmly thank the customer."
-                                ),
-                            ),
-                        )
-
-                        final_reply = ""
-                        if response.function_calls:
-                            for function_call in response.function_calls:
-                                tool_name = function_call.name
-                                tool_args = function_call.args
-
-                                st.caption(f"🔧 Tool Executed: `{tool_name}`")
-
-                                if tool_name == "search_knowledge_base":
-                                    tool_result = search_knowledge_base(**tool_args)
-                                elif tool_name == "add_to_cart":
-                                    tool_result = add_to_cart(**tool_args)
-                                    st.rerun()
-                                elif tool_name == "calculate_total_price":
-                                    tool_result = calculate_total_price(**tool_args)
-                                elif tool_name == "process_cart_checkout":
-                                    tool_result = process_cart_checkout(**tool_args)
-                                elif tool_name == "add_product_review":
-                                    tool_result = add_product_review(**tool_args)
-                                else:
-                                    tool_result = "Tool not found."
-
-                                followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
-                                final_response = client.models.generate_content(
-                                    model="gemini-3.6-flash", contents=followup_prompt
+            with st.expander("🛒 View Cart & Secure Checkout", expanded=True):
+                if st.session_state.cart:
+                    for c_idx, item in enumerate(st.session_state.cart):
+                        col_c1, col_c2 = st.columns([3, 1])
+                        with col_c1:
+                            st.write(f"- **{item['product']}** ({item['quantity']})")
+                        with col_c2:
+                            if st.button("Remove", key=f"rem_{c_idx}"):
+                                st.session_state.cart.pop(c_idx)
+                                st.rerun()
+                    
+                    st.markdown("---")
+                    st.subheader("📍 Secure Checkout Form")
+                    with st.form("checkout_form"):
+                        checkout_address = st.text_area("Delivery Address:")
+                        secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+                        product_desc = st.text_area("Product Specifications / Custom Description:")
+                        payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
+                        live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+                        
+                        submit_checkout = st.form_submit_button("Complete Order & Pay")
+                        if submit_checkout:
+                            if checkout_address and secondary_phone:
+                                result_msg = process_cart_checkout(
+                                    checkout_address, secondary_phone, product_desc, payment_method, live_location
                                 )
-                                final_reply = final_response.text
-                        else:
-                            final_reply = response.text
+                                st.success(result_msg)
+                                st.rerun()
+                            else:
+                                st.warning("⚠️ Please provide delivery address and secondary contact number.")
+                else:
+                    st.info("Your cart is empty. Add products from the left panel.")
 
-                        st.markdown(final_reply)
-                        st.session_state.messages.append({"role": "assistant", "content": final_reply})
+            st.markdown("---")
+            st.markdown("### 💬 AI Assistant Chat")
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
 
-                    except Exception as e:
-                        st.error(f"Error: {e}")
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
+            if user_prompt := st.chat_input("Ask about inventory, products, or type in your language..."):
+                st.session_state.messages.append({"role": "user", "content": user_prompt})
+                with st.chat_message("user"):
+                    st.markdown(user_prompt)
+
+                with st.chat_message("assistant"):
+                    with st.spinner("AI Assistant is processing..."):
+                        try:
+                            context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
+                            full_prompt = user_prompt + context_memory
+
+                            response = client.models.generate_content(
+                                model="gemini-3.6-flash",
+                                contents=full_prompt,
+                                config=types.GenerateContentConfig(
+                                    tools=[
+                                        search_knowledge_base,
+                                        add_to_cart,
+                                        calculate_total_price,
+                                        process_cart_checkout,
+                                        add_product_review,
+                                    ],
+                                    temperature=0.3,
+                                    system_instruction=(
+                                        "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
+                                        "1. Detect user language and ALWAYS respond in that same language. "
+                                        "2. Use the 'add_to_cart' tool when a user wishes to buy or add products. "
+                                        "3. Guide users to manage their cart and complete checkout using the cart panel. "
+                                        "4. When feedback is provided, use 'add_product_review' and warmly thank the customer."
+                                    ),
+                                ),
+                            )
+
+                            final_reply = ""
+                            if response.function_calls:
+                                for function_call in response.function_calls:
+                                    tool_name = function_call.name
+                                    tool_args = function_call.args
+
+                                    st.caption(f"🔧 Tool Executed: `{tool_name}`")
+
+                                    if tool_name == "search_knowledge_base":
+                                        tool_result = search_knowledge_base(**tool_args)
+                                    elif tool_name == "add_to_cart":
+                                        tool_result = add_to_cart(**tool_args)
+                                        st.rerun()
+                                    elif tool_name == "calculate_total_price":
+                                        tool_result = calculate_total_price(**tool_args)
+                                    elif tool_name == "process_cart_checkout":
+                                        tool_result = process_cart_checkout(**tool_args)
+                                    elif tool_name == "add_product_review":
+                                        tool_result = add_product_review(**tool_args)
+                                    else:
+                                        tool_result = "Tool not found."
+
+                                    followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
+                                    final_response = client.models.generate_content(
+                                        model="gemini-3.6-flash", contents=followup_prompt
+                                    )
+                                    final_reply = final_response.text
+                            else:
+                                final_reply = response.text
+
+                            st.markdown(final_reply)
+                            st.session_state.messages.append({"role": "assistant", "content": final_reply})
+
+                        except Exception as e:
+                            st.error(f"Error: {e}")
