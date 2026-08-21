@@ -354,7 +354,7 @@ else:
                         full_prompt = user_prompt + context_memory
 
                         response = client.models.generate_content(
-                            model="gemini-2.5-flash",
+                            model="gemini-3.6-flash",  # Updated to gemini-3.6-flash
                             contents=full_prompt,
                             config=types.GenerateContentConfig(
                                 tools=[
@@ -395,7 +395,7 @@ else:
 
                                 followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
                                 final_response = client.models.generate_content(
-                                    model="gemini-2.5-flash", contents=followup_prompt
+                                    model="gemini-3.6-flash", contents=followup_prompt  # Updated to gemini-3.6-flash
                                 )
                                 final_reply = final_response.text
                         else:
