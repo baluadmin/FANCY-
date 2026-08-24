@@ -299,40 +299,44 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        col_catalog, col_ai = st.columns([1.2, 1.8], gap="large")
+        col_catalog, col_ai = st.columns([1.3, 1.7], gap="large")
 
         with col_catalog:
             with st.container(height=650, border=True):
                 st.markdown("### 📂 Product Categories")
-                st.caption("Click any category below to view and add items directly:")
+                st.caption("Click any category box below to expand items:")
 
                 categories = ["Headset", "Charger", "Cable", "Mic", "Battery", "Tempered", "Ear pod"]
 
-                for cat in categories:
-                    with st.expander(f"📦 {cat}"):
-                        cat_products = [p for p in product_records if p['category'] == cat]
-                        
-                        if cat_products:
-                            for idx, prod in enumerate(cat_products):
-                                # Column-wise stacked layout (ஒன்றன் கீழ் ஒன்றாக செங்குத்தாக)
-                                st.markdown(f"**{prod['name']}**")
-                                st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                # Create 3 columns layout for categories (Grid view: 3 items per row)
+                for i in range(0, len(categories), 3):
+                    row_cats = categories[i:i+3]
+                    cols = st.columns(len(row_cats))
+                    
+                    for col_idx, cat in enumerate(row_cats):
+                        with cols[col_idx]:
+                            with st.expander(f"📦 {cat}"):
+                                cat_products = [p for p in product_records if p['category'] == cat]
                                 
-                                q_col, u_col = st.columns(2)
-                                with q_col:
-                                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}")
-                                with u_col:
-                                    u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}")
-                                
-                                if st.button("Add to Cart", key=f"btn_{cat}_{idx}", use_container_width=True):
-                                    full_q_str = f"{int(q_val)} {u_val}"
-                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                    st.success(f"Added {full_q_str} of {prod['name']}!")
-                                    st.rerun()
-                                
-                                st.markdown("---")
-                        else:
-                            st.info(f"No items available under {cat}.")
+                                if cat_products:
+                                    for idx, prod in enumerate(cat_products):
+                                        st.markdown(f"**{prod['name']}**")
+                                        st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
+                                        
+                                        q_col, u_col = st.columns(2)
+                                        with q_col:
+                                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}")
+                                        with u_col:
+                                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}")
+                                        
+                                        if st.button("Add", key=f"btn_{cat}_{idx}", use_container_width=True):
+                                            full_q_str = f"{int(q_val)} {u_val}"
+                                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                            st.success(f"Added!")
+                                            st.rerun()
+                                        st.markdown("---")
+                                else:
+                                    st.info(f"No items.")
 
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
