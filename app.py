@@ -145,11 +145,14 @@ def load_inventory_to_chroma():
     if not os.path.exists(file_name):
         return
     try:
-        existing = collection.get(ids=[file_name])
-        if not existing or not existing["ids"]:
-            df = pd.read_csv(file_name)
-            file_text = df.to_string(index=False)
-            if file_text.strip():
+        df = pd.read_csv(file_name)
+        file_text = df.to_string(index=False)
+        if file_text.strip():
+            # Upsert or update chroma collection dynamically
+            existing = collection.get(ids=[file_name])
+            if existing and existing["ids"]:
+                collection.update(documents=[file_text], ids=[file_name])
+            else:
                 collection.add(documents=[file_text], ids=[file_name])
     except Exception:
         pass
@@ -158,26 +161,28 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Product records grouped by your requested categories
-product_records = [
-    {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-    {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-    
-    {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-    {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-    
-    {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-    {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-    
-    {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-    {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-    
-    {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-    
-    {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-    
-    {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
-]
+# --- DYNAMICALLY LOAD PRODUCT RECORDS FROM inventory.csv ---
+product_records = []
+if os.path.exists("inventory.csv"):
+    try:
+        inv_df = pd.read_csv("inventory.csv")
+        for _, row in inv_df.iterrows():
+            product_records.append({
+                "id": str(row.iloc[0]),
+                "name": str(row.iloc[1]),
+                "category": str(row.iloc[2]),
+                "stock": str(row.iloc[3]),
+                "price": str(row.iloc[4])
+            })
+    except Exception:
+        product_records = []
+
+# Fallback default records if csv is missing
+if not product_records:
+    product_records = [
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
+    ]
 
 
 # 4. Define Tools
@@ -306,7 +311,8 @@ else:
                 st.markdown("### 📂 Product Categories")
                 st.caption("Click any category box below to expand items:")
 
-                categories = ["Headset", "Charger", "Cable", "Mic", "Battery", "Tempered", "Ear pod"]
+                # Get unique categories dynamically from inventory
+                categories = list(set([p['category'] for p in product_records]))
 
                 # Create 3 columns layout for categories (Grid view: 3 items per row)
                 for i in range(0, len(categories), 3):
@@ -321,7 +327,7 @@ else:
                                 if cat_products:
                                     for idx, prod in enumerate(cat_products):
                                         st.markdown(f"**{prod['name']}**")
-                                        st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
+                                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
                                         
                                         q_col, u_col = st.columns(2)
                                         with q_col:
