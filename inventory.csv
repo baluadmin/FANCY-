@@ -1,0 +1,12 @@
+Item_ID,Item_Name,Category,Stock_Quantity,Price_INR,Supplier
+ITM001,Bluetooth Wireless Headset,Headset,50,1200,SoundPro Tech
+ITM002,Over-Ear Gaming Headset,Headset,40,1800,Gaming Gear Ltd
+ITM003,Fast Type-C Charger 33W,Charger,120,650,VoltDirect
+ITM004,Dual Port Fast Wall Charger,Charger,90,500,PowerPlus Inc
+ITM005,Braided Micro USB Cable,Cable,200,250,Connectify
+ITM006,Type-C Fast Charging Cable,Cable,150,300,Connectify
+ITM007,Professional Studio Mic,Mic,30,2500,AudioTech India
+ITM008,Mini Lavalier Clip-on Mic,Mic,80,450,AudioTech India
+ITM009,Lithium Mobile Replacement Battery,Battery,45,800,CellPower Hub
+ITM010,Edge-to-Edge Tempered Glass,Tempered,300,200,ScreenGuard Co
+ITM011,Wireless Bluetooth Ear Pods,Ear pod,75,1500,SoundPro Tech
