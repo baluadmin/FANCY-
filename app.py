@@ -158,29 +158,18 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load product records
-product_records = []
-if os.path.exists("inventory.csv"):
-    try:
-        inventory_df = pd.read_csv("inventory.csv")
-        for _, row in inventory_df.iterrows():
-            item_id = str(row.iloc[0]) if len(row) > 0 else "Item"
-            prod_name = str(row.iloc[1]) if len(row) > 1 else item_id
-            price = str(row.iloc[3]) if len(row) > 3 else "0"
-            stock = str(row.iloc[4]) if len(row) > 4 else "0"
-            product_records.append({"id": item_id, "name": prod_name, "price": price, "stock": stock})
-    except Exception:
-        product_records = []
-
-if not product_records:
-    product_records = [
-        {"id": "ITM001", "name": "Organic Green Tea", "price": "250", "stock": "120"},
-        {"id": "ITM002", "name": "Almond Nuts 500g", "price": "600", "stock": "85"},
-        {"id": "ITM003", "name": "Millets Health Mix", "price": "350", "stock": "150"},
-        {"id": "ITM004", "name": "Fresh Mixed Fruits Box", "price": "400", "stock": "45"},
-        {"id": "ITM005", "name": "Cold Pressed Coconut Oil", "price": "450", "stock": "60"},
-        {"id": "ITM006", "name": "Organic Honey 250ml", "price": "300", "stock": "95"},
-    ]
+# Load product records (Updated with mobile accessories categories)
+product_records = [
+    {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
+    {"id": "ITM002", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
+    {"id": "ITM003", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
+    {"id": "ITM004", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
+    {"id": "ITM005", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
+    {"id": "ITM006", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
+    {"id": "ITM007", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
+    {"id": "ITM008", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
+    {"id": "ITM009", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
+]
 
 
 # 4. Define Tools
@@ -196,10 +185,10 @@ def search_knowledge_base(query: str) -> str:
 
 
 def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight (e.g. 500g, 2kg)."""
+    """Add a product or service item into the shopping cart with custom quantity/weight."""
     st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
     st.session_state.last_booked_item = product_name
-    return f"Added '{product_name}' (Qty/Weight: {quantity}) to your cart successfully!"
+    return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
 
 
 def calculate_total_price(price: float, quantity: int, discount_percentage: float = 0.0) -> str:
@@ -238,7 +227,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
         writer.writerow([timestamp, customer_name, cart_summary, payment_method, txn_id])
 
     st.session_state.cart = []
-    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id}). Please leave your rating and review!"
+    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
 
 
 def add_product_review(rating: int, review_comment: str) -> str:
@@ -302,43 +291,53 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        # Main Split Layout (Left: Search & Catalog, Right: AI Search & Chat)
         col_search, col_ai = st.columns([1.1, 1.9], gap="large")
 
         with col_search:
             with st.container(height=650, border=True):
-                st.markdown("### 🔍 Search & Add Products")
-                search_query = st.text_input("Type product name to search:", "").lower().strip()
+                st.markdown("### 🔍 Categories & Products")
+                
+                # Category Filter Buttons
+                categories = ["All", "Headset", "Charger", "Cable", "Mic", "Battery", "Tempered", "Ear pod"]
+                selected_category = st.selectbox("Select Category Menu:", categories)
 
-                filtered_products = [
-                    p for p in product_records 
-                    if search_query in p['name'].lower() or search_query in p['id'].lower()
-                ] if search_query else product_records
+                search_query = st.text_input("Or search product name:", "").lower().strip()
 
+                # Filter products based on category selection and search query
+                filtered_products = product_records
+                if selected_category != "All":
+                    filtered_products = [p for p in filtered_products if p['category'] == selected_category]
+                
+                if search_query:
+                    filtered_products = [
+                        p for p in filtered_products 
+                        if search_query in p['name'].lower() or search_query in p['id'].lower()
+                    ]
+
+                st.markdown("---")
                 if filtered_products:
                     for idx, prod in enumerate(filtered_products):
                         st.markdown(f"**{prod['id']} - {prod['name']}**")
-                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                        st.caption(f"Category: {prod['category']} | Price: ₹{prod['price']} | Stock: {prod['stock']}")
                         
                         q_col, u_col = st.columns(2)
                         with q_col:
-                            q_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"search_qty_{idx}")
+                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"search_qty_{idx}")
                         with u_col:
-                            u_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"search_unit_{idx}")
+                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"search_unit_{idx}")
                         
                         if st.button("Add to Cart", key=f"search_add_{idx}"):
-                            full_q_str = f"{q_val} {u_val}"
+                            full_q_str = f"{int(q_val)} {u_val}"
                             st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
                             st.success(f"Added {full_q_str} of {prod['name']}!")
                             st.rerun()
                         st.markdown("---")
                 else:
-                    st.info("No matching products found.")
+                    st.info("No matching products found in this category.")
 
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
             
-            # Separate Top AI Search Box
             user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="top_ai_search_input")
             
             if user_prompt:
@@ -354,7 +353,7 @@ else:
                         full_prompt = user_prompt + context_memory
 
                         response = client.models.generate_content(
-                            model="gemini-3.5-flash-lite",  # Switched to gemini-3.5-flash-lite for higher free tier limits (500 RPD)
+                            model="gemini-2.5-flash",
                             contents=full_prompt,
                             config=types.GenerateContentConfig(
                                 tools=[
@@ -395,7 +394,7 @@ else:
 
                                 followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
                                 final_response = client.models.generate_content(
-                                    model="gemini-3.5-flash-lite", contents=followup_prompt
+                                    model="gemini-2.5-flash", contents=followup_prompt
                                 )
                                 final_reply = final_response.text
                         else:
@@ -407,7 +406,6 @@ else:
 
             st.markdown("---")
             
-            # Display Chat History inside a separate scrolling container
             with st.container(height=500, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
@@ -421,19 +419,18 @@ else:
                                             st.markdown(f"👉 **Quick Add: {prod['name']}**")
                                             ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
                                             with ai_q_col:
-                                                aq_val = st.number_input("Qty", min_value=0.1, value=1.0, step=0.5, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
+                                                aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
                                             with ai_u_col:
-                                                au_val = st.selectbox("Unit", ["kg", "g", "ml", "L", "Units"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
+                                                au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
                                             with ai_b_col:
                                                 st.write("")
                                                 if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
-                                                    full_aq_str = f"{aq_val} {au_val}"
+                                                    full_aq_str = f"{int(aq_val)} {au_val}"
                                                     st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
                                                     st.success(f"Added {full_aq_str} of {prod['name']}!")
                                                     st.rerun()
 
     else:
-        # Cart & Checkout Full View
         st.subheader("🛒 Your Shopping Cart & Checkout")
         if st.session_state.cart:
             for c_idx, item in enumerate(st.session_state.cart):
