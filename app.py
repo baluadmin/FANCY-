@@ -314,24 +314,21 @@ else:
                         
                         if cat_products:
                             for idx, prod in enumerate(cat_products):
-                                # Row-wise structured layout inside columns
-                                r_info, r_qty, r_unit, r_btn = st.columns([2.5, 1, 1, 1], vertical_alignment="center")
+                                # Column-wise stacked layout (ஒன்றன் கீழ் ஒன்றாக செங்குத்தாக)
+                                st.markdown(f"**{prod['name']}**")
+                                st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
                                 
-                                with r_info:
-                                    st.markdown(f"**{prod['name']}**  \n<small style='color:gray;'>₹{prod['price']} | Stock: {prod['stock']}</small>", unsafe_allow_html=True)
+                                q_col, u_col = st.columns(2)
+                                with q_col:
+                                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}")
+                                with u_col:
+                                    u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}")
                                 
-                                with r_qty:
-                                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}", label_visibility="collapsed")
-                                
-                                with r_unit:
-                                    u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}", label_visibility="collapsed")
-                                
-                                with r_btn:
-                                    if st.button("Add", key=f"btn_{cat}_{idx}", use_container_width=True):
-                                        full_q_str = f"{int(q_val)} {u_val}"
-                                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                        st.success(f"Added!")
-                                        st.rerun()
+                                if st.button("Add to Cart", key=f"btn_{cat}_{idx}", use_container_width=True):
+                                    full_q_str = f"{int(q_val)} {u_val}"
+                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                    st.success(f"Added {full_q_str} of {prod['name']}!")
+                                    st.rerun()
                                 
                                 st.markdown("---")
                         else:
