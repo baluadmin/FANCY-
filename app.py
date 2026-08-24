@@ -309,31 +309,28 @@ else:
                 categories = ["Headset", "Charger", "Cable", "Mic", "Battery", "Tempered", "Ear pod"]
 
                 for cat in categories:
-                    # Expander without the word "Items"
                     with st.expander(f"📦 {cat}"):
                         cat_products = [p for p in product_records if p['category'] == cat]
                         
                         if cat_products:
                             for idx, prod in enumerate(cat_products):
-                                # Column-wise structured layout for each item
-                                col_info, col_qty, col_unit, col_btn = st.columns([2, 1, 1, 1])
+                                # Row-wise structured layout inside columns
+                                r_info, r_qty, r_unit, r_btn = st.columns([2.5, 1, 1, 1], vertical_alignment="center")
                                 
-                                with col_info:
-                                    st.markdown(f"**{prod['name']}**")
-                                    st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
+                                with r_info:
+                                    st.markdown(f"**{prod['name']}**  \n<small style='color:gray;'>₹{prod['price']} | Stock: {prod['stock']}</small>", unsafe_allow_html=True)
                                 
-                                with col_qty:
-                                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}")
+                                with r_qty:
+                                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}", label_visibility="collapsed")
                                 
-                                with col_unit:
-                                    u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}")
+                                with r_unit:
+                                    u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}", label_visibility="collapsed")
                                 
-                                with col_btn:
-                                    st.write("") # alignment spacer
-                                    if st.button("Add", key=f"btn_{cat}_{idx}"):
+                                with r_btn:
+                                    if st.button("Add", key=f"btn_{cat}_{idx}", use_container_width=True):
                                         full_q_str = f"{int(q_val)} {u_val}"
                                         st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                        st.success(f"Added {full_q_str} of {prod['name']}!")
+                                        st.success(f"Added!")
                                         st.rerun()
                                 
                                 st.markdown("---")
