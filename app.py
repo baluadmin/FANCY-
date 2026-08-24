@@ -158,17 +158,25 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load product records (Updated with mobile accessories categories)
+# Product records grouped by your requested categories
 product_records = [
     {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-    {"id": "ITM002", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-    {"id": "ITM003", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-    {"id": "ITM004", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-    {"id": "ITM005", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-    {"id": "ITM006", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-    {"id": "ITM007", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
-    {"id": "ITM008", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-    {"id": "ITM009", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
+    {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
+    
+    {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
+    {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
+    
+    {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
+    {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
+    
+    {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
+    {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
+    
+    {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
+    
+    {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
+    
+    {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
 ]
 
 
@@ -291,49 +299,39 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        col_search, col_ai = st.columns([1.1, 1.9], gap="large")
+        col_catalog, col_ai = st.columns([1.2, 1.8], gap="large")
 
-        with col_search:
+        with col_catalog:
             with st.container(height=650, border=True):
-                st.markdown("### 🔍 Categories & Products")
-                
-                # Category Filter Buttons
-                categories = ["All", "Headset", "Charger", "Cable", "Mic", "Battery", "Tempered", "Ear pod"]
-                selected_category = st.selectbox("Select Category Menu:", categories)
+                st.markdown("### 📂 Product Categories & Items")
+                st.caption("Click any category menu below to view and add items directly:")
 
-                search_query = st.text_input("Or search product name:", "").lower().strip()
+                categories = ["Headset", "Charger", "Cable", "Mic", "Battery", "Tempered", "Ear pod"]
 
-                # Filter products based on category selection and search query
-                filtered_products = product_records
-                if selected_category != "All":
-                    filtered_products = [p for p in filtered_products if p['category'] == selected_category]
-                
-                if search_query:
-                    filtered_products = [
-                        p for p in filtered_products 
-                        if search_query in p['name'].lower() or search_query in p['id'].lower()
-                    ]
-
-                st.markdown("---")
-                if filtered_products:
-                    for idx, prod in enumerate(filtered_products):
-                        st.markdown(f"**{prod['id']} - {prod['name']}**")
-                        st.caption(f"Category: {prod['category']} | Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                for cat in categories:
+                    # Create an expander for each category menu
+                    with st.expander(f"📦 {cat} Items"):
+                        cat_products = [p for p in product_records if p['category'] == cat]
                         
-                        q_col, u_col = st.columns(2)
-                        with q_col:
-                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"search_qty_{idx}")
-                        with u_col:
-                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"search_unit_{idx}")
-                        
-                        if st.button("Add to Cart", key=f"search_add_{idx}"):
-                            full_q_str = f"{int(q_val)} {u_val}"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success(f"Added {full_q_str} of {prod['name']}!")
-                            st.rerun()
-                        st.markdown("---")
-                else:
-                    st.info("No matching products found in this category.")
+                        if cat_products:
+                            for idx, prod in enumerate(cat_products):
+                                st.markdown(f"**{prod['id']} - {prod['name']}**")
+                                st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                                
+                                q_col, u_col = st.columns(2)
+                                with q_col:
+                                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}")
+                                with u_col:
+                                    u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}")
+                                
+                                if st.button("Add to Cart", key=f"btn_{cat}_{idx}"):
+                                    full_q_str = f"{int(q_val)} {u_val}"
+                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                    st.success(f"Added {full_q_str} of {prod['name']}!")
+                                    st.rerun()
+                                st.markdown("---")
+                        else:
+                            st.info(f"No items available under {cat}.")
 
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
