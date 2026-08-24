@@ -38,6 +38,8 @@ if "cart" not in st.session_state:
     st.session_state.cart = []
 if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
+if "selected_menu" not in st.session_state:
+    st.session_state.selected_menu = "Headset"
 
 
 # --- OWNER SECURE LOGIN FLOW ---
@@ -148,7 +150,6 @@ def load_inventory_to_chroma():
         df = pd.read_csv(file_name)
         file_text = df.to_string(index=False)
         if file_text.strip():
-            # Upsert or update chroma collection dynamically
             existing = collection.get(ids=[file_name])
             if existing and existing["ids"]:
                 collection.update(documents=[file_text], ids=[file_name])
@@ -161,7 +162,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# --- DYNAMICALLY LOAD PRODUCT RECORDS FROM inventory.csv ---
+# Load Product Records from inventory.csv dynamically
 product_records = []
 if os.path.exists("inventory.csv"):
     try:
@@ -177,11 +178,19 @@ if os.path.exists("inventory.csv"):
     except Exception:
         product_records = []
 
-# Fallback default records if csv is missing
 if not product_records:
     product_records = [
         {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
         {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
     ]
 
 
@@ -304,45 +313,46 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        col_catalog, col_ai = st.columns([1.3, 1.7], gap="large")
+        # Two column layout: Left for Menu List & Items, Right for AI Chat
+        col_menu, col_items, col_ai = st.columns([1.0, 1.3, 1.7], gap="medium")
 
-        with col_catalog:
+        with col_menu:
             with st.container(height=650, border=True):
-                st.markdown("### 📂 Product Categories")
-                st.caption("Click any category box below to expand items:")
-
-                # Get unique categories dynamically from inventory
+                st.markdown("### 📋 Menu")
+                
                 categories = list(set([p['category'] for p in product_records]))
+                
+                for cat in categories:
+                    if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
+                        st.session_state.selected_menu = cat
+                        st.rerun()
 
-                # Create 3 columns layout for categories (Grid view: 3 items per row)
-                for i in range(0, len(categories), 3):
-                    row_cats = categories[i:i+3]
-                    cols = st.columns(len(row_cats))
-                    
-                    for col_idx, cat in enumerate(row_cats):
-                        with cols[col_idx]:
-                            with st.expander(f"📦 {cat}"):
-                                cat_products = [p for p in product_records if p['category'] == cat]
-                                
-                                if cat_products:
-                                    for idx, prod in enumerate(cat_products):
-                                        st.markdown(f"**{prod['name']}**")
-                                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
-                                        
-                                        q_col, u_col = st.columns(2)
-                                        with q_col:
-                                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{cat}_{idx}")
-                                        with u_col:
-                                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{cat}_{idx}")
-                                        
-                                        if st.button("Add", key=f"btn_{cat}_{idx}", use_container_width=True):
-                                            full_q_str = f"{int(q_val)} {u_val}"
-                                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                            st.success(f"Added!")
-                                            st.rerun()
-                                        st.markdown("---")
-                                else:
-                                    st.info(f"No items.")
+        with col_items:
+            with st.container(height=650, border=True):
+                current_cat = st.session_state.get("selected_menu", "Headset")
+                st.markdown(f"### 📦 {current_cat} Items")
+                
+                filtered_items = [p for p in product_records if p['category'] == current_cat]
+                
+                if filtered_items:
+                    for idx, prod in enumerate(filtered_items):
+                        st.markdown(f"**{prod['name']}**")
+                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                        
+                        q_col, u_col = st.columns(2)
+                        with q_col:
+                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}")
+                        with u_col:
+                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}")
+                        
+                        if st.button("Add to Cart", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                            full_q_str = f"{int(q_val)} {u_val}"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success(f"Added {full_q_str} of {prod['name']}!")
+                            st.rerun()
+                        st.markdown("---")
+                else:
+                    st.info("No items found in this menu.")
 
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
