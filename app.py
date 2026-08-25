@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Professional Compact Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -17,6 +17,13 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        /* Apply Professional Font Family Globally */
+        html, body, [class*="css"] {
+            font-family: 'Inter', sans-serif !important;
+        }
+
         /* Hide Streamlit default top header, menu, share, github, and floating badges */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
@@ -35,29 +42,30 @@ st.markdown("""
             overflow: hidden;
         }
         
-        /* High contrast solid white input boxes with clear dark borders and bold text */
+        /* High contrast solid white input boxes with clear dark borders and clean text */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
-            border: 2px solid #94a3b8 !important;
-            font-size: 16px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            font-size: 14px !important;
             font-weight: 500 !important;
+            border-radius: 6px !important;
         }
 
         /* Professional Dark Navy Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
-            padding: 20px;
-            border-radius: 12px;
+            padding: 18px;
+            border-radius: 10px;
             color: white;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .brand-title {
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: 1px;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             color: #38bdf8;
             margin: 0;
         }
@@ -67,10 +75,10 @@ st.markdown("""
             background-color: #0284c7 !important;
             color: white !important;
             border: 1px solid #0369a1 !important;
-            font-weight: 700 !important;
-            font-size: 15px !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 1rem !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            border-radius: 6px !important;
+            padding: 0.4rem 1rem !important;
         }
         div.stButton > button:hover {
             background-color: #0369a1 !important;
@@ -113,22 +121,23 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# 2. Centered Professional Customer Login Screen (Before Login)
+# 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 50px; margin-bottom: 25px;'>
-            <h1 style='color: #0f172a; font-size: 36px; font-weight: 900; margin-bottom: 5px;'>HM MOBILES</h1>
-            <p style='color: #334155; font-size: 16px; font-weight: 600;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
+            <h1 style='color: #0f172a; font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
+            <p style='color: #475569; font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1, 1.4, 1])
+    # Using wider side columns to make the center login box compact and narrow
+    _, mid_col, _ = st.columns([1.3, 1, 1.3])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='background: #ffffff; padding: 35px; border-radius: 14px; border: 2px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);'>
-                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 20px; font-size: 22px; font-weight: 800;'>Customer Portal Login</h3>
+                <div style='background: #ffffff; padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05);'>
+                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 700;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
