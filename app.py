@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Light Yellow Background CSS
+# 1. Streamlit Page Configuration & Modern Light Yellow UI with Custom Menu Styling
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -29,10 +29,10 @@ st.markdown("""
             overflow: hidden;
         }
         
-        /* Custom Header Banner Styling */
+        /* Custom Header Banner Styling (Subtitle removed) */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            padding: 15px 20px;
+            padding: 18px 20px;
             border-radius: 12px;
             color: white;
             text-align: center;
@@ -46,10 +46,17 @@ st.markdown("""
             color: #38bdf8;
             margin: 0;
         }
-        .brand-subtitle {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-top: 2px;
+
+        /* Menu Button Light Color Theme */
+        div.stButton > button {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            border: 1px solid #bae6fd !important;
+            font-weight: 600 !important;
+        }
+        div.stButton > button:hover {
+            background-color: #bae6fd !important;
+            color: #0c4a6e !important;
         }
 
         /* Layout columns adjustment */
@@ -124,7 +131,6 @@ if not st.session_state.logged_in_user:
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
-        <p class="brand-subtitle">Smart Inventory & AI Shopping Assistant</p>
     </div>
 """, unsafe_allow_html=True)
 
