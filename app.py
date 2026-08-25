@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & CSS to hide Manage app badge completely
+# 1. Streamlit Page Configuration & Professional Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -17,7 +17,7 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Hide Streamlit default top header, menu, share, github, and Manage app badge */
+        /* Hide Streamlit default top header, menu, share, github, and floating badges */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -25,14 +25,15 @@ st.markdown("""
         section[data-testid="stStatusWidget"] {visibility: hidden; display: none;}
         iframe[title="streamlit_app.manage"] {display: none !important;}
         .manage-app {display: none !important;}
-        
-        /* Target the floating container in bottom-right corner */
-        div.eczjsgs4 {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
         
-        /* Professional clean light background */
+        /* Hide bottom-right floating buttons/icons */
+        div[data-testid="stDecoration"] {display: none;}
+        footer {display: none !important;}
+        
+        /* Professional Clean Background */
         .stApp {
-            background-color: #f1f5f9 !important;
+            background-color: #f8fafc !important;
             max-height: 100vh;
             overflow: hidden;
         }
@@ -42,6 +43,15 @@ st.markdown("""
             background-color: #ffffff !important;
             color: #0f172a !important;
             border-color: #cbd5e1 !important;
+        }
+
+        /* Professional Login Box Container Design */
+        .login-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
         }
 
         /* Professional Dark Navy Header Banner */
@@ -111,20 +121,24 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# 2. Centered Customer Login Screen (Before Login)
+# 2. Centered Professional Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 40px;'>
-            <h1 style='color: #0f172a; font-size: 32px; font-weight: 900;'>HM MOBILES</h1>
-            <p style='color: #64748b; font-size: 16px; margin-top: -10px;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 30px; margin-bottom: 20px;'>
+            <h1 style='color: #0f172a; font-size: 32px; font-weight: 900; margin-bottom: 5px;'>HM MOBILES</h1>
+            <p style='color: #64748b; font-size: 15px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1, 1.3, 1])
+    _, mid_col, _ = st.columns([1, 1.2, 1])
     
     with mid_col:
-        with st.container(border=True):
-            st.markdown("### Customer Portal Login")
+        with st.container():
+            st.markdown("""
+                <div style='background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);'>
+                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 20px; font-size: 20px;'>Customer Portal Login</h3>
+            """, unsafe_allow_html=True)
+            
             with st.form("customer_direct_login_center"):
                 cust_name = st.text_input("Your Name:")
                 cust_phone = st.text_input("Mobile Number:", max_chars=10)
@@ -139,6 +153,8 @@ if not st.session_state.logged_in_user:
                         st.rerun()
                     else:
                         st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
     
     st.stop()
 
