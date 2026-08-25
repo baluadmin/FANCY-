@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Layout CSS
+# 1. Streamlit Page Configuration & Hide Default Header/Menu CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -17,6 +17,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+        /* Hide Streamlit default top header, menu, share, github icons */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        
         div[data-testid="stHorizontalBlock"] {
             display: flex;
             flex-direction: row;
@@ -58,7 +63,7 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<h1 style='text-align: center; font-size: 26px; margin-top: 50px;'>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 28px; margin-top: 40px;'>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     _, mid_col, _ = st.columns([1, 1.2, 1])
     
@@ -84,7 +89,6 @@ if not st.session_state.logged_in_user:
 
 
 # --- AFTER LOGIN: MAIN APPLICATION DISPLAY ---
-# Clean Header with Shop Title & Navigation Controls together
 st.markdown("<h2 style='text-align: center; font-size: 22px; margin-bottom: 5px;'>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
 
 top_c1, top_c2, top_c3, top_c4 = st.columns([2.2, 1, 1, 1])
