@@ -153,6 +153,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.logged_in_user = cust_name.strip()
                         st.session_state.user_phone = cust_phone.strip()
                         st.session_state.user_role = "Customer"
+                        st.session_state.selected_menu = "Headset"  # Ensure default menu is set for all users
                         st.success("✅ Login Successful!")
                         st.rerun()
                     else:
