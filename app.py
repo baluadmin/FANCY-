@@ -58,7 +58,7 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<h1 style='text-align: center; font-size: 26px;'>📱<br>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 26px;'>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     _, mid_col, _ = st.columns([1, 1.2, 1])
     
@@ -83,8 +83,27 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH CENTERED BRAND HEADER ---
-st.markdown("<h2 style='text-align: center; font-size: 22px; margin-bottom: 0px;'>📱<br>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
+# --- AFTER LOGIN: MAIN APPLICATION DISPLAY ---
+# Welcome user name on the top left side
+top_c1, top_c2, top_c3, top_c4 = st.columns([2, 1, 1, 1])
+with top_c1:
+    st.markdown(f"**Welcome, {st.session_state.logged_in_user}!**")
+with top_c2:
+    if st.button("🏠 Home", use_container_width=True):
+        st.session_state.current_view = "Home"
+        st.rerun()
+with top_c3:
+    cart_count = len(st.session_state.cart)
+    if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+        st.session_state.current_view = "Cart"
+        st.rerun()
+with top_c4:
+    if st.button("🚪 Logout", use_container_width=True):
+        st.session_state.clear()
+        st.rerun()
+
+st.markdown("<h2 style='text-align: center; font-size: 20px; margin-top: -10px; margin-bottom: 10px;'>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
+st.markdown("---")
 
 # 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
@@ -224,27 +243,6 @@ def add_product_review(rating: int, review_comment: str) -> str:
 
     return f"Thank you, {customer_name}! Your review ({rating}/5 stars) has been saved."
 
-
-# 5. Interface Logic
-# Top Navigation Bar with Home, Cart, and Logout Buttons next to Cart
-nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([2.5, 1, 1, 1])
-with nav_col1:
-    st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
-with nav_col2:
-    if st.button("🏠 Home", use_container_width=True):
-        st.session_state.current_view = "Home"
-        st.rerun()
-with nav_col3:
-    cart_count = len(st.session_state.cart)
-    if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
-        st.session_state.current_view = "Cart"
-        st.rerun()
-with nav_col4:
-    if st.button("🚪 Logout", use_container_width=True):
-        st.session_state.clear()
-        st.rerun()
-
-st.markdown("---")
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
