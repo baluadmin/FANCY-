@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Modern Professional UI Styling
+# 1. Streamlit Page Configuration & Light Yellow Background CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -22,9 +22,9 @@ st.markdown("""
         header {visibility: hidden;}
         footer {visibility: hidden;}
         
-        /* Modern App Background & Typography */
+        /* Full website light yellow background */
         .stApp {
-            background-color: #f8fafc;
+            background-color: #fffbeb !important;
             max-height: 100vh;
             overflow: hidden;
         }
@@ -123,7 +123,7 @@ if not st.session_state.logged_in_user:
 # --- AFTER LOGIN: MODERN STYLISH HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
-        <h1 class="brand-title">📱 HM MOBILES THIRUVERKADU</h1>
+        <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
         <p class="brand-subtitle">Smart Inventory & AI Shopping Assistant</p>
     </div>
 """, unsafe_allow_html=True)
