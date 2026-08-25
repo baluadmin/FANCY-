@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Layout CSS
+# 1. Streamlit Page Configuration & Modern Professional UI Styling
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -22,6 +22,37 @@ st.markdown("""
         header {visibility: hidden;}
         footer {visibility: hidden;}
         
+        /* Modern App Background & Typography */
+        .stApp {
+            background-color: #f8fafc;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Custom Header Banner Styling */
+        .brand-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            margin: 0;
+        }
+        .brand-subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Layout columns adjustment */
         div[data-testid="stHorizontalBlock"] {
             display: flex;
             flex-direction: row;
@@ -31,14 +62,10 @@ st.markdown("""
         div[data-testid="column"] {
             flex: 1 1 33% !important;
             min-width: 0px !important;
-            padding: 0px 5px !important;
-        }
-        .stApp {
-            max-height: 100vh;
-            overflow: hidden;
+            padding: 0px 6px !important;
         }
         .block-container {
-            padding-top: 0.5rem;
+            padding-top: 0.8rem;
             padding-bottom: 0rem;
             padding-left: 1rem;
             padding-right: 1rem;
@@ -63,17 +90,22 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<p style='text-align: center; font-size: 26px; font-weight: bold; margin-top: 40px;'>HM MOBILES THIRUVERKADU</p>", unsafe_allow_html=True)
+    st.markdown("""
+        <div style='text-align: center; margin-top: 40px;'>
+            <h1 style='color: #0f172a; font-size: 32px; font-weight: 900;'>HM MOBILES</h1>
+            <p style='color: #64748b; font-size: 16px; margin-top: -10px;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        </div>
+    """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1, 1.2, 1])
+    _, mid_col, _ = st.columns([1, 1.3, 1])
     
     with mid_col:
         with st.container(border=True):
-            st.subheader("🛍️ Customer Login")
+            st.markdown("### 🛍️ Customer Portal Login")
             with st.form("customer_direct_login_center"):
-                cust_name = st.text_input("Enter Your Name:")
-                cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
-                login_btn = st.form_submit_button("Login", use_container_width=True)
+                cust_name = st.text_input("Your Name:")
+                cust_phone = st.text_input("Mobile Number:", max_chars=10)
+                login_btn = st.form_submit_button("Secure Login", use_container_width=True)
 
                 if login_btn:
                     if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
@@ -88,12 +120,17 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MAIN APPLICATION DISPLAY ---
-st.markdown("<p style='text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 5px;'>HM MOBILES THIRUVERKADU</p>", unsafe_allow_html=True)
+# --- AFTER LOGIN: MODERN STYLISH HEADER & NAVIGATION ---
+st.markdown("""
+    <div class="brand-banner">
+        <h1 class="brand-title">📱 HM MOBILES THIRUVERKADU</h1>
+        <p class="brand-subtitle">Smart Inventory & AI Shopping Assistant</p>
+    </div>
+""", unsafe_allow_html=True)
 
 top_c1, top_c2, top_c3, top_c4 = st.columns([2.2, 1, 1, 1])
 with top_c1:
-    st.markdown(f"👤 Welcome, **{st.session_state.logged_in_user}**")
+    st.markdown(f"👋 Welcome back, **{st.session_state.logged_in_user}**!")
 with top_c2:
     if st.button("🏠 Home", use_container_width=True):
         st.session_state.current_view = "Home"
