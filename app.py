@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional Compact Styling CSS
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -19,12 +19,12 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally */
+        /* Apply Professional Font Family Globally and Remove Header Link Anchors */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
         }
 
-        /* Hide Streamlit default top header, menu, share, github, and floating badges */
+        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -34,6 +34,10 @@ st.markdown("""
         .manage-app {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
+        
+        /* Completely hide header link icons next to section headers */
+        a.stMarkdownHeaderLink {display: none !important;}
+        h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
         /* Clean and crisp background */
         .stApp {
@@ -130,14 +134,13 @@ if not st.session_state.logged_in_user:
         </div>
     """, unsafe_allow_html=True)
     
-    # Using wider side columns to make the center login box compact and narrow
     _, mid_col, _ = st.columns([1.3, 1, 1.3])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='background: #ffffff; padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05);'>
-                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 700;'>Customer Portal Login</h3>
+                <div style='background: #ffffff; padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
@@ -331,7 +334,7 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 1: MENU ---
     with col_menu:
-        st.markdown("### Menu")
+        st.markdown("Menu")
         with st.container(height=500, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
@@ -342,7 +345,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
-        st.markdown(f"### {current_cat}")
+        st.markdown(f"{current_cat}")
         with st.container(height=500, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
@@ -368,7 +371,7 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
     with col_ai:
-        st.markdown("### AI Assistant")
+        st.markdown("AI Assistant")
         user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
         
         if user_prompt:
