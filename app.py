@@ -33,7 +33,7 @@ st.markdown("""
             overflow: hidden;
         }
         .block-container {
-            padding-top: 1rem;
+            padding-top: 0.5rem;
             padding-bottom: 0rem;
             padding-left: 1rem;
             padding-right: 1rem;
@@ -58,7 +58,7 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<h1 style='text-align: center; font-size: 26px;'>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 26px; margin-top: 50px;'>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     _, mid_col, _ = st.columns([1, 1.2, 1])
     
@@ -84,10 +84,12 @@ if not st.session_state.logged_in_user:
 
 
 # --- AFTER LOGIN: MAIN APPLICATION DISPLAY ---
-# Welcome user name on the top left side
-top_c1, top_c2, top_c3, top_c4 = st.columns([2, 1, 1, 1])
+# Clean Header with Shop Title & Navigation Controls together
+st.markdown("<h2 style='text-align: center; font-size: 22px; margin-bottom: 5px;'>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
+
+top_c1, top_c2, top_c3, top_c4 = st.columns([2.2, 1, 1, 1])
 with top_c1:
-    st.markdown(f"**Welcome, {st.session_state.logged_in_user}!**")
+    st.markdown(f"👤 Welcome, **{st.session_state.logged_in_user}**")
 with top_c2:
     if st.button("🏠 Home", use_container_width=True):
         st.session_state.current_view = "Home"
@@ -102,7 +104,6 @@ with top_c4:
         st.session_state.clear()
         st.rerun()
 
-st.markdown("<h2 style='text-align: center; font-size: 20px; margin-top: -10px; margin-bottom: 10px;'>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
 st.markdown("---")
 
 # 3. Gemini API Configuration & Database Setup
@@ -251,7 +252,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("### 📋 Menu")
-        with st.container(height=500, border=True):
+        with st.container(height=480, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -262,7 +263,7 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"### 📦 {current_cat}")
-        with st.container(height=500, border=True):
+        with st.container(height=480, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
@@ -355,7 +356,7 @@ if st.session_state.current_view == "Home":
                     st.error(f"Error: {e}")
 
         # Chat container
-        with st.container(height=410, border=True):
+        with st.container(height=390, border=True):
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
