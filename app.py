@@ -41,8 +41,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🔐 Enterprise AI Assistant (Portal)")
-
 # Initialize Session States
 if "logged_in_user" not in st.session_state:
     st.session_state.logged_in_user = None
@@ -58,7 +56,7 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# 2. Sidebar - Customer Login System (Hidden completely once logged in)
+# 2. Sidebar - Customer Login System (Shown only before login)
 if not st.session_state.logged_in_user:
     st.sidebar.subheader("🛍️ Customer Login")
     with st.sidebar.form("customer_direct_login"):
@@ -75,12 +73,13 @@ if not st.session_state.logged_in_user:
                 st.rerun()
             else:
                 st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-
-# Stop execution if not logged in
-if not st.session_state.logged_in_user:
-    st.warning("⚠️ Please log in via the sidebar to access the portal.")
+    
+    # Stop execution cleanly before login without displaying empty pages or warnings
     st.stop()
 
+
+# --- AFTER LOGIN: MAIN APPLICATION DISPLAY ---
+st.title("🔐 Enterprise AI Assistant (Portal)")
 
 # 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
