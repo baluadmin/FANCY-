@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Centered Login CSS
+# 1. Streamlit Page Configuration & Clean Layout CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -56,14 +56,9 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# 2. Centered Customer Login Screen (Before Login with HD Logo)
+# 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    # Displaying the HD Logo centered before login
-    col_l1, col_l2, col_l3 = st.columns([1.8, 1, 1.8])
-    with col_l2:
-        st.image("https://i.imgur.com/8764c2.png", width=120)  # HD Processed Logo Link
-        
-    st.markdown("<h1 style='text-align: center; font-size: 24px;'>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 28px;'>📱 HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     _, mid_col, _ = st.columns([1, 1.2, 1])
     
@@ -88,12 +83,12 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH HD LOGO HEADER ---
-header_c1, header_c2 = st.columns([0.1, 3.9])
+# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH CLEAR HEADER ---
+header_c1, header_c2 = st.columns([0.08, 3.92])
 with header_c1:
-    st.image("https://i.imgur.com/8764c2.png", width=45)
+    st.markdown("### 📱")
 with header_c2:
-    st.markdown("<h3 style='margin-top: 5px;'>HM MOBILES THIRUVERKADU</h3>", unsafe_allow_html=True)
+    st.markdown("<h2 style='margin: 0px; padding-top: 5px; font-size: 22px;'>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
 
 # 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
