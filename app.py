@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Strict CSS to Lock Full-Page Scroll
+# 1. Streamlit Page Configuration & Responsive Mobile Layout CSS
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -17,27 +17,13 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Hide main scrollbars completely */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-        }
-        /* Lock app height to viewport */
-        .stApp {
-            max-height: 100vh;
-            overflow: hidden;
-        }
-        /* Reduce top padding to fit everything in one screen */
-        .block-container {
-            padding-top: 1.5rem;
-            padding-bottom: 0rem;
+        /* Responsive design for Mobile Portrait mode */
+        @media (max-width: 768px) {
+            div[data-testid="column"] {
+                width: 100% !important;
+                flex: 100% !important;
+                min-width: 100% !important;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -340,24 +326,24 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        # Three Column Layout matching 1 (Menu), 2 (Items), 3 (AI Chat)
+        # Desktop-ல் 3 தூண்களாகவும், Mobile-ல் ஒன்றுக்கு கீழ் ஒன்றாக (Stack) வரக்கூடிய Layout
         col_menu, col_items, col_ai = st.columns([1.0, 1.3, 1.7], gap="medium")
 
-        # --- SECTION 1: MENU (Controlled height & inner scroll) ---
+        # --- SECTION 1: MENU ---
         with col_menu:
             st.markdown("### 📋 Menu")
-            with st.container(height=480, border=True):
+            with st.container(height=450, border=True):
                 categories = list(set([p['category'] for p in product_records]))
                 for cat in categories:
                     if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                         st.session_state.selected_menu = cat
                         st.rerun()
 
-        # --- SECTION 2: ITEMS (Controlled height & inner scroll) ---
+        # --- SECTION 2: ITEMS ---
         with col_items:
             current_cat = st.session_state.get("selected_menu", "Headset")
             st.markdown(f"### 📦 {current_cat} Items")
-            with st.container(height=480, border=True):
+            with st.container(height=450, border=True):
                 filtered_items = [p for p in product_records if p['category'] == current_cat]
                 
                 if filtered_items:
@@ -380,7 +366,7 @@ else:
                 else:
                     st.info("No items found in this menu.")
 
-        # --- SECTION 3: AI ASSISTANT SEARCH & CHAT (Controlled height & inner scroll) ---
+        # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
             user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="top_ai_search_input")
@@ -449,8 +435,8 @@ else:
                     except Exception as e:
                         st.error(f"Error: {e}")
 
-            # Independent scrolling chat history container matching exact screen size height
-            with st.container(height=400, border=True):
+            # Chat container
+            with st.container(height=350, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
