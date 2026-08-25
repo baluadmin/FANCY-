@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS (Forced Light Theme & Visibility Fix)
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -19,7 +19,7 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally and Force High Contrast Colors to prevent text/bg clash */
+        /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
             color: #1e293b !important;
@@ -40,8 +40,8 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Force form labels, paragraphs, and text elements to be clearly visible and high-contrast */
-        label, .stTextInput label, p, span {
+        /* Force form labels, paragraphs, and cart text elements to be clearly visible and dark */
+        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #0f172a !important;
             font-weight: 600 !important;
         }
@@ -475,7 +475,7 @@ else:
         for c_idx, item in enumerate(st.session_state.cart):
             cc1, cc2 = st.columns([4, 1])
             with cc1:
-                st.write(f"- **{item['product']}** ({item['quantity']})")
+                st.markdown(f"- **{item['product']}** ({item['quantity']})")
             with cc2:
                 if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
                     st.session_state.cart.pop(c_idx)
