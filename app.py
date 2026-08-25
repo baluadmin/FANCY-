@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional Input Box CSS
+# 1. Streamlit Page Configuration & CSS to hide "Manage app" and default elements
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -17,10 +17,12 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Hide Streamlit default top header, menu, share, github icons */
+        /* Hide Streamlit default top header, menu, share, github, and Manage app button */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
+        div[data-testid="stToolbar"] {visibility: hidden; display: none;}
+        section[data-testid="stStatusWidget"] {visibility: hidden; display: none;}
         
         /* Professional clean light background */
         .stApp {
