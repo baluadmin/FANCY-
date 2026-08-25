@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Clean Layout CSS
+# 1. Streamlit Page Configuration & Layout CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -58,7 +58,7 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<h1 style='text-align: center; font-size: 28px;'>📱 HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 26px;'>📱 HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     _, mid_col, _ = st.columns([1, 1.2, 1])
     
@@ -83,12 +83,8 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH CLEAR HEADER ---
-header_c1, header_c2 = st.columns([0.08, 3.92])
-with header_c1:
-    st.markdown("### 📱")
-with header_c2:
-    st.markdown("<h2 style='margin: 0px; padding-top: 5px; font-size: 22px;'>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
+# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH BRAND HEADER ---
+st.markdown("### 📱 HM MOBILES THIRUVERKADU")
 
 # 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
