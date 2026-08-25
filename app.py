@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Auto Dark/Light Theme CSS Variables
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -55,7 +55,7 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Light Blue Header Banner with White Text (Stays attractive in both modes) */
+        /* Light Blue Header Banner with White Text */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
             padding: 18px;
@@ -203,6 +203,24 @@ except Exception as e:
     st.stop()
 
 
+# Load Inventory Directly from Google Sheets CSV Link
+def load_inventory_from_sheet():
+    # உங்கள் கூகுள் ஷீட் CSV எக்ஸ்போர்ட் லிங்க்
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
+    try:
+        df = pd.read_csv(sheet_csv_url)
+        df.to_csv("inventory.csv", index=False)
+        return df
+    except Exception as e:
+        # ஷீட் ரீட் ஆகவில்லையாள் லோக்கல் inventory.csv-ஐ பயன்படுத்தும்
+        if os.path.exists("inventory.csv"):
+            return pd.read_csv("inventory.csv")
+        return pd.DataFrame()
+
+
+inv_df = load_inventory_from_sheet()
+
+
 def load_inventory_to_chroma():
     file_name = "inventory.csv"
     if not os.path.exists(file_name):
@@ -223,11 +241,10 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load Product Records from inventory.csv dynamically
+# Load Product Records from Google Sheet Data dynamically
 product_records = []
-if os.path.exists("inventory.csv"):
+if not inv_df.empty:
     try:
-        inv_df = pd.read_csv("inventory.csv")
         for _, row in inv_df.iterrows():
             product_records.append({
                 "id": str(row.iloc[0]),
