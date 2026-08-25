@@ -19,10 +19,10 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally and Force High Contrast Text */
+        /* Apply Professional Font Family Globally and Force High Contrast Colors */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
-            color: #0f172a !important;
+            color: #1e293b !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -40,13 +40,13 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Force form labels to be clearly visible and bold with contrasting text */
+        /* Force form labels and paragraphs to be clearly visible and bold */
         label, .stTextInput label, p {
             color: #0f172a !important;
             font-weight: 600 !important;
         }
         
-        /* Clean and crisp professional background */
+        /* Clean and crisp professional light gray background */
         .stApp {
             background-color: #f8fafc !important;
         }
@@ -66,7 +66,7 @@ st.markdown("""
             background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
             padding: 18px;
             border-radius: 10px;
-            color: white;
+            color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 15px;
@@ -75,14 +75,14 @@ st.markdown("""
             font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
-            color: #38bdf8;
+            color: #38bdf8 !important;
             margin: 0;
         }
 
         /* Bold, premium Action Buttons */
         div.stButton > button {
             background-color: #0284c7 !important;
-            color: white !important;
+            color: #ffffff !important;
             border: 1px solid #0369a1 !important;
             font-weight: 600 !important;
             font-size: 14px !important;
