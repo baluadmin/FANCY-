@@ -313,25 +313,24 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        # Two column layout: Left for Menu List & Items, Right for AI Chat
+        # Three Column Layout corresponding to 1 (Menu), 2 (Items), 3 (AI Chat)
         col_menu, col_items, col_ai = st.columns([1.0, 1.3, 1.7], gap="medium")
 
+        # --- SECTION 1: MENU (With Independent Scroll) ---
         with col_menu:
-            with st.container(height=650, border=True):
-                st.markdown("### 📋 Menu")
-                
+            st.markdown("### 📋 Menu")
+            with st.container(height=600, border=True):
                 categories = list(set([p['category'] for p in product_records]))
-                
                 for cat in categories:
                     if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                         st.session_state.selected_menu = cat
                         st.rerun()
 
+        # --- SECTION 2: ITEMS (With Independent Scroll) ---
         with col_items:
-            with st.container(height=650, border=True):
-                current_cat = st.session_state.get("selected_menu", "Headset")
-                st.markdown(f"### 📦 {current_cat} Items")
-                
+            current_cat = st.session_state.get("selected_menu", "Headset")
+            st.markdown(f"### 📦 {current_cat} Items")
+            with st.container(height=600, border=True):
                 filtered_items = [p for p in product_records if p['category'] == current_cat]
                 
                 if filtered_items:
@@ -354,9 +353,9 @@ else:
                 else:
                     st.info("No items found in this menu.")
 
+        # --- SECTION 3: AI ASSISTANT SEARCH & CHAT (With Independent Scroll) ---
         with col_ai:
             st.markdown("### 💬 AI Assistant Search & Chat")
-            
             user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="top_ai_search_input")
             
             if user_prompt:
@@ -423,9 +422,8 @@ else:
                     except Exception as e:
                         st.error(f"Error: {e}")
 
-            st.markdown("---")
-            
-            with st.container(height=500, border=True):
+            # Independent scrolling chat history container
+            with st.container(height=520, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
