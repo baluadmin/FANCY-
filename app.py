@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Compact Layout CSS for Mobile & Desktop
+# 1. Streamlit Page Configuration & Compact Layout CSS
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -17,7 +17,6 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Force 3 columns to fit side-by-side on all screens without horizontal scroll */
         div[data-testid="stHorizontalBlock"] {
             display: flex;
             flex-direction: row;
@@ -29,7 +28,6 @@ st.markdown("""
             min-width: 0px !important;
             padding: 0px 5px !important;
         }
-        /* Hide main page scrollbar to lock vertical screen size */
         .stApp {
             max-height: 100vh;
             overflow: hidden;
@@ -45,9 +43,8 @@ st.markdown("""
 
 st.title("🔐 Enterprise AI Assistant (Portal)")
 
-# 2. Sidebar - Role Selection & Secure Login System
-st.sidebar.header("👤 User Authentication")
-role = st.sidebar.selectbox("Select Role", ["Customer", "Owner / Admin"])
+# 2. Sidebar - Customer Login System Only
+st.sidebar.header("👤 Customer Portal")
 
 # Initialize Session States
 if "logged_in_user" not in st.session_state:
@@ -56,12 +53,6 @@ if "user_phone" not in st.session_state:
     st.session_state.user_phone = None
 if "user_role" not in st.session_state:
     st.session_state.user_role = None
-if "password_verified" not in st.session_state:
-    st.session_state.password_verified = False
-if "otp_sent" not in st.session_state:
-    st.session_state.otp_sent = False
-if "generated_otp" not in st.session_state:
-    st.session_state.generated_otp = None
 if "cart" not in st.session_state:
     st.session_state.cart = []
 if "current_view" not in st.session_state:
@@ -70,86 +61,31 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# --- OWNER SECURE LOGIN FLOW ---
-if role == "Owner / Admin":
-    st.sidebar.subheader("👑 Owner Secure Login")
+# --- CUSTOMER DIRECT LOGIN FLOW ---
+if st.session_state.user_role != "Customer":
+    st.sidebar.subheader("🛍️ Customer Login")
+    with st.sidebar.form("customer_direct_login"):
+        cust_name = st.text_input("Enter Your Name:")
+        cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
+        # Changed button name to 'Login'
+        login_btn = st.form_submit_button("Login")
 
-    if st.session_state.user_role != "Owner":
-        if not st.session_state.password_verified:
-            owner_pass = st.sidebar.text_input(
-                "1. Enter Admin Password:", type="password", key="owner_pass_input"
-            )
-            if st.sidebar.button("Verify Password"):
-                if owner_pass == "admin123":
-                    st.session_state.password_verified = True
-                    st.sidebar.success("✅ Password correct! Enter mobile number.")
-                    st.rerun()
-                else:
-                    st.sidebar.error("❌ Incorrect Password!")
-
-        elif st.session_state.password_verified and not st.session_state.otp_sent:
-            mobile_number = st.sidebar.text_input(
-                "2. Enter Mobile Number:", max_chars=10, key="owner_mobile_input"
-            )
-            if st.sidebar.button("Send OTP to Mobile"):
-                if len(mobile_number) == 10 and mobile_number.isdigit():
-                    otp = str(random.randint(100000, 999999))
-                    st.session_state.generated_otp = otp
-                    st.session_state.otp_sent = True
-                    st.sidebar.success(f"✅ OTP sent to +91 {mobile_number}")
-                    st.sidebar.info(f"🔑 [Test SMS OTP]: {otp}")
-                    st.rerun()
-                else:
-                    st.sidebar.warning("⚠️ Enter a valid 10-digit mobile number.")
-
-        elif st.session_state.otp_sent:
-            entered_otp = st.sidebar.text_input(
-                "3. Enter 6-digit OTP:", max_chars=6, type="password", key="owner_otp_input"
-            )
-            if st.sidebar.button("Confirm OTP & Login"):
-                if entered_otp.strip() == str(st.session_state.generated_otp).strip():
-                    st.session_state.logged_in_user = "Owner"
-                    st.session_state.user_role = "Owner"
-                    st.session_state.password_verified = False
-                    st.session_state.otp_sent = False
-                    st.sidebar.success("✅ Owner Login Successful!")
-                    st.rerun()
-                else:
-                    st.sidebar.error("❌ Invalid OTP.")
-
-    if st.session_state.user_role == "Owner":
-        st.sidebar.markdown("---")
-        st.sidebar.subheader("📊 Owner Controls")
-        if st.sidebar.button("Logout"):
-            st.session_state.clear()
-            st.rerun()
-
-# --- CUSTOMER LOGIN FLOW ---
+        if login_btn:
+            if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                st.session_state.logged_in_user = cust_name.strip()
+                st.session_state.user_phone = cust_phone.strip()
+                st.session_state.user_role = "Customer"
+                st.success("✅ Login Successful!")
+                st.rerun()
+            else:
+                st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
 else:
-    st.sidebar.subheader("🛍️ Customer Direct Login")
-
-    if st.session_state.user_role != "Customer":
-        with st.sidebar.form("customer_direct_login"):
-            cust_name = st.text_input("Enter Your Name:")
-            cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
-            login_btn = st.form_submit_button("Login")
-
-            if login_btn:
-                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                    st.session_state.logged_in_user = cust_name.strip()
-                    st.session_state.user_phone = cust_phone.strip()
-                    st.session_state.user_role = "Customer"
-                    st.success("✅ Login Successful!")
-                    st.rerun()
-                else:
-                    st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-
-    if st.session_state.user_role == "Customer":
-        st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
-        st.sidebar.write(f"Phone: **{st.session_state.user_phone}**")
-        if st.sidebar.button("Logout"):
-            st.session_state.clear()
-            st.rerun()
+    st.sidebar.subheader("🛍️ Account Info")
+    st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
+    st.sidebar.write(f"Phone: **{st.session_state.user_phone}**")
+    if st.sidebar.button("Logout"):
+        st.session_state.clear()
+        st.rerun()
 
 # Stop execution if not logged in
 if not st.session_state.logged_in_user:
@@ -297,213 +233,187 @@ def add_product_review(rating: int, review_comment: str) -> str:
 
 
 # 5. Interface Logic
-if st.session_state.user_role == "Owner":
-    st.subheader("👑 Owner Admin Dashboard")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("### 📦 Customer Orders")
-        if os.path.exists("orders.csv"):
-            st.dataframe(pd.read_csv("orders.csv"), hide_index=True)
-        else:
-            st.info("No orders found.")
+# Top Navigation Bar (Home & Cart Buttons)
+nav_col1, nav_col2, nav_col3 = st.columns([3, 1, 1])
+with nav_col1:
+    st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
+with nav_col2:
+    if st.button("🏠 Home", use_container_width=True):
+        st.session_state.current_view = "Home"
+        st.rerun()
+with nav_col3:
+    cart_count = len(st.session_state.cart)
+    if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+        st.session_state.current_view = "Cart"
+        st.rerun()
 
-    with col2:
-        st.markdown("### 💳 Payment Records")
-        if os.path.exists("payments.csv"):
-            st.dataframe(pd.read_csv("payments.csv"), hide_index=True)
-        else:
-            st.info("No payments found.")
+st.markdown("---")
 
-    st.markdown("---")
-    st.markdown("### ⭐ Customer Reviews")
-    if os.path.exists("reviews.csv"):
-        st.dataframe(pd.read_csv("reviews.csv"), hide_index=True)
-    else:
-        st.info("No reviews found.")
+# View Switching: Home View vs Cart/Checkout View
+if st.session_state.current_view == "Home":
+    col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
+
+    # --- SECTION 1: MENU ---
+    with col_menu:
+        st.markdown("### 📋 Menu")
+        with st.container(height=500, border=True):
+            categories = list(set([p['category'] for p in product_records]))
+            for cat in categories:
+                if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
+                    st.session_state.selected_menu = cat
+                    st.rerun()
+
+    # --- SECTION 2: ITEMS ---
+    with col_items:
+        current_cat = st.session_state.get("selected_menu", "Headset")
+        st.markdown(f"### 📦 {current_cat}")
+        with st.container(height=500, border=True):
+            filtered_items = [p for p in product_records if p['category'] == current_cat]
+            
+            if filtered_items:
+                for idx, prod in enumerate(filtered_items):
+                    st.markdown(f"**{prod['name']}**")
+                    st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
+                    
+                    q_col, u_col = st.columns(2)
+                    with q_col:
+                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                    with u_col:
+                        u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
+                    
+                    if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                        full_q_str = f"{int(q_val)} {u_val}"
+                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                        st.success(f"Added!")
+                        st.rerun()
+                    st.markdown("---")
+            else:
+                st.info("No items found.")
+
+    # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
+    with col_ai:
+        st.markdown("### 💬 AI Assistant")
+        user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
+        
+        if user_prompt:
+            msg_id = len(st.session_state.get("messages", []))
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
+            
+            st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
+            
+            with st.spinner("Processing..."):
+                try:
+                    context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
+                    full_prompt = user_prompt + context_memory
+
+                    response = client.models.generate_content(
+                        model="gemini-3.6-flash",
+                        contents=full_prompt,
+                        config=types.GenerateContentConfig(
+                            tools=[
+                                search_knowledge_base,
+                                add_to_cart,
+                                calculate_total_price,
+                                process_cart_checkout,
+                                add_product_review,
+                            ],
+                            temperature=0.3,
+                            system_instruction=(
+                                "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
+                                "1. Detect user language and ALWAYS respond in that same language. "
+                                "2. When listing products, mention their exact names clearly."
+                            ),
+                        ),
+                    )
+
+                    final_reply = ""
+                    if response.function_calls:
+                        for function_call in response.function_calls:
+                            tool_name = function_call.name
+                            tool_args = function_call.args
+
+                            if tool_name == "search_knowledge_base":
+                                tool_result = search_knowledge_base(**tool_args)
+                            elif tool_name == "add_to_cart":
+                                tool_result = add_to_cart(**tool_args)
+                                st.rerun()
+                            elif tool_name == "calculate_total_price":
+                                tool_result = calculate_total_price(**tool_args)
+                            elif tool_name == "process_cart_checkout":
+                                tool_result = process_cart_checkout(**tool_args)
+                            elif tool_name == "add_product_review":
+                                tool_result = add_product_review(**tool_args)
+                            else:
+                                tool_result = "Tool not found."
+
+                            followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
+                            final_response = client.models.generate_content(
+                                model="gemini-3.6-flash", contents=followup_prompt
+                            )
+                            final_reply = final_response.text
+                    else:
+                        final_reply = response.text
+
+                    st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
+                except Exception as e:
+                    st.error(f"Error: {e}")
+
+        # Chat container
+        with st.container(height=410, border=True):
+            if "messages" in st.session_state:
+                for message in st.session_state.messages:
+                    with st.chat_message(message["role"]):
+                        st.markdown(message["content"])
+                        
+                        if message["role"] == "assistant":
+                            for p_idx, prod in enumerate(product_records):
+                                if prod['name'].lower() in message["content"].lower():
+                                    with st.container():
+                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
+                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                        with ai_q_col:
+                                            aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
+                                        with ai_u_col:
+                                            au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
+                                        with ai_b_col:
+                                            if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
+                                                full_aq_str = f"{int(aq_val)} {au_val}"
+                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
+                                                st.success(f"Added!")
+                                                st.rerun()
 
 else:
-    # Top Navigation Bar (Home & Cart Buttons)
-    nav_col1, nav_col2, nav_col3 = st.columns([3, 1, 1])
-    with nav_col1:
-        st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
-    with nav_col2:
-        if st.button("🏠 Home", use_container_width=True):
-            st.session_state.current_view = "Home"
-            st.rerun()
-    with nav_col3:
-        cart_count = len(st.session_state.cart)
-        if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
-            st.session_state.current_view = "Cart"
-            st.rerun()
-
-    st.markdown("---")
-
-    # View Switching: Home View vs Cart/Checkout View
-    if st.session_state.current_view == "Home":
-        col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
-
-        # --- SECTION 1: MENU ---
-        with col_menu:
-            st.markdown("### 📋 Menu")
-            with st.container(height=500, border=True):
-                categories = list(set([p['category'] for p in product_records]))
-                for cat in categories:
-                    if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
-                        st.session_state.selected_menu = cat
-                        st.rerun()
-
-        # --- SECTION 2: ITEMS ---
-        with col_items:
-            current_cat = st.session_state.get("selected_menu", "Headset")
-            st.markdown(f"### 📦 {current_cat}")
-            with st.container(height=500, border=True):
-                filtered_items = [p for p in product_records if p['category'] == current_cat]
-                
-                if filtered_items:
-                    for idx, prod in enumerate(filtered_items):
-                        st.markdown(f"**{prod['name']}**")
-                        st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
-                        
-                        q_col, u_col = st.columns(2)
-                        with q_col:
-                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                        with u_col:
-                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
-                        
-                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                            full_q_str = f"{int(q_val)} {u_val}"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success(f"Added!")
-                            st.rerun()
-                        st.markdown("---")
+    st.subheader("🛒 Your Shopping Cart & Checkout")
+    if st.session_state.cart:
+        for c_idx, item in enumerate(st.session_state.cart):
+            cc1, cc2 = st.columns([4, 1])
+            with cc1:
+                st.write(f"- **{item['product']}** ({item['quantity']})")
+            with cc2:
+                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
+                    st.session_state.cart.pop(c_idx)
+                    st.rerun()
+        
+        st.markdown("---")
+        st.subheader("📍 Secure Checkout Form")
+        with st.form("checkout_form_main_view"):
+            checkout_address = st.text_area("Delivery Address:")
+            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            product_desc = st.text_area("Product Specifications / Custom Description:")
+            payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
+            live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+            
+            submit_checkout = st.form_submit_button("Complete Order & Pay")
+            if submit_checkout:
+                if checkout_address and secondary_phone:
+                    result_msg = process_cart_checkout(
+                        checkout_address, secondary_phone, product_desc, payment_method, live_location
+                    )
+                    st.success(result_msg)
+                    st.session_state.current_view = "Home"
+                    st.rerun()
                 else:
-                    st.info("No items found.")
-
-        # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
-        with col_ai:
-            st.markdown("### 💬 AI Assistant")
-            user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
-            
-            if user_prompt:
-                msg_id = len(st.session_state.get("messages", []))
-                if "messages" not in st.session_state:
-                    st.session_state.messages = []
-                
-                st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
-                
-                with st.spinner("Processing..."):
-                    try:
-                        context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
-                        full_prompt = user_prompt + context_memory
-
-                        response = client.models.generate_content(
-                            model="gemini-3.6-flash",
-                            contents=full_prompt,
-                            config=types.GenerateContentConfig(
-                                tools=[
-                                    search_knowledge_base,
-                                    add_to_cart,
-                                    calculate_total_price,
-                                    process_cart_checkout,
-                                    add_product_review,
-                                ],
-                                temperature=0.3,
-                                system_instruction=(
-                                    "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
-                                    "1. Detect user language and ALWAYS respond in that same language. "
-                                    "2. When listing products, mention their exact names clearly."
-                                ),
-                            ),
-                        )
-
-                        final_reply = ""
-                        if response.function_calls:
-                            for function_call in response.function_calls:
-                                tool_name = function_call.name
-                                tool_args = function_call.args
-
-                                if tool_name == "search_knowledge_base":
-                                    tool_result = search_knowledge_base(**tool_args)
-                                elif tool_name == "add_to_cart":
-                                    tool_result = add_to_cart(**tool_args)
-                                    st.rerun()
-                                elif tool_name == "calculate_total_price":
-                                    tool_result = calculate_total_price(**tool_args)
-                                elif tool_name == "process_cart_checkout":
-                                    tool_result = process_cart_checkout(**tool_args)
-                                elif tool_name == "add_product_review":
-                                    tool_result = add_product_review(**tool_args)
-                                else:
-                                    tool_result = "Tool not found."
-
-                                followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
-                                final_response = client.models.generate_content(
-                                    model="gemini-3.6-flash", contents=followup_prompt
-                                )
-                                final_reply = final_response.text
-                        else:
-                            final_reply = response.text
-
-                        st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
-                    except Exception as e:
-                        st.error(f"Error: {e}")
-
-            # Chat container
-            with st.container(height=440, border=True):
-                if "messages" in st.session_state:
-                    for message in st.session_state.messages:
-                        with st.chat_message(message["role"]):
-                            st.markdown(message["content"])
-                            
-                            if message["role"] == "assistant":
-                                for p_idx, prod in enumerate(product_records):
-                                    if prod['name'].lower() in message["content"].lower():
-                                        with st.container():
-                                            st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                            ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
-                                            with ai_q_col:
-                                                aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                            with ai_u_col:
-                                                au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                            with ai_b_col:
-                                                if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                    full_aq_str = f"{int(aq_val)} {au_val}"
-                                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                    st.success(f"Added!")
-                                                    st.rerun()
-
+                    st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
-        st.subheader("🛒 Your Shopping Cart & Checkout")
-        if st.session_state.cart:
-            for c_idx, item in enumerate(st.session_state.cart):
-                cc1, cc2 = st.columns([4, 1])
-                with cc1:
-                    st.write(f"- **{item['product']}** ({item['quantity']})")
-                with cc2:
-                    if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
-                        st.session_state.cart.pop(c_idx)
-                        st.rerun()
-            
-            st.markdown("---")
-            st.subheader("📍 Secure Checkout Form")
-            with st.form("checkout_form_main_view"):
-                checkout_address = st.text_area("Delivery Address:")
-                secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
-                product_desc = st.text_area("Product Specifications / Custom Description:")
-                payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-                live_location = st.text_input("Live Location Link (Google Maps Share URL):")
-                
-                submit_checkout = st.form_submit_button("Complete Order & Pay")
-                if submit_checkout:
-                    if checkout_address and secondary_phone:
-                        result_msg = process_cart_checkout(
-                            checkout_address, secondary_phone, product_desc, payment_method, live_location
-                        )
-                        st.success(result_msg)
-                        st.session_state.current_view = "Home"
-                        st.rerun()
-                    else:
-                        st.warning("⚠️ Please provide delivery address and secondary contact number.")
-        else:
-            st.info("Your cart is empty. Click **Home** above to browse and add products.")
+        st.info("Your cart is empty. Click **Home** above to browse and add products.")
