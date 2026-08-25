@@ -29,7 +29,7 @@ st.markdown("""
             overflow: hidden;
         }
         
-        /* Custom Header Banner Styling (Subtitle removed) */
+        /* Custom Header Banner Styling */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             padding: 18px 20px;
@@ -108,7 +108,7 @@ if not st.session_state.logged_in_user:
     
     with mid_col:
         with st.container(border=True):
-            st.markdown("### 🛍️ Customer Portal Login")
+            st.markdown("### Customer Portal Login")
             with st.form("customer_direct_login_center"):
                 cust_name = st.text_input("Your Name:")
                 cust_phone = st.text_input("Mobile Number:", max_chars=10)
@@ -138,16 +138,16 @@ top_c1, top_c2, top_c3, top_c4 = st.columns([2.2, 1, 1, 1])
 with top_c1:
     st.markdown(f"👋 Welcome back, **{st.session_state.logged_in_user}**!")
 with top_c2:
-    if st.button("🏠 Home", use_container_width=True):
+    if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
 with top_c3:
     cart_count = len(st.session_state.cart)
-    if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+    if st.button(f"Cart ({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
 with top_c4:
-    if st.button("🚪 Logout", use_container_width=True):
+    if st.button("Logout", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
@@ -298,7 +298,7 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 1: MENU ---
     with col_menu:
-        st.markdown("### 📋 Menu")
+        st.markdown("Menu")
         with st.container(height=480, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
@@ -309,7 +309,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 2: ITEMS ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
-        st.markdown(f"### 📦 {current_cat}")
+        st.markdown(f"{current_cat}")
         with st.container(height=480, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
@@ -335,7 +335,7 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
     with col_ai:
-        st.markdown("### 💬 AI Assistant")
+        st.markdown("AI Assistant")
         user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
         
         if user_prompt:
@@ -427,7 +427,7 @@ if st.session_state.current_view == "Home":
                                                 st.rerun()
 
 else:
-    st.subheader("🛒 Your Shopping Cart & Checkout")
+    st.subheader("Your Shopping Cart & Checkout")
     if st.session_state.cart:
         for c_idx, item in enumerate(st.session_state.cart):
             cc1, cc2 = st.columns([4, 1])
@@ -439,7 +439,7 @@ else:
                     st.rerun()
         
         st.markdown("---")
-        st.subheader("📍 Secure Checkout Form")
+        st.subheader("Secure Checkout Form")
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
