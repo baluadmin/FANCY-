@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Modern Light Yellow UI with Custom Menu Styling
+# 1. Streamlit Page Configuration & Extra Light Yellow Background CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -22,9 +22,9 @@ st.markdown("""
         header {visibility: hidden;}
         footer {visibility: hidden;}
         
-        /* Full website light yellow background */
+        /* Extra light yellow background for full website */
         .stApp {
-            background-color: #fffbeb !important;
+            background-color: #fffef0 !important;
             max-height: 100vh;
             overflow: hidden;
         }
