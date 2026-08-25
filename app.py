@@ -10,8 +10,8 @@ import streamlit as st
 
 # 1. Streamlit Page Configuration & Centered Login CSS
 st.set_page_config(
-    page_title="Enterprise AI Assistant with Smart Cart",
-    page_icon="🛒",
+    page_title="HM Mobiles Thiruverkadu",
+    page_icon="📱",
     layout="wide",
 )
 
@@ -38,14 +38,6 @@ st.markdown("""
             padding-left: 1rem;
             padding-right: 1rem;
         }
-        /* Center login box styling */
-        .center-login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-            width: 100%;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -66,7 +58,7 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<h1 style='text-align: center;'>🔐 Enterprise AI Assistant</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>📱 HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     # Using columns to center the login form horizontally
     _, mid_col, _ = st.columns([1, 1.2, 1])
@@ -94,7 +86,7 @@ if not st.session_state.logged_in_user:
 
 
 # --- AFTER LOGIN: MAIN APPLICATION DISPLAY ---
-st.title("🔐 Enterprise AI Assistant (Portal)")
+st.title("📱 HM MOBILES THIRUVERKADU")
 
 # 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
