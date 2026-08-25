@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Extra Soft Light Background CSS
+# 1. Streamlit Page Configuration & Professional Color Palette CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -22,16 +22,16 @@ st.markdown("""
         header {visibility: hidden;}
         footer {visibility: hidden;}
         
-        /* Very soft light cream/white background for full website */
+        /* Professional clean light background */
         .stApp {
-            background-color: #fffefb !important;
+            background-color: #f1f5f9 !important;
             max-height: 100vh;
             overflow: hidden;
         }
         
-        /* Custom Header Banner Styling */
+        /* Professional Dark Navy Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
             padding: 18px 20px;
             border-radius: 12px;
             color: white;
@@ -47,16 +47,17 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Menu Button Light Color Theme */
+        /* Professional Menu & Action Button Theme */
         div.stButton > button {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
-            border: 1px solid #bae6fd !important;
+            background-color: #0284c7 !important;
+            color: white !important;
+            border: 1px solid #0369a1 !important;
             font-weight: 600 !important;
+            border-radius: 8px !important;
         }
         div.stButton > button:hover {
-            background-color: #bae6fd !important;
-            color: #0c4a6e !important;
+            background-color: #0369a1 !important;
+            color: #ffffff !important;
         }
 
         /* Layout columns adjustment */
@@ -127,7 +128,7 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MODERN STYLISH HEADER & NAVIGATION ---
+# --- AFTER LOGIN: MODERN PROFESSIONAL HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
