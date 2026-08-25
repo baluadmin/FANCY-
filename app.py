@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional Color Palette CSS
+# 1. Streamlit Page Configuration & Professional Input Box CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -29,6 +29,13 @@ st.markdown("""
             overflow: hidden;
         }
         
+        /* Fix typing/input boxes to be solid white and clear */
+        input, textarea, div[data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+
         /* Professional Dark Navy Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
@@ -317,7 +324,7 @@ if st.session_state.current_view == "Home":
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
                     st.markdown(f"**{prod['name']}**")
-                    st.caption(f"₹{prod['price']}")  # Stock display removed here
+                    st.caption(f"₹{prod['price']}")
                     
                     q_col, u_col = st.columns(2)
                     with q_col:
