@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS (Forced Light Theme Fix)
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -19,9 +19,10 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally and Remove Header Link Anchors */
+        /* Apply Professional Font Family Globally and Force Light Theme Consistency */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
+            color: #0f172a !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -39,11 +40,9 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Clean and crisp background */
+        /* Clean and crisp professional background */
         .stApp {
             background-color: #f8fafc !important;
-            max-height: 100vh;
-            overflow: hidden;
         }
         
         /* High contrast solid white input boxes with clear dark borders and clean text */
@@ -153,7 +152,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.logged_in_user = cust_name.strip()
                         st.session_state.user_phone = cust_phone.strip()
                         st.session_state.user_role = "Customer"
-                        st.session_state.selected_menu = "Headset"  # Ensure default menu is set for all users
+                        st.session_state.selected_menu = "Headset"
                         st.success("✅ Login Successful!")
                         st.rerun()
                     else:
