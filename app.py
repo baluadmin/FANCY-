@@ -43,9 +43,7 @@ st.markdown("""
 
 st.title("🔐 Enterprise AI Assistant (Portal)")
 
-# 2. Sidebar - Customer Login System Only
-st.sidebar.header("👤 Customer Portal")
-
+# 2. Sidebar - Customer Login System Only (Removed Portal Title)
 # Initialize Session States
 if "logged_in_user" not in st.session_state:
     st.session_state.logged_in_user = None
@@ -67,7 +65,6 @@ if st.session_state.user_role != "Customer":
     with st.sidebar.form("customer_direct_login"):
         cust_name = st.text_input("Enter Your Name:")
         cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
-        # Changed button name to 'Login'
         login_btn = st.form_submit_button("Login")
 
         if login_btn:
