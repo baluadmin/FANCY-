@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional Styling CSS
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -26,59 +26,51 @@ st.markdown("""
         iframe[title="streamlit_app.manage"] {display: none !important;}
         .manage-app {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
-        
-        /* Hide bottom-right floating buttons/icons */
         div[data-testid="stDecoration"] {display: none;}
-        footer {display: none !important;}
         
-        /* Professional Clean Background */
+        /* Clean and crisp background */
         .stApp {
             background-color: #f8fafc !important;
             max-height: 100vh;
             overflow: hidden;
         }
         
-        /* Fix typing/input boxes to be solid white and clear */
+        /* High contrast solid white input boxes with clear dark borders and bold text */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
-            border-color: #cbd5e1 !important;
-        }
-
-        /* Professional Login Box Container Design */
-        .login-card {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            border: 2px solid #94a3b8 !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
         }
 
         /* Professional Dark Navy Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
-            padding: 18px 20px;
+            padding: 20px;
             border-radius: 12px;
             color: white;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .brand-title {
-            font-size: 24px;
-            font-weight: 800;
+            font-size: 28px;
+            font-weight: 900;
             letter-spacing: 1px;
             color: #38bdf8;
             margin: 0;
         }
 
-        /* Professional Menu & Action Button Theme */
+        /* Bold, premium Action Buttons */
         div.stButton > button {
             background-color: #0284c7 !important;
             color: white !important;
             border: 1px solid #0369a1 !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
+            font-size: 15px !important;
             border-radius: 8px !important;
+            padding: 0.5rem 1rem !important;
         }
         div.stButton > button:hover {
             background-color: #0369a1 !important;
@@ -98,10 +90,10 @@ st.markdown("""
             padding: 0px 6px !important;
         }
         .block-container {
-            padding-top: 0.8rem;
+            padding-top: 1rem;
             padding-bottom: 0rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -124,19 +116,19 @@ if "selected_menu" not in st.session_state:
 # 2. Centered Professional Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px; margin-bottom: 20px;'>
-            <h1 style='color: #0f172a; font-size: 32px; font-weight: 900; margin-bottom: 5px;'>HM MOBILES</h1>
-            <p style='color: #64748b; font-size: 15px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 50px; margin-bottom: 25px;'>
+            <h1 style='color: #0f172a; font-size: 36px; font-weight: 900; margin-bottom: 5px;'>HM MOBILES</h1>
+            <p style='color: #334155; font-size: 16px; font-weight: 600;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1, 1.2, 1])
+    _, mid_col, _ = st.columns([1, 1.4, 1])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);'>
-                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 20px; font-size: 20px;'>Customer Portal Login</h3>
+                <div style='background: #ffffff; padding: 35px; border-radius: 14px; border: 2px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);'>
+                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 20px; font-size: 22px; font-weight: 800;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
@@ -330,8 +322,8 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 1: MENU ---
     with col_menu:
-        st.markdown("Menu")
-        with st.container(height=480, border=True):
+        st.markdown("### Menu")
+        with st.container(height=500, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -341,8 +333,8 @@ if st.session_state.current_view == "Home":
     # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
-        st.markdown(f"{current_cat}")
-        with st.container(height=480, border=True):
+        st.markdown(f"### {current_cat}")
+        with st.container(height=500, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
@@ -367,7 +359,7 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
     with col_ai:
-        st.markdown("AI Assistant")
+        st.markdown("### AI Assistant")
         user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
         
         if user_prompt:
@@ -435,7 +427,7 @@ if st.session_state.current_view == "Home":
                     st.error(f"Error: {e}")
 
         # Chat container
-        with st.container(height=390, border=True):
+        with st.container(height=410, border=True):
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
@@ -459,7 +451,7 @@ if st.session_state.current_view == "Home":
                                                 st.rerun()
 
 else:
-    st.subheader("Your Shopping Cart & Checkout")
+    st.subheader("🛒 Your Shopping Cart & Checkout")
     if st.session_state.cart:
         for c_idx, item in enumerate(st.session_state.cart):
             cc1, cc2 = st.columns([4, 1])
@@ -471,7 +463,7 @@ else:
                     st.rerun()
         
         st.markdown("---")
-        st.subheader("Secure Checkout Form")
+        st.subheader("📍 Secure Checkout Form")
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
