@@ -40,7 +40,7 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Force form labels (Your Name, Mobile Number) to be clearly visible and bold */
+        /* Force form labels to be clearly visible and bold with contrasting text */
         label, .stTextInput label, p {
             color: #0f172a !important;
             font-weight: 600 !important;
@@ -51,7 +51,7 @@ st.markdown("""
             background-color: #f8fafc !important;
         }
         
-        /* High contrast solid white input boxes with clear dark borders and clean text */
+        /* High contrast solid white input boxes with clear dark borders and dark text */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
