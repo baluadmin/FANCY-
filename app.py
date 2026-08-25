@@ -61,7 +61,7 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Professional Dark Navy Header Banner */
+        /* Professional Dark Navy Header Banner with High-Contrast Clear Text */
         .brand-banner {
             background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
             padding: 18px;
@@ -75,7 +75,7 @@ st.markdown("""
             font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
-            color: #38bdf8 !important;
+            color: #f97316 !important; /* High-contrast clear burnt orange for perfect visibility */
             margin: 0;
         }
 
