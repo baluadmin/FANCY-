@@ -58,7 +58,7 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# 2. Sidebar - Customer Login System (Hidden automatically once logged in)
+# 2. Sidebar - Customer Login System (Hidden completely once logged in)
 if not st.session_state.logged_in_user:
     st.sidebar.subheader("🛍️ Customer Login")
     with st.sidebar.form("customer_direct_login"):
@@ -75,13 +75,6 @@ if not st.session_state.logged_in_user:
                 st.rerun()
             else:
                 st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-else:
-    st.sidebar.subheader("🛍️ Account Info")
-    st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
-    st.sidebar.write(f"Phone: **{st.session_state.user_phone}**")
-    if st.sidebar.button("Sidebar Logout"):
-        st.session_state.clear()
-        st.rerun()
 
 # Stop execution if not logged in
 if not st.session_state.logged_in_user:
