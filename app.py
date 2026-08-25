@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Force Side-by-Side Layout CSS for Mobile & Desktop
+# 1. Streamlit Page Configuration & Force Side-by-Side Flexbox Layout for Mobile
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -17,12 +17,19 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Force all columns to stay side-by-side even on mobile screens */
-        div[data-testid="column"] {
-            flex: 1 1 0% !important;
-            min-width: 0px !important;
+        /* Force side-by-side columns even on mobile screens with horizontal scrolling */
+        div[data-testid="stHorizontalBlock"] {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            width: 100%;
         }
-        /* Hide main page scrollbar to lock layout */
+        div[data-testid="column"] {
+            flex: 0 0 32% !important;
+            min-width: 280px !important;
+        }
+        /* Hide main page scrollbar to lock vertical layout */
         .stApp {
             max-height: 100vh;
             overflow: hidden;
@@ -332,7 +339,7 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        col_menu, col_items, col_ai = st.columns([0.9, 1.4, 1.7], gap="medium")
+        col_menu, col_items, col_ai = st.columns([1.0, 1.4, 1.7], gap="medium")
 
         # --- SECTION 1: MENU ---
         with col_menu:
