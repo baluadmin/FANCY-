@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Responsive Mobile Layout CSS
+# 1. Streamlit Page Configuration & Fixed Multi-Column Layout CSS
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -17,13 +17,19 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Responsive design for Mobile Portrait mode */
-        @media (max-width: 768px) {
-            div[data-testid="column"] {
-                width: 100% !important;
-                flex: 100% !important;
-                min-width: 100% !important;
-            }
+        /* Force side-by-side layout even on mobile screens */
+        div[data-testid="column"] {
+            flex: 1 1 0% !important;
+            min-width: 0px !important;
+        }
+        /* Hide main page scrollbar */
+        .stApp {
+            max-height: 100vh;
+            overflow: hidden;
+        }
+        .block-container {
+            padding-top: 1.5rem;
+            padding-bottom: 0rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -326,13 +332,13 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        # Desktop-ல் 3 தூண்களாகவும், Mobile-ல் ஒன்றுக்கு கீழ் ஒன்றாக (Stack) வரக்கூடிய Layout
+        # Three Column Layout side-by-side
         col_menu, col_items, col_ai = st.columns([1.0, 1.3, 1.7], gap="medium")
 
         # --- SECTION 1: MENU ---
         with col_menu:
             st.markdown("### 📋 Menu")
-            with st.container(height=450, border=True):
+            with st.container(height=480, border=True):
                 categories = list(set([p['category'] for p in product_records]))
                 for cat in categories:
                     if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -343,7 +349,7 @@ else:
         with col_items:
             current_cat = st.session_state.get("selected_menu", "Headset")
             st.markdown(f"### 📦 {current_cat} Items")
-            with st.container(height=450, border=True):
+            with st.container(height=480, border=True):
                 filtered_items = [p for p in product_records if p['category'] == current_cat]
                 
                 if filtered_items:
@@ -436,7 +442,7 @@ else:
                         st.error(f"Error: {e}")
 
             # Chat container
-            with st.container(height=350, border=True):
+            with st.container(height=400, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
