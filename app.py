@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Clean Layout CSS
+# 1. Streamlit Page Configuration & Force Side-by-Side Layout CSS for Mobile & Desktop
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -17,10 +17,12 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+        /* Force all columns to stay side-by-side even on mobile screens */
         div[data-testid="column"] {
             flex: 1 1 0% !important;
             min-width: 0px !important;
         }
+        /* Hide main page scrollbar to lock layout */
         .stApp {
             max-height: 100vh;
             overflow: hidden;
@@ -335,7 +337,7 @@ else:
         # --- SECTION 1: MENU ---
         with col_menu:
             st.markdown("### 📋 Menu")
-            with st.container(height=520, border=True):
+            with st.container(height=500, border=True):
                 categories = list(set([p['category'] for p in product_records]))
                 for cat in categories:
                     if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -346,7 +348,7 @@ else:
         with col_items:
             current_cat = st.session_state.get("selected_menu", "Headset")
             st.markdown(f"### 📦 {current_cat} Items")
-            with st.container(height=520, border=True):
+            with st.container(height=500, border=True):
                 filtered_items = [p for p in product_records if p['category'] == current_cat]
                 
                 if filtered_items:
@@ -439,7 +441,7 @@ else:
                         st.error(f"Error: {e}")
 
             # Chat container
-            with st.container(height=435, border=True):
+            with st.container(height=410, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
