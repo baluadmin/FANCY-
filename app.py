@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Auto Dark/Light Theme CSS Variables
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -22,7 +22,6 @@ st.markdown("""
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
-            color: #1e293b !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -40,28 +39,23 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Force form labels, paragraphs, and cart text elements to be clearly visible and dark */
+        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #0f172a !important;
+            color: var(--text-color) !important;
             font-weight: 600 !important;
         }
         
-        /* Clean and crisp professional background */
-        .stApp {
-            background-color: #f8fafc !important;
-        }
-        
-        /* High contrast solid white input boxes with clear dark borders and dark text */
+        /* Input boxes styling supporting both modes */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
+            background-color: var(--secondary-background-color) !important;
+            color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
             font-weight: 500 !important;
             border-radius: 6px !important;
         }
 
-        /* Light Blue Header Banner with White Text */
+        /* Light Blue Header Banner with White Text (Stays attractive in both modes) */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
             padding: 18px;
@@ -135,8 +129,8 @@ if "selected_menu" not in st.session_state:
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
-            <h1 style='color: #0f172a; font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='color: #475569; font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
+            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -145,8 +139,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='background: #ffffff; padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='color: #0f172a; margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
+                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
