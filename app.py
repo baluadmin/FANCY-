@@ -6,6 +6,7 @@ import chromadb
 from google import genai
 from google.genai import types
 import pandas as pd
+import requests
 import streamlit as st
 
 # 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
@@ -203,16 +204,15 @@ except Exception as e:
     st.stop()
 
 
-# Load Inventory Directly from Google Sheets CSV Link
+# Load Inventory Directly from Google Sheets CSV Link with Cache Bypass
+@st.cache_data(ttl=5)
 def load_inventory_from_sheet():
-    # உங்கள் கூகுள் ஷீட் CSV எக்ஸ்போர்ட் லிங்க்
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
         df = pd.read_csv(sheet_csv_url)
         df.to_csv("inventory.csv", index=False)
         return df
     except Exception as e:
-        # ஷீட் ரீட் ஆகவில்லையாள் லோக்கல் inventory.csv-ஐ பயன்படுத்தும்
         if os.path.exists("inventory.csv"):
             return pd.read_csv("inventory.csv")
         return pd.DataFrame()
@@ -300,7 +300,7 @@ def calculate_total_price(price: float, quantity: int, discount_percentage: floa
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
-    """Checkout all items currently in the cart with delivery and payment details."""
+    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -312,19 +312,32 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
+    # உங்களுடைய புதிய Google Apps Script Web App URL-ஐ கீழே உள்ள வரীতে ஒட்டவும்
+    google_script_url = "உங்களது_புதிய_கூகுள்_ஷீட்_வெப்_ஆப்_URL"
+
+    order_data = {
+        "Timestamp": timestamp,
+        "Customer_Name": customer_name,
+        "Primary_Phone": primary_phone,
+        "Items": cart_summary,
+        "Address": address,
+        "Secondary_Phone": secondary_phone,
+        "Description": description,
+        "Live_Location": location_link
+    }
+
+    try:
+        requests.post(google_script_url, json=order_data)
+    except Exception:
+        pass
+
+    # லோக்கல் பேக்கப்பிற்காக CSV ஃபைலிலும் சேமிக்கும்
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
             writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
         writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
-
-    pay_exists = os.path.isfile("payments.csv")
-    with open("payments.csv", mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not pay_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Items", "Method", "Transaction ID"])
-        writer.writerow([timestamp, customer_name, cart_summary, payment_method, txn_id])
 
     st.session_state.cart = []
     return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
