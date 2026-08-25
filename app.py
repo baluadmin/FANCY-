@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & CSS to hide "Manage app" and default elements
+# 1. Streamlit Page Configuration & CSS to hide Manage app badge completely
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -17,12 +17,18 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Hide Streamlit default top header, menu, share, github, and Manage app button */
+        /* Hide Streamlit default top header, menu, share, github, and Manage app badge */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
         div[data-testid="stToolbar"] {visibility: hidden; display: none;}
         section[data-testid="stStatusWidget"] {visibility: hidden; display: none;}
+        iframe[title="streamlit_app.manage"] {display: none !important;}
+        .manage-app {display: none !important;}
+        
+        /* Target the floating container in bottom-right corner */
+        div.eczjsgs4 {display: none !important;}
+        div[class*="viewerBadge"] {display: none !important;}
         
         /* Professional clean light background */
         .stApp {
