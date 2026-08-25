@@ -307,7 +307,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS ---
+    # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -317,7 +317,7 @@ if st.session_state.current_view == "Home":
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
                     st.markdown(f"**{prod['name']}**")
-                    st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
+                    st.caption(f"₹{prod['price']}")  # Stock display removed here
                     
                     q_col, u_col = st.columns(2)
                     with q_col:
