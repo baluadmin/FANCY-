@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Force Side-by-Side Flexbox Layout for Mobile
+# 1. Streamlit Page Configuration & Compact Layout CSS for Mobile & Desktop
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -17,19 +17,19 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Force side-by-side columns even on mobile screens with horizontal scrolling */
+        /* Force 3 columns to fit side-by-side on all screens without horizontal scroll */
         div[data-testid="stHorizontalBlock"] {
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;
-            overflow-x: auto;
             width: 100%;
         }
         div[data-testid="column"] {
-            flex: 0 0 32% !important;
-            min-width: 280px !important;
+            flex: 1 1 33% !important;
+            min-width: 0px !important;
+            padding: 0px 5px !important;
         }
-        /* Hide main page scrollbar to lock vertical layout */
+        /* Hide main page scrollbar to lock vertical screen size */
         .stApp {
             max-height: 100vh;
             overflow: hidden;
@@ -37,6 +37,8 @@ st.markdown("""
         .block-container {
             padding-top: 1rem;
             padding-bottom: 0rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -339,7 +341,7 @@ else:
 
     # View Switching: Home View vs Cart/Checkout View
     if st.session_state.current_view == "Home":
-        col_menu, col_items, col_ai = st.columns([1.0, 1.4, 1.7], gap="medium")
+        col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
 
         # --- SECTION 1: MENU ---
         with col_menu:
@@ -354,34 +356,34 @@ else:
         # --- SECTION 2: ITEMS ---
         with col_items:
             current_cat = st.session_state.get("selected_menu", "Headset")
-            st.markdown(f"### 📦 {current_cat} Items")
+            st.markdown(f"### 📦 {current_cat}")
             with st.container(height=500, border=True):
                 filtered_items = [p for p in product_records if p['category'] == current_cat]
                 
                 if filtered_items:
                     for idx, prod in enumerate(filtered_items):
                         st.markdown(f"**{prod['name']}**")
-                        st.caption(f"Price: ₹{prod['price']} | Stock: {prod['stock']}")
+                        st.caption(f"₹{prod['price']} | Stock: {prod['stock']}")
                         
                         q_col, u_col = st.columns(2)
                         with q_col:
-                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}")
+                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
                         with u_col:
-                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}")
+                            u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
                         
-                        if st.button("Add to Cart", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
                             full_q_str = f"{int(q_val)} {u_val}"
                             st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success(f"Added {full_q_str} of {prod['name']}!")
+                            st.success(f"Added!")
                             st.rerun()
                         st.markdown("---")
                 else:
-                    st.info("No items found in this menu.")
+                    st.info("No items found.")
 
         # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
         with col_ai:
-            st.markdown("### 💬 AI Assistant Search & Chat")
-            user_prompt = st.text_input("Ask AI about inventory, products, or requests:", placeholder="Type here...", key="top_ai_search_input")
+            st.markdown("### 💬 AI Assistant")
+            user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
             
             if user_prompt:
                 msg_id = len(st.session_state.get("messages", []))
@@ -390,7 +392,7 @@ else:
                 
                 st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
                 
-                with st.spinner("AI Assistant is processing..."):
+                with st.spinner("Processing..."):
                     try:
                         context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
                         full_prompt = user_prompt + context_memory
@@ -448,7 +450,7 @@ else:
                         st.error(f"Error: {e}")
 
             # Chat container
-            with st.container(height=410, border=True):
+            with st.container(height=440, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
@@ -461,15 +463,14 @@ else:
                                             st.markdown(f"👉 **Quick Add: {prod['name']}**")
                                             ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
                                             with ai_q_col:
-                                                aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}")
+                                                aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
                                             with ai_u_col:
-                                                au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}")
+                                                au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
                                             with ai_b_col:
-                                                st.write("")
-                                                if st.button("Add to Cart", key=f"ai_btn_{message.get('id', 0)}_{p_idx}"):
+                                                if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
                                                     full_aq_str = f"{int(aq_val)} {au_val}"
                                                     st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                    st.success(f"Added {full_aq_str} of {prod['name']}!")
+                                                    st.success(f"Added!")
                                                     st.rerun()
 
     else:
