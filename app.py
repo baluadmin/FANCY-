@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Compact Layout CSS
+# 1. Streamlit Page Configuration & Centered Login CSS
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
@@ -38,6 +38,14 @@ st.markdown("""
             padding-left: 1rem;
             padding-right: 1rem;
         }
+        /* Center login box styling */
+        .center-login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            width: 100%;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -56,25 +64,32 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# 2. Sidebar - Customer Login System (Shown only before login)
+# 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.sidebar.subheader("🛍️ Customer Login")
-    with st.sidebar.form("customer_direct_login"):
-        cust_name = st.text_input("Enter Your Name:")
-        cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
-        login_btn = st.form_submit_button("Login")
-
-        if login_btn:
-            if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                st.session_state.logged_in_user = cust_name.strip()
-                st.session_state.user_phone = cust_phone.strip()
-                st.session_state.user_role = "Customer"
-                st.success("✅ Login Successful!")
-                st.rerun()
-            else:
-                st.sidebar.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
+    st.markdown("<h1 style='text-align: center;'>🔐 Enterprise AI Assistant</h1>", unsafe_allow_html=True)
     
-    # Stop execution cleanly before login without displaying empty pages or warnings
+    # Using columns to center the login form horizontally
+    _, mid_col, _ = st.columns([1, 1.2, 1])
+    
+    with mid_col:
+        with st.container(border=True):
+            st.subheader("🛍️ Customer Login")
+            with st.form("customer_direct_login_center"):
+                cust_name = st.text_input("Enter Your Name:")
+                cust_phone = st.text_input("Enter Mobile Number:", max_chars=10)
+                login_btn = st.form_submit_button("Login", use_container_width=True)
+
+                if login_btn:
+                    if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                        st.session_state.logged_in_user = cust_name.strip()
+                        st.session_state.user_phone = cust_phone.strip()
+                        st.session_state.user_role = "Customer"
+                        st.success("✅ Login Successful!")
+                        st.rerun()
+                    else:
+                        st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
+    
+    # Stop execution cleanly before login
     st.stop()
 
 
