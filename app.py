@@ -8,12 +8,26 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration
+# 1. Streamlit Page Configuration & CSS to Remove Whole Page Scroll
 st.set_page_config(
     page_title="Enterprise AI Assistant with Smart Cart",
     page_icon="🛒",
     layout="wide",
 )
+
+# Custom CSS to hide the main page scrollbar and fix the layout height
+st.markdown("""
+    <style>
+        /* Hide main page scrollbar */
+        .stApp {
+            overflow: hidden;
+        }
+        /* Make columns fixed height and clean */
+        div[data-testid="column"] {
+            overflow: hidden;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 st.title("🔐 Enterprise AI Assistant (Portal)")
 
@@ -319,7 +333,7 @@ else:
         # --- SECTION 1: MENU (With Independent Scroll) ---
         with col_menu:
             st.markdown("### 📋 Menu")
-            with st.container(height=600, border=True):
+            with st.container(height=550, border=True):
                 categories = list(set([p['category'] for p in product_records]))
                 for cat in categories:
                     if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -330,7 +344,7 @@ else:
         with col_items:
             current_cat = st.session_state.get("selected_menu", "Headset")
             st.markdown(f"### 📦 {current_cat} Items")
-            with st.container(height=600, border=True):
+            with st.container(height=550, border=True):
                 filtered_items = [p for p in product_records if p['category'] == current_cat]
                 
                 if filtered_items:
@@ -423,7 +437,7 @@ else:
                         st.error(f"Error: {e}")
 
             # Independent scrolling chat history container
-            with st.container(height=520, border=True):
+            with st.container(height=470, border=True):
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
