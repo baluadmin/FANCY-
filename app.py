@@ -58,7 +58,7 @@ if "selected_menu" not in st.session_state:
 
 # 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
-    st.markdown("<h1 style='text-align: center; font-size: 26px;'>📱 HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 26px;'>📱<br>HM MOBILES THIRUVERKADU</h1>", unsafe_allow_html=True)
     
     _, mid_col, _ = st.columns([1, 1.2, 1])
     
@@ -83,8 +83,8 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH BRAND HEADER ---
-st.markdown("### 📱 HM MOBILES THIRUVERKADU")
+# --- AFTER LOGIN: MAIN APPLICATION DISPLAY WITH CENTERED BRAND HEADER ---
+st.markdown("<h2 style='text-align: center; font-size: 22px; margin-bottom: 0px;'>📱<br>HM MOBILES THIRUVERKADU</h2>", unsafe_allow_html=True)
 
 # 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
