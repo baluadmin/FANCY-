@@ -61,9 +61,9 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Professional Dark Navy Header Banner with High-Contrast Clear Text */
+        /* Light Blue Header Banner with White Text */
         .brand-banner {
-            background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%);
+            background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
             padding: 18px;
             border-radius: 10px;
             color: #ffffff !important;
@@ -75,11 +75,11 @@ st.markdown("""
             font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
-            color: #f97316 !important;
+            color: #ffffff !important;
             margin: 0;
         }
 
-        /* Changed all buttons to Light Sky Blue with clean dark text for professional look */
+        /* Action Buttons Styling */
         div.stButton > button {
             background-color: #e0f2fe !important;
             color: #0369a1 !important;
