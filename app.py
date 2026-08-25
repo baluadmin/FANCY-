@@ -43,7 +43,6 @@ st.markdown("""
 
 st.title("🔐 Enterprise AI Assistant (Portal)")
 
-# 2. Sidebar - Customer Login System Only (Removed Portal Title)
 # Initialize Session States
 if "logged_in_user" not in st.session_state:
     st.session_state.logged_in_user = None
@@ -59,8 +58,8 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# --- CUSTOMER DIRECT LOGIN FLOW ---
-if st.session_state.user_role != "Customer":
+# 2. Sidebar - Customer Login System (Hidden automatically once logged in)
+if not st.session_state.logged_in_user:
     st.sidebar.subheader("🛍️ Customer Login")
     with st.sidebar.form("customer_direct_login"):
         cust_name = st.text_input("Enter Your Name:")
@@ -80,7 +79,7 @@ else:
     st.sidebar.subheader("🛍️ Account Info")
     st.sidebar.write(f"Logged in: **{st.session_state.logged_in_user}**")
     st.sidebar.write(f"Phone: **{st.session_state.user_phone}**")
-    if st.sidebar.button("Logout"):
+    if st.sidebar.button("Sidebar Logout"):
         st.session_state.clear()
         st.rerun()
 
@@ -230,8 +229,8 @@ def add_product_review(rating: int, review_comment: str) -> str:
 
 
 # 5. Interface Logic
-# Top Navigation Bar (Home & Cart Buttons)
-nav_col1, nav_col2, nav_col3 = st.columns([3, 1, 1])
+# Top Navigation Bar with Home, Cart, and Logout Buttons next to Cart
+nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([2.5, 1, 1, 1])
 with nav_col1:
     st.write(f"Welcome, **{st.session_state.logged_in_user}**!")
 with nav_col2:
@@ -242,6 +241,10 @@ with nav_col3:
     cart_count = len(st.session_state.cart)
     if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
+        st.rerun()
+with nav_col4:
+    if st.button("🚪 Logout", use_container_width=True):
+        st.session_state.clear()
         st.rerun()
 
 st.markdown("---")
