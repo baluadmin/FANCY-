@@ -8,7 +8,7 @@ from google.genai import types
 import pandas as pd
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS (Forced Light Theme & Visibility Fix)
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -19,7 +19,7 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally and Force High Contrast Colors */
+        /* Apply Professional Font Family Globally and Force High Contrast Colors to prevent text/bg clash */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
             color: #1e293b !important;
@@ -40,13 +40,13 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Force form labels and paragraphs to be clearly visible and bold */
-        label, .stTextInput label, p {
+        /* Force form labels, paragraphs, and text elements to be clearly visible and high-contrast */
+        label, .stTextInput label, p, span {
             color: #0f172a !important;
             font-weight: 600 !important;
         }
         
-        /* Clean and crisp professional light gray background */
+        /* Clean and crisp professional background */
         .stApp {
             background-color: #f8fafc !important;
         }
