@@ -8,8 +8,6 @@ from google.genai import types
 import pandas as pd
 import requests
 import streamlit as st
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
 # 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
@@ -128,27 +126,17 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# Direct Google Sheets Helper for LOGIN Tab
+# Direct Google Sheets Helper for LOGIN Tab via Web App
 def log_login_to_sheet(name, phone):
     try:
-        if "gcp_service_account" in st.secrets:
-            creds_dict = dict(st.secrets["gcp_service_account"])
-            scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-            client = gspread.authorize(creds)
-            
-            # Opens your Google Sheet and targets the "LOGIN" tab
-            sheet = client.open("need inventory model for this mobile shop").worksheet("LOGIN")
-            
-            # Calculate next row and incremental S.NO
-            existing_rows = sheet.get_all_values()
-            next_row = len(existing_rows) + 1
-            s_no = len(existing_rows) # Row count excluding header
-            
-            # Inserts [S.NO, NAME, MOBILE NUMBER] into Columns A, B, and C
-            sheet.insert_row([s_no, name, phone], next_row)
+        google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
+        payload = {
+            "Customer_Name": name,
+            "Primary_Phone": phone
+        }
+        requests.post(google_script_url, json=payload)
     except Exception as e:
-        st.sidebar.error(f"Sheet Sync Error: {e}")
+        print(f"Login sheet logging error: {e}")
 
 
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
@@ -181,7 +169,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Save Login Details directly to the Google Sheet LOGIN Tab
+                        # Log Login Details directly to the Google Sheet LOGIN Tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
