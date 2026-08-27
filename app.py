@@ -125,18 +125,21 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
+# Google Sheet Web App Endpoint URL
+GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3fsLzCrQA25M5PP1Ox7j3W8sJikJdTwMFmizKpU4_mnm3NJLn2LNAZqdN8xPxfo6P/exec"
 
-# Google Sheet Web App Logging Integration for Login Tab with your actual URL
+
+# Helper to log login details into the LOGIN tab
 def log_login_to_sheet(name, phone):
     try:
-        google_script_url = "https://script.google.com/macros/s/AKfycbx3fsLzCrQA25M5PP1Ox7j3W8sJikJdTwMFmizKpU4_mnm3NJLn2LNAZqdN8xPxfo6P/exec"
         payload = {
+            "Type": "Login",
             "Customer_Name": name,
             "Primary_Phone": phone
         }
-        requests.post(google_script_url, json=payload)
+        requests.post(GOOGLE_SCRIPT_URL, json=payload)
     except Exception as e:
-        print(f"Login sheet logging error: {e}")
+        print(f"Login sheet error: {e}")
 
 
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
@@ -169,7 +172,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Background push to Google Sheets LOGIN tab
+                        # Send login details to LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
@@ -318,7 +321,7 @@ def calculate_total_price(price: float, quantity: int, discount_percentage: floa
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
-    """Checkout all items currently in the cart with delivery and payment details, and save order locally."""
+    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -329,6 +332,23 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
+
+    # Send Order Details to Google Sheets "HM Mobiles Orders" tab
+    try:
+        order_data = {
+            "Type": "Order",
+            "Timestamp": timestamp,
+            "Customer_Name": customer_name,
+            "Primary_Phone": primary_phone,
+            "Items": cart_summary,
+            "Address": address,
+            "Secondary_Phone": secondary_phone,
+            "Description": description,
+            "Live_Location": location_link
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
+    except Exception as e:
+        print(f"Order sheet error: {e}")
 
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
