@@ -260,7 +260,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load Product Records from Google Sheet Data dynamically
+# Load Product Records from Google Sheet Data dynamically with image support
 product_records = []
 if not inv_df.empty:
     try:
@@ -270,24 +270,25 @@ if not inv_df.empty:
                 "name": str(row.iloc[1]),
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])
+                "price": str(row.iloc[4]),
+                "image": str(row.iloc[5]) if len(row) > 5 and pd.notna(row.iloc[5]) else "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "https://images.unsplash.com/photo-1544652478-653e94fa1012?w=400&q=80"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "https://images.unsplash.com/photo-1544652478-653e94fa1012?w=400&q=80"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "https://images.unsplash.com/photo-1609592424164-500c73291254?w=400&q=80"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=400&q=80"},
     ]
 
 
@@ -376,38 +377,49 @@ def add_product_review(rating: int, review_comment: str) -> str:
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
+    col_menu, col_items, col_ai = st.columns([0.8, 1.4, 1.5], gap="small")
 
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=500, border=True):
+        with st.container(height=550, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Units Dropdown Removed) ---
+    # --- SECTION 2: ITEMS (Single Line Layout with Image Space) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=500, border=True):
+        with st.container(height=550, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    st.markdown(f"**{prod['name']}**")
-                    st.caption(f"₹{prod['price']}")
+                    # Single-line horizontal arrangement: [Image Space] | [Details] | [Qty & Add Button]
+                    img_col, info_col, action_col = st.columns([1, 1.8, 1.8], gap="small")
                     
-                    # Quantity input only (Units dropdown completely removed)
-                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}")
+                    with img_col:
+                        img_url = prod.get("image", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80")
+                        try:
+                            st.image(img_url, use_container_width=True)
+                        except Exception:
+                            st.markdown("📱")
                     
-                    if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} Units"
-                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added!")
-                        st.rerun()
+                    with info_col:
+                        st.markdown(f"**{prod['name']}**")
+                        st.caption(f"₹{prod['price']}")
+                    
+                    with action_col:
+                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                            full_q_str = f"{int(q_val)} Units"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success(f"Added!")
+                            st.rerun()
+                            
                     st.markdown("---")
             else:
                 st.info("No items found.")
@@ -482,7 +494,7 @@ if st.session_state.current_view == "Home":
                     st.error(f"Error: {e}")
 
         # Chat container
-        with st.container(height=410, border=True):
+        with st.container(height=460, border=True):
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
