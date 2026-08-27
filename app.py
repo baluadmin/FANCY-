@@ -191,17 +191,16 @@ with top_c4:
 
 st.markdown("---")
 
-# 3. Gemini API Configuration & Database Setup
+# 3. Gemini API Configuration & Database Setup (Secure Secrets Implementation)
 db_path = "./chroma_db"
 
 try:
-    # Replace with your standard Gemini API key (starts with AIza...)
-    api_key_input = "YOUR_ACTUAL_GEMINI_API_KEY"
+    api_key_input = st.secrets["GOOGLE_API_KEY"]
     client = genai.Client(api_key=api_key_input)
     chroma_client = chromadb.PersistentClient(path=db_path)
     collection = chroma_client.get_or_create_collection(name="my_inventory_library")
 except Exception as e:
-    st.error(f"Error connecting to Database or API Key missing: {e}")
+    st.error(f"Error connecting to Database or API Key missing from Streamlit Secrets: {e}")
     st.stop()
 
 
