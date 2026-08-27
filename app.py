@@ -9,7 +9,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Responsive Mobile/Desktop CSS Styling
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -59,15 +59,15 @@ st.markdown("""
         /* Light Blue Header Banner with White Text */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
-            padding: 16px;
+            padding: 18px;
             border-radius: 10px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         .brand-title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
@@ -90,13 +90,26 @@ st.markdown("""
             border: 1px solid #7dd3fc !important;
         }
 
-        /* Responsive Mobile Layout Fix: Auto-stack columns on smaller screens to prevent side-scrolling */
+        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
         @media (max-width: 900px) {
-            div[data-testid="stHorizontalBlock"] {
+            /* Keep top nav buttons horizontal */
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
+                width: auto !important;
+                flex: 1 1 auto !important;
+                min-width: 0px !important;
+                padding: 0px 2px !important;
+            }
+
+            /* Stack body content sections vertically on mobile */
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
                 flex-direction: column !important;
                 flex-wrap: wrap !important;
             }
-            div[data-testid="column"] {
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) > div[data-testid="column"] {
                 width: 100% !important;
                 flex: 1 1 100% !important;
                 min-width: 100% !important;
@@ -107,8 +120,8 @@ st.markdown("""
         .block-container {
             padding-top: 1rem;
             padding-bottom: 0rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
             max-width: 100% !important;
         }
     </style>
@@ -148,18 +161,18 @@ def log_login_to_sheet(name, phone):
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 20px; margin-bottom: 15px;'>
-            <h1 style='font-size: 26px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
+            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
+            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([0.2, 1, 0.2])
+    _, mid_col, _ = st.columns([1.3, 1, 1.3])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
+                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
                     <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
