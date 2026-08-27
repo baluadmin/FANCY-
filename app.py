@@ -300,45 +300,6 @@ def update_item_in_sheet(item_id, name, category, stock, price, image_url):
         print(f"Update item error: {e}")
 
 
-def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
-    if not st.session_state.cart:
-        return "Your cart is empty. Please add products first."
-    
-    customer_name = st.session_state.logged_in_user
-    primary_phone = st.session_state.user_phone
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
-
-    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
-    st.session_state.last_booked_item = cart_summary
-
-    try:
-        order_data = {
-            "Type": "Order",
-            "Timestamp": timestamp,
-            "Customer_Name": customer_name,
-            "Primary_Phone": primary_phone,
-            "Items": cart_summary,
-            "Address": address,
-            "Secondary_Phone": secondary_phone,
-            "Description": description,
-            "Payment_Method": "Cash on Delivery (COD)"
-        }
-        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
-    except Exception as e:
-        print(f"Order sheet error: {e}")
-
-    file_exists = os.path.isfile("orders.csv")
-    with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Payment Method"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, "Cash on Delivery (COD)"])
-
-    st.session_state.cart = []
-    return f"Checkout complete! Order placed for: {cart_summary}. Payment Method: Cash on Delivery (COD) (TXN ID: {txn_id})."
-
-
 product_records = []
 if not inv_df.empty:
     try:
@@ -519,28 +480,62 @@ else:
                     st.rerun()
         
         st.markdown("---")
-        st.subheader("📍 Secure Checkout Form (Cash on Delivery)")
+        st.subheader("📍 Secure Checkout Form (UPI / Cash on Delivery)")
         
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
-            # Locked display notice for COD
-            st.markdown("💳 **Payment Method:** Cash on Delivery (COD) only")
+            payment_method = st.selectbox("Payment Method", ["Cash on Delivery (COD)", "UPI Payment (GPay / PhonePe / Paytm)"])
+            payment_screenshot = st.file_uploader("Upload UPI Payment Screenshot (If paid via UPI)", type=["jpg", "png", "jpeg"])
             
-            submit_checkout = st.form_submit_button("Complete Order (COD)")
+            submit_checkout = st.form_submit_button("Complete Order & Send via WhatsApp")
             if submit_checkout:
                 if checkout_address and secondary_phone:
-                    result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, "Cash on Delivery (COD)"
-                    )
-                    st.success(result_msg)
-                    st.session_state.cart = []
-                    st.session_state.current_view = "Home"
-                    st.rerun()
+                    screenshot_url = "No UPI Screenshot Provided"
+                    if payment_screenshot is not None:
+                        screenshot_url = upload_image_to_host(payment_screenshot)
+                    
+                    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+                    
+                    st.session_state.pending_whatsapp_order = {
+                        "name": st.session_state.logged_in_user,
+                        "phone": st.session_state.user_phone,
+                        "items": cart_summary,
+                        "address": checkout_address,
+                        "alt_phone": secondary_phone,
+                        "desc": product_desc,
+                        "payment": payment_method,
+                        "screenshot": screenshot_url
+                    }
+                    st.success("✅ Order prepared! Click the WhatsApp button below to finalize your order.")
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
+
+        if "pending_whatsapp_order" in st.session_state and st.session_state.pending_whatsapp_order:
+            ord_info = st.session_state.pending_whatsapp_order
+            wa_message = (
+                f"🛍️ *New Order - HM Mobiles*%0A"
+                f"*Customer:* {ord_info['name']} ({ord_info['phone']})%0A"
+                f"*Items:* {ord_info['items']}%0A"
+                f"*Address:* {ord_info['address']}%0A"
+                f"*Alt Phone:* {ord_info['alt_phone']}%0A"
+                f"*Description:* {ord_info['desc']}%0A"
+                f"*Payment:* {ord_info['payment']}%0A"
+                f"*Payment Proof:* {ord_info['screenshot']}"
+            )
+            wa_url = f"https://wa.me/919840450113?text={wa_message}"
+            
+            st.markdown("---")
+            st.markdown("### 📲 Finalize Order via WhatsApp")
+            st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
+            
+            if st.button("Clear / Reset Cart & Finish"):
+                st.session_state.cart = []
+                st.session_state.pop("pending_whatsapp_order")
+                st.session_state.current_view = "Home"
+                st.rerun()
 
     else:
         st.info("Your cart is empty. Click **Home / Menu** above to browse products.")
