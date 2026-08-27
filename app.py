@@ -509,7 +509,7 @@ else:
                 if checkout_address and secondary_phone:
                     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
                     
-                    # Automatically log order details to Google Sheet
+                    # 1. Instantly log order to Google Sheet
                     log_order_to_sheet(
                         name=st.session_state.logged_in_user,
                         phone=st.session_state.user_phone,
@@ -519,40 +519,30 @@ else:
                         desc=product_desc
                     )
                     
-                    st.session_state.pending_whatsapp_order = {
-                        "name": st.session_state.logged_in_user,
-                        "phone": st.session_state.user_phone,
-                        "items": cart_summary,
-                        "address": checkout_address,
-                        "alt_phone": secondary_phone,
-                        "desc": product_desc
-                    }
-                    st.success("✅ Order logged to Google Sheet successfully! Click below to send your order via WhatsApp.")
+                    # 2. Build WhatsApp redirect URL
+                    raw_wa_message = (
+                        f"New Order - HM Mobiles\n"
+                        f"Customer: {st.session_state.logged_in_user} ({st.session_state.user_phone})\n"
+                        f"Items: {cart_summary}\n"
+                        f"Address: {checkout_address}\n"
+                        f"Alt Phone: {secondary_phone}\n"
+                        f"Description: {product_desc}"
+                    )
+                    encoded_message = urllib.parse.quote(raw_wa_message)
+                    wa_url = f"https://wa.me/919840450113?text={encoded_message}"
+                    
+                    # 3. Cleanly redirect user to WhatsApp instantly and clear cart
+                    st.success("✅ Order logged to Google Sheet successfully! Opening WhatsApp...")
+                    st.markdown(f"""
+                        <meta http-equiv="refresh" content="0;url={wa_url}">
+                        <script>
+                            window.location.href = "{wa_url}";
+                        </script>
+                    """, unsafe_allow_html=True)
+                    
+                    st.session_state.cart = []
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
-
-        if "pending_whatsapp_order" in st.session_state and st.session_state.pending_whatsapp_order:
-            ord_info = st.session_state.pending_whatsapp_order
-            raw_wa_message = (
-                f"New Order - HM Mobiles\n"
-                f"Customer: {ord_info['name']} ({ord_info['phone']})\n"
-                f"Items: {ord_info['items']}\n"
-                f"Address: {ord_info['address']}\n"
-                f"Alt Phone: {ord_info['alt_phone']}\n"
-                f"Description: {ord_info['desc']}"
-            )
-            encoded_message = urllib.parse.quote(raw_wa_message)
-            wa_url = f"https://wa.me/919840450113?text={encoded_message}"
-            
-            st.markdown("---")
-            st.markdown("### 📲 Send Order via WhatsApp")
-            st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
-            
-            if st.button("Clear / Reset Cart & Finish"):
-                st.session_state.cart = []
-                st.session_state.pop("pending_whatsapp_order", None)
-                st.session_state.current_view = "Home"
-                st.rerun()
 
     else:
         st.info("Your cart is empty. Click **Home / Menu** above to browse products.")
