@@ -2,6 +2,7 @@ from datetime import datetime
 import csv
 import os
 import random
+import urllib.parse
 import chromadb
 from google import genai
 from google.genai import types
@@ -515,17 +516,18 @@ else:
 
         if "pending_whatsapp_order" in st.session_state and st.session_state.pending_whatsapp_order:
             ord_info = st.session_state.pending_whatsapp_order
-            wa_message = (
-                f"🛍️ *New Order - HM Mobiles*%0A"
-                f"*Customer:* {ord_info['name']} ({ord_info['phone']})%0A"
-                f"*Items:* {ord_info['items']}%0A"
-                f"*Address:* {ord_info['address']}%0A"
-                f"*Alt Phone:* {ord_info['alt_phone']}%0A"
-                f"*Description:* {ord_info['desc']}%0A"
-                f"*Payment:* {ord_info['payment']}%0A"
-                f"*Payment Proof:* {ord_info['screenshot']}"
+            raw_wa_message = (
+                f"New Order - HM Mobiles\n"
+                f"Customer: {ord_info['name']} ({ord_info['phone']})\n"
+                f"Items: {ord_info['items']}\n"
+                f"Address: {ord_info['address']}\n"
+                f"Alt Phone: {ord_info['alt_phone']}\n"
+                f"Description: {ord_info['desc']}\n"
+                f"Payment: {ord_info['payment']}\n"
+                f"Payment Proof: {ord_info['screenshot']}"
             )
-            wa_url = f"https://wa.me/919840450113?text={wa_message}"
+            encoded_message = urllib.parse.quote(raw_wa_message)
+            wa_url = f"https://wa.me/919840450113?text={encoded_message}"
             
             st.markdown("---")
             st.markdown("### 📲 Finalize Order via WhatsApp")
