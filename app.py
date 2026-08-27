@@ -56,17 +56,6 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Completely remove border, background, and shadow from selectboxes and wrappers */
-        div[data-baseweb="select"] > div {
-            background-color: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-        }
-        div[data-baseweb="select"] {
-            border: none !important;
-            background-color: transparent !important;
-        }
-
         /* Light Blue Header Banner with White Text */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
@@ -136,7 +125,7 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
-# Google Apps Script Web App Endpoint URL Updated
+# Google Apps Script Web App Endpoint URL
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
 
@@ -183,7 +172,6 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Send login details to LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
@@ -316,7 +304,7 @@ def search_knowledge_base(query: str) -> str:
 
 
 def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight."""
+    """Add a product or service item into the shopping cart with custom quantity."""
     st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
     st.session_state.last_booked_item = product_name
     return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
@@ -343,7 +331,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
-    # Send Order Details to Google Sheets "HM Mobiles Orders" tab
     try:
         order_data = {
             "Type": "Order",
@@ -401,7 +388,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
+    # --- SECTION 2: ITEMS (Units Dropdown Removed) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -413,14 +400,11 @@ if st.session_state.current_view == "Home":
                     st.markdown(f"**{prod['name']}**")
                     st.caption(f"₹{prod['price']}")
                     
-                    q_col, u_col = st.columns(2)
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
+                    # Quantity input only (Units dropdown completely removed)
+                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}")
                     
                     if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} {u_val}"
+                        full_q_str = f"{int(q_val)} Units"
                         st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
                         st.success(f"Added!")
                         st.rerun()
@@ -509,14 +493,12 @@ if st.session_state.current_view == "Home":
                                 if prod['name'].lower() in message["content"].lower():
                                     with st.container():
                                         st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                        ai_q_col, ai_b_col = st.columns([1, 1])
                                         with ai_q_col:
                                             aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
                                         with ai_b_col:
                                             if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} {au_val}"
+                                                full_aq_str = f"{int(aq_val)} Units"
                                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
                                                 st.success(f"Added!")
                                                 st.rerun()
