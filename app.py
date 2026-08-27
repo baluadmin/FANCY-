@@ -496,7 +496,10 @@ else:
                 if checkout_address and secondary_phone:
                     screenshot_url = "No UPI Screenshot Provided"
                     if payment_screenshot is not None:
-                        screenshot_url = upload_image_to_host(payment_screenshot)
+                        with st.spinner("Uploading payment screenshot..."):
+                            hosted_url = upload_image_to_host(payment_screenshot)
+                            if hosted_url:
+                                screenshot_url = hosted_url
                     
                     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
                     
@@ -510,7 +513,7 @@ else:
                         "payment": payment_method,
                         "screenshot": screenshot_url
                     }
-                    st.success("✅ Order prepared! Click the WhatsApp button below to finalize your order.")
+                    st.success("✅ Order prepared! Click the WhatsApp button below to send your order.")
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
 
