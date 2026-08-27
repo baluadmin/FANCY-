@@ -399,16 +399,22 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    st.markdown(f"**{prod['name']}**")
-                    st.caption(f"₹{prod['price']}")
+                    # Rearranged clean layout: Name, Price, Qty and Add button in horizontal alignment
+                    p_info_col, p_qty_col, p_btn_col = st.columns([1.5, 1, 1], gap="small")
                     
-                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    
-                    if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} Units"
-                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added!")
-                        st.rerun()
+                    with p_info_col:
+                        st.markdown(f"**{prod['name']}**")
+                        st.caption(f"₹{prod['price']}")
+                        
+                    with p_qty_col:
+                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                        
+                    with p_btn_col:
+                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                            full_q_str = f"{int(q_val)} Units"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success(f"Added!")
+                            st.rerun()
                     st.markdown("---")
             else:
                 st.info("No items found.")
