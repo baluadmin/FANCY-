@@ -239,7 +239,6 @@ inv_df = load_inventory_from_sheet()
 
 
 def upload_image_to_host(uploaded_file):
-    """Automatically uploads local system image file to free image host API and gets web link."""
     try:
         url = "https://api.imgbb.com/1/upload"
         payload = {"key": "6d207e02198a847aa98d0a2a901485a2"}
@@ -269,6 +268,22 @@ def log_new_item_to_sheet(item_id, name, category, stock, price, image_url):
         print(f"Add item error: {e}")
 
 
+def update_item_in_sheet(item_id, name, category, stock, price, image_url):
+    try:
+        payload = {
+            "Type": "UpdateItem",
+            "Item_ID": item_id,
+            "Item_Name": name,
+            "Category": category,
+            "Stock_Quantity": stock,
+            "Price_INR": price,
+            "Image": image_url
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=payload)
+    except Exception as e:
+        print(f"Update item error: {e}")
+
+
 product_records = []
 if not inv_df.empty:
     try:
@@ -285,37 +300,78 @@ if not inv_df.empty:
         product_records = []
 
 
-# --- OWNER DASHBOARD VIEW WITH LOCAL SYSTEM FILE UPLOADER ---
+# --- OWNER DASHBOARD VIEW WITH ADD & EDIT TABS ---
 if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_role == "Owner":
     st.subheader("🛠️ Owner Inventory & Menu Management Dashboard")
-    st.markdown("Upload product images directly from your system and add items to your Google Sheet:")
     
-    with st.form("owner_add_item_form"):
-        col_1, col_2 = st.columns(2)
-        with col_1:
-            new_id = st.text_input("Item ID (e.g., ITM012):")
-            new_name = st.text_input("Product Name:")
-            new_cat = st.text_input("Category (e.g., Charger, Headset, Backcase):")
-        with col_2:
-            new_stock = st.number_input("Stock Quantity:", min_value=1, value=50)
-            new_price = st.number_input("Price (INR):", min_value=1.0, value=500.0)
-            
-        # Replaced URL text input with local system file uploader
-        uploaded_file = st.file_uploader("Upload Product Image from System", type=["jpg", "png", "jpeg"])
-            
-        submit_item = st.form_submit_button("➕ Add Item to Menu & Sheet")
-        
-        if submit_item:
-            if new_id and new_name and new_cat:
-                image_link = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
-                if uploaded_file is not None:
-                    image_link = upload_image_to_host(uploaded_file)
+    owner_tab1, owner_tab2 = st.tabs(["➕ Add New Item", "✏️ Edit Existing Item"])
+    
+    with owner_tab1:
+        st.markdown("Add new products directly to your catalog and Google Sheet:")
+        with st.form("owner_add_item_form"):
+            col_1, col_2 = st.columns(2)
+            with col_1:
+                new_id = st.text_input("Item ID (e.g., ITM012):")
+                new_name = st.text_input("Product Name:")
+                new_cat = st.text_input("Category (e.g., Charger, Headset, Backcase):")
+            with col_2:
+                new_stock = st.number_input("Stock Quantity:", min_value=1, value=50)
+                new_price = st.number_input("Price (INR):", min_value=1.0, value=500.0)
                 
-                log_new_item_to_sheet(new_id, new_name, new_cat, new_stock, new_price, image_link)
-                st.success(f"✅ Successfully added '{new_name}' with system image to your Google Sheet!")
-                st.balloons()
-            else:
-                st.warning("⚠️ Please fill in Item ID, Name, and Category.")
+            uploaded_file = st.file_uploader("Upload Product Image from System", type=["jpg", "png", "jpeg"], key="add_img")
+                
+            submit_item = st.form_submit_button("➕ Add Item to Menu & Sheet")
+            
+            if submit_item:
+                if new_id and new_name and new_cat:
+                    image_link = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
+                    if uploaded_file is not None:
+                        image_link = upload_image_to_host(uploaded_file)
+                    
+                    log_new_item_to_sheet(new_id, new_name, new_cat, new_stock, new_price, image_link)
+                    st.success(f"✅ Successfully added '{new_name}' to your Google Sheet!")
+                    st.balloons()
+                else:
+                    st.warning("⚠️ Please fill in Item ID, Name, and Category.")
+
+    with owner_tab2:
+        st.markdown("Select an existing item ID to update its information:")
+        if not inv_df.empty:
+            item_ids = inv_df.iloc[:, 0].astype(str).tolist()
+            selected_id = st.selectbox("Select Item ID to Edit:", item_ids)
+            
+            # Fetch existing item details
+            matched_row = inv_df[inv_df.iloc[:, 0].astype(str) == selected_id]
+            if not matched_row.empty:
+                curr_name = str(matched_row.iloc[0, 1])
+                curr_cat = str(matched_row.iloc[0, 2])
+                curr_stock = int(matched_row.iloc[0, 3])
+                curr_price = float(matched_row.iloc[0, 4])
+                curr_img = str(matched_row.iloc[0, 5]) if len(matched_row.columns) > 5 and pd.notna(matched_row.iloc[0, 5]) else ""
+                
+                with st.form("owner_edit_item_form"):
+                    e_col1, e_col2 = st.columns(2)
+                    with e_col1:
+                        edit_name = st.text_input("Product Name:", value=curr_name)
+                        edit_cat = st.text_input("Category:", value=curr_cat)
+                    with e_col2:
+                        edit_stock = st.number_input("Stock Quantity:", min_value=0, value=curr_stock)
+                        edit_price = st.number_input("Price (INR):", min_value=1.0, value=curr_price)
+                        
+                    edit_file = st.file_uploader("Upload New Image (Optional)", type=["jpg", "png", "jpeg"], key="edit_img")
+                    
+                    submit_edit = st.form_submit_button("💾 Save Changes to Sheet")
+                    
+                    if submit_edit:
+                        final_img = curr_img
+                        if edit_file is not None:
+                            final_img = upload_image_to_host(edit_file)
+                            
+                        update_item_in_sheet(selected_id, edit_name, edit_cat, edit_stock, edit_price, final_img)
+                        st.success(f"✅ Successfully updated Item ID {selected_id}!")
+                        st.balloons()
+        else:
+            st.info("No items found in inventory.")
 
     st.markdown("---")
     st.subheader("📋 Current Live Inventory Catalog")
