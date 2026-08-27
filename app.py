@@ -535,9 +535,13 @@ else:
             
             st.markdown("---")
             st.markdown("### 📲 Finalize Order via WhatsApp")
-            if ord_info['screenshot'] != "No UPI Screenshot Provided":
+            
+            # Only show preview if a real custom payment screenshot was uploaded
+            if ord_info['screenshot'] != "No UPI Screenshot Provided" and "unsplash.com" not in ord_info['screenshot']:
                 st.image(ord_info['screenshot'], caption="Uploaded Payment Screenshot", width=200)
-                st.info("💡 Tip: You can right-click or save the image above to attach it directly in your WhatsApp chat along with the order details.")
+                st.info("💡 Tip: You can save the image above to attach it directly in your WhatsApp chat.")
+            else:
+                st.info("ℹ️ Order placed with Cash on Delivery (No payment screenshot required).")
             
             st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
             
