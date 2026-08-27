@@ -381,9 +381,9 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    # Professional Image Rendering per Item Card
+                    # Professional Image Rendering per Item Card using use_container_width
                     img_url = prod.get("image", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80")
-                    st.image(img_url, use_column_width=True)
+                    st.image(img_url, use_container_width=True)
                     
                     st.markdown(f"**{prod['name']}**")
                     st.caption(f"₹{prod['price']}")
