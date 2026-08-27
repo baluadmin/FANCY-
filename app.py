@@ -126,10 +126,10 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# Google Sheet Web App Logging Integration for Login Tab
+# Google Sheet Web App Logging Integration for Login Tab with your actual URL
 def log_login_to_sheet(name, phone):
     try:
-        google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
+        google_script_url = "https://script.google.com/macros/s/AKfycbx3fsLzCrQA25M5PP1Ox7j3W8sJikJdTwMFmizKpU4_mnm3NJLn2LNAZqdN8xPxfo6P/exec"
         payload = {
             "Customer_Name": name,
             "Primary_Phone": phone
