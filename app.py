@@ -133,6 +133,8 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
+if "auto_gps_link" not in st.session_state:
+    st.session_state.auto_gps_link = ""
 
 # Google Apps Script Web App Endpoint URL
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
@@ -302,7 +304,6 @@ def update_item_in_sheet(item_id, name, category, stock, price, image_url):
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
-    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -509,6 +510,7 @@ elif st.session_state.current_view == "Home":
 # --- CART / CHECKOUT VIEW ---
 else:
     st.subheader("🛒 Your Shopping Cart & Checkout")
+    
     if st.session_state.cart:
         for c_idx, item in enumerate(st.session_state.cart):
             cc1, cc2 = st.columns([4, 1])
@@ -522,41 +524,13 @@ else:
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form")
         
-        # HTML/JS widget to fetch browser GPS coordinates automatically
-        loc_component_html = """
-            <div style="font-family: 'Inter', sans-serif; margin-bottom: 10px;">
-                <button onclick="getLocation()" style="background-color: #0284c7; color: white; border: none; padding: 8px 14px; font-weight: 600; border-radius: 6px; cursor: pointer;">📍 Detect My Current GPS Location</button>
-                <span id="loc_status" style="margin-left: 10px; font-size: 13px; font-weight: 500; color: #334155;"></span>
-            </div>
-            <script>
-                function getLocation() {
-                    const status = document.getElementById("loc_status");
-                    if (!navigator.geolocation) {
-                        status.innerHTML = "Geolocation is not supported by your browser";
-                        return;
-                    }
-                    status.innerHTML = "Locating...";
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        const mapsUrl = "https://maps.google.com/?q=" + lat + "," + lng;
-                        
-                        status.innerHTML = "✅ GPS captured! Copied link to clipboard.";
-                        navigator.clipboard.writeText(mapsUrl);
-                    }, () => {
-                        status.innerHTML = "Unable to retrieve your location";
-                    });
-                }
-            </script>
-        """
-        components.html(loc_component_html, height=50)
-
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-            live_location = st.text_input("Live Location Link (Paste GPS link or Google Maps URL):")
+            
+            live_location = st.text_input("Live Location Link:", value=st.session_state.auto_gps_link, placeholder="Click button below or paste map URL")
             
             submit_checkout = st.form_submit_button("Complete Order & Pay")
             if submit_checkout:
@@ -566,9 +540,50 @@ else:
                     )
                     st.success(result_msg)
                     st.session_state.cart = []
+                    st.session_state.auto_gps_link = ""
                     st.session_state.current_view = "Home"
                     st.rerun()
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
+
+        loc_component_html = f"""
+            <div style="font-family: 'Inter', sans-serif; margin-top: -10px; margin-bottom: 15px;">
+                <button onclick="getLiveLocation()" style="background-color: #0284c7; color: white; border: none; padding: 10px 16px; font-weight: 600; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📍 Fetch & Fill Current GPS Location</button>
+                <span id="loc_status" style="margin-left: 10px; font-size: 13px; font-weight: 600; color: #0369a1;"></span>
+            </div>
+            <script>
+                function getLiveLocation() {
+                    const status = document.getElementById("loc_status");
+                    if (!navigator.geolocation) {
+                        status.innerHTML = "Geolocation is not supported by your browser";
+                        return;
+                    }
+                    status.innerHTML = "Fetching GPS coordinates...";
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsUrl = "https://maps.google.com/?q=" + lat + "," + lng;
+                        
+                        status.innerHTML = "✅ Location captured! Refreshing page...";
+                        
+                        const currentUrl = window.parent.location.href.split('?')[0];
+                        window.parent.location.href = currentUrl + "?lat=" + lat + "&lng=" + lng;
+                    }, () => {
+                        status.innerHTML = "⚠️ Permission denied or unavailable.";
+                    });
+                }
+            </script>
+        """
+        components.html(loc_component_html, height=60)
+        
+        query_params = st.query_params
+        if "lat" in query_params and "lng" in query_params:
+            lat_val = query_params["lat"]
+            lng_val = query_params["lng"]
+            generated_url = f"https://maps.google.com/?q={lat_val},{lng_val}"
+            if st.session_state.auto_gps_link != generated_url:
+                st.session_state.auto_gps_link = generated_url
+                st.rerun()
+
     else:
         st.info("Your cart is empty. Click **Home / Menu** above to browse products.")
