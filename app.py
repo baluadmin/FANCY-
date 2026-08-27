@@ -546,7 +546,7 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
 
-        loc_component_html = f"""
+        loc_component_html = r"""
             <div style="font-family: 'Inter', sans-serif; margin-top: -10px; margin-bottom: 15px;">
                 <button onclick="getLiveLocation()" style="background-color: #0284c7; color: white; border: none; padding: 10px 16px; font-weight: 600; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📍 Fetch & Fill Current GPS Location</button>
                 <span id="loc_status" style="margin-left: 10px; font-size: 13px; font-weight: 600; color: #0369a1;"></span>
