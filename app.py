@@ -8,7 +8,6 @@ from google.genai import types
 import pandas as pd
 import requests
 import streamlit as st
-import streamlit.components.v1 as components
 
 # 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
@@ -133,8 +132,6 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
-if "auto_gps_link" not in st.session_state:
-    st.session_state.auto_gps_link = "Not Fetched"
 
 # Google Apps Script Web App Endpoint URL
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
@@ -303,7 +300,7 @@ def update_item_in_sheet(item_id, name, category, stock, price, image_url):
         print(f"Update item error: {e}")
 
 
-def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
+def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str) -> str:
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -324,8 +321,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
             "Items": cart_summary,
             "Address": address,
             "Secondary_Phone": secondary_phone,
-            "Description": description,
-            "Live_Location": location_link
+            "Description": description
         }
         requests.post(GOOGLE_SCRIPT_URL, json=order_data)
     except Exception as e:
@@ -335,8 +331,8 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
+            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description"])
+        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description])
 
     st.session_state.cart = []
     return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
@@ -524,78 +520,20 @@ else:
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form")
         
-        # Check URL parameters for GPS location auto-fill
-        query_params = st.query_params
-        if "lat" in query_params and "lng" in query_params:
-            lat_val = query_params["lat"]
-            lng_val = query_params["lng"]
-            generated_url = f"https://maps.google.com/?q={lat_val},{lng_val}"
-            if st.session_state.auto_gps_link != generated_url:
-                st.session_state.auto_gps_link = generated_url
-
-        loc_component_html = r"""
-            <div style="font-family: 'Inter', sans-serif; margin-bottom: 10px;">
-                <button onclick="getLiveLocation()" style="background-color: #0284c7; color: white; border: none; padding: 10px 16px; font-weight: 600; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">📍 Fetch & Fill Current GPS Location</button>
-                <span id="loc_status" style="margin-left: 10px; font-size: 13px; font-weight: 600; color: #0369a1;"></span>
-            </div>
-            <script>
-                function getLiveLocation() {
-                    const status = document.getElementById("loc_status");
-                    if (!navigator.geolocation) {
-                        status.innerHTML = "Geolocation is not supported by your browser";
-                        return;
-                    }
-                    status.innerHTML = "Fetching GPS coordinates...";
-                    
-                    const options = {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    };
-
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        
-                        status.innerHTML = "✅ Location captured! Refreshing...";
-                        
-                        const currentUrl = window.parent.location.href.split('?')[0];
-                        window.parent.location.href = currentUrl + "?lat=" + lat + "&lng=" + lng;
-                    }, (error) => {
-                        if(error.code == 1) {
-                            status.innerHTML = "⚠️ Permission denied. Enable location in browser settings.";
-                        } else if(error.code == 2) {
-                            status.innerHTML = "⚠️ Position unavailable. Turn on GPS.";
-                        } else {
-                            status.innerHTML = "⚠️ Timeout getting location.";
-                        }
-                    }, options);
-                }
-            </script>
-        """
-        components.html(loc_component_html, height=55)
-
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
             
-            # Displays the clickable map link or status directly inside the form workflow
-            if st.session_state.auto_gps_link != "Not Fetched":
-                st.markdown(f"**🔗 Captured Map Link:** [{st.session_state.auto_gps_link}]({st.session_state.auto_gps_link})")
-            else:
-                st.info("ℹ️ Click the 'Fetch & Fill Current GPS Location' button above to capture your map link.")
-            
             submit_checkout = st.form_submit_button("Complete Order & Pay")
             if submit_checkout:
                 if checkout_address and secondary_phone:
                     result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, payment_method, st.session_state.auto_gps_link
+                        checkout_address, secondary_phone, product_desc, payment_method
                     )
                     st.success(result_msg)
                     st.session_state.cart = []
-                    st.session_state.auto_gps_link = "Not Fetched"
                     st.session_state.current_view = "Home"
                     st.rerun()
                 else:
