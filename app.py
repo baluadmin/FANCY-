@@ -125,8 +125,8 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
-# Google Apps Script Web App Endpoint URL
-GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3fsLzCrQA25M5PP1Ox7j3W8sJikJdTwMFmizKpU4_mnm3NJLn2LNAZqdN8xPxfo6P/exec"
+# Google Apps Script Web App Endpoint URL Updated
+GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
 
 # Function to log customer login into the "LOGIN" tab
@@ -172,7 +172,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Send login details specifically to the LOGIN tab
+                        # Send login details to LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
