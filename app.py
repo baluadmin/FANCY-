@@ -238,6 +238,21 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
+def upload_image_to_host(uploaded_file):
+    """Automatically uploads local system image file to free image host API and gets web link."""
+    try:
+        url = "https://api.imgbb.com/1/upload"
+        payload = {"key": "6d207e02198a847aa98d0a2a901485a2"}
+        files = {"image": uploaded_file.getvalue()}
+        response = requests.post(url, data=payload, files=files)
+        result = response.json()
+        if result.get("success"):
+            return result["data"]["url"]
+    except Exception as e:
+        print(f"Image upload error: {e}")
+    return "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
+
+
 def log_new_item_to_sheet(item_id, name, category, stock, price, image_url):
     try:
         payload = {
@@ -270,10 +285,10 @@ if not inv_df.empty:
         product_records = []
 
 
-# --- OWNER DASHBOARD VIEW WITH URL INPUT ---
+# --- OWNER DASHBOARD VIEW WITH LOCAL SYSTEM FILE UPLOADER ---
 if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_role == "Owner":
     st.subheader("🛠️ Owner Inventory & Menu Management Dashboard")
-    st.markdown("Add new products directly to your catalog and Google Sheet:")
+    st.markdown("Upload product images directly from your system and add items to your Google Sheet:")
     
     with st.form("owner_add_item_form"):
         col_1, col_2 = st.columns(2)
@@ -284,15 +299,20 @@ if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_r
         with col_2:
             new_stock = st.number_input("Stock Quantity:", min_value=1, value=50)
             new_price = st.number_input("Price (INR):", min_value=1.0, value=500.0)
-            new_img = st.text_input("Image URL (Google Drive link or direct link):", placeholder="https://...")
+            
+        # Replaced URL text input with local system file uploader
+        uploaded_file = st.file_uploader("Upload Product Image from System", type=["jpg", "png", "jpeg"])
             
         submit_item = st.form_submit_button("➕ Add Item to Menu & Sheet")
         
         if submit_item:
             if new_id and new_name and new_cat:
-                image_link = new_img if new_img.strip() else "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
+                image_link = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
+                if uploaded_file is not None:
+                    image_link = upload_image_to_host(uploaded_file)
+                
                 log_new_item_to_sheet(new_id, new_name, new_cat, new_stock, new_price, image_link)
-                st.success(f"✅ Successfully added '{new_name}' to inventory sheet!")
+                st.success(f"✅ Successfully added '{new_name}' with system image to your Google Sheet!")
                 st.balloons()
             else:
                 st.warning("⚠️ Please fill in Item ID, Name, and Category.")
