@@ -156,9 +156,9 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Optional: Log Login Event to Google Sheets
+                        # Log Login Event to Google Sheets
                         try:
-                            google_script_url = "உங்களது_புதிய_கூகுள்_ஷீட்_வெப்_ஆப்_URL"
+                            google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
                             requests.post(google_script_url, json={
                                 "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                                 "Customer_Name": cust_name.strip(),
@@ -330,7 +330,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
-    google_script_url = "உங்களது_புதிய_கூகுள்_ஷீட்_வெப்_ஆப்_URL"
+    google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
 
     order_data = {
         "Timestamp": timestamp,
