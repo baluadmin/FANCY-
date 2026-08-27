@@ -47,13 +47,20 @@ st.markdown("""
         }
         
         /* Input boxes styling supporting both modes */
-        input, textarea, div[data-baseweb="select"] > div {
+        input, textarea {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
             font-weight: 500 !important;
             border-radius: 6px !important;
+        }
+
+        /* Remove box border and background styling specifically for selectboxes */
+        div[data-baseweb="select"] > div {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
         /* Light Blue Header Banner with White Text */
