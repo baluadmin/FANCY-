@@ -195,7 +195,8 @@ st.markdown("---")
 db_path = "./chroma_db"
 
 try:
-    api_key_input = "AQ.Ab8RN6IFdepGa4xcKZXwHURujdXMmNgOGdkqa3gMY0qyRd99YQ"
+    # Replace with your standard Gemini API key (starts with AIza...)
+    api_key_input = "YOUR_ACTUAL_GEMINI_API_KEY"
     client = genai.Client(api_key=api_key_input)
     chroma_client = chromadb.PersistentClient(path=db_path)
     collection = chroma_client.get_or_create_collection(name="my_inventory_library")
