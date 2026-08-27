@@ -528,13 +528,17 @@ else:
                 f"Alt Phone: {ord_info['alt_phone']}\n"
                 f"Description: {ord_info['desc']}\n"
                 f"Payment: {ord_info['payment']}\n"
-                f"Payment Proof: {ord_info['screenshot']}"
+                f"Payment Proof Image URL: {ord_info['screenshot']}"
             )
             encoded_message = urllib.parse.quote(raw_wa_message)
             wa_url = f"https://wa.me/919840450113?text={encoded_message}"
             
             st.markdown("---")
             st.markdown("### 📲 Finalize Order via WhatsApp")
+            if ord_info['screenshot'] != "No UPI Screenshot Provided":
+                st.image(ord_info['screenshot'], caption="Uploaded Payment Screenshot", width=200)
+                st.info("💡 Tip: You can right-click or save the image above to attach it directly in your WhatsApp chat along with the order details.")
+            
             st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
             
             if st.button("Clear / Reset Cart & Finish"):
