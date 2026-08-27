@@ -9,7 +9,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Responsive Mobile/Desktop CSS Styling
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -25,7 +25,7 @@ st.markdown("""
             font-family: 'Inter', sans-serif !important;
         }
 
-        /* Hide Streamlit default top header, menu, share, github */
+        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -35,10 +35,12 @@ st.markdown("""
         .manage-app {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
+        
+        /* Completely hide header link icons next to section headers */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color based on Streamlit's active theme */
+        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
             font-weight: 600 !important;
@@ -57,15 +59,15 @@ st.markdown("""
         /* Light Blue Header Banner with White Text */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
-            padding: 16px;
+            padding: 18px;
             border-radius: 10px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         .brand-title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
@@ -88,26 +90,23 @@ st.markdown("""
             border: 1px solid #7dd3fc !important;
         }
 
-        /* Responsive Mobile Layout Fix: Auto-stack columns on smaller screens to prevent horizontal scrolling */
-        @media (max-width: 900px) {
-            div[data-testid="stHorizontalBlock"] {
-                flex-direction: column !important;
-                flex-wrap: wrap !important;
-            }
-            div[data-testid="column"] {
-                width: 100% !important;
-                flex: 1 1 100% !important;
-                min-width: 100% !important;
-                padding: 4px 0px !important;
-            }
+        /* Layout columns adjustment */
+        div[data-testid="stHorizontalBlock"] {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            width: 100%;
         }
-
+        div[data-testid="column"] {
+            flex: 1 1 33% !important;
+            min-width: 0px !important;
+            padding: 0px 6px !important;
+        }
         .block-container {
             padding-top: 1rem;
             padding-bottom: 0rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            max-width: 100% !important;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -146,18 +145,18 @@ def log_login_to_sheet(name, phone):
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 20px; margin-bottom: 15px;'>
-            <h1 style='font-size: 26px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
+            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
+            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([0.2, 1, 0.2])
+    _, mid_col, _ = st.columns([1.3, 1, 1.3])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
+                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
                     <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
@@ -261,17 +260,17 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load Product Records from Google Sheet Data dynamically
+# Load Product Records from Google Sheet Data dynamically with correct index mapping
 product_records = []
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
             product_records.append({
                 "id": str(row.iloc[0]),
-                "name": str(row.iloc[1]),
+                "name": str(row.iloc[1]),  # Product Name is at column index 1
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])
+                "price": str(row.iloc[4])   # Price is at column index 4
             })
     except Exception:
         product_records = []
