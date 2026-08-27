@@ -483,9 +483,6 @@ else:
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form (UPI / Cash on Delivery)")
         
-        # File uploader placed outside the form to properly capture uploads
-        payment_screenshot = st.file_uploader("Upload UPI Payment Screenshot (If paid via UPI)", type=["jpg", "png", "jpeg"], key="upi_file_upload")
-        
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
@@ -496,9 +493,9 @@ else:
             if submit_checkout:
                 if checkout_address and secondary_phone:
                     screenshot_url = "No UPI Screenshot Provided"
-                    if payment_screenshot is not None:
+                    if "upi_file_upload" in st.session_state and st.session_state.upi_file_upload is not None:
                         with st.spinner("Uploading payment screenshot..."):
-                            hosted_url = upload_image_to_host(payment_screenshot)
+                            hosted_url = upload_image_to_host(st.session_state.upi_file_upload)
                             if hosted_url:
                                 screenshot_url = hosted_url
                     
@@ -518,6 +515,14 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
 
+        # File uploader placed at the bottom before WhatsApp section
+        payment_screenshot = st.file_uploader(
+            "Upload UPI Payment Screenshot (If paid via UPI)", 
+            type=["jpg", "png", "jpeg"], 
+            key="upi_file_upload",
+            help="200MB per file • JPG, PNG"
+        )
+
         if "pending_whatsapp_order" in st.session_state and st.session_state.pending_whatsapp_order:
             ord_info = st.session_state.pending_whatsapp_order
             raw_wa_message = (
@@ -536,18 +541,15 @@ else:
             st.markdown("---")
             st.markdown("### 📲 Finalize Order via WhatsApp")
             
-            # Only show preview if a real custom payment screenshot was uploaded
             if ord_info['screenshot'] != "No UPI Screenshot Provided" and "unsplash.com" not in ord_info['screenshot']:
                 st.image(ord_info['screenshot'], caption="Uploaded Payment Screenshot", width=200)
                 st.info("💡 Tip: You can save the image above to attach it directly in your WhatsApp chat.")
-            else:
-                st.info("ℹ️ Order placed with Cash on Delivery (No payment screenshot required).")
             
             st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
             
             if st.button("Clear / Reset Cart & Finish"):
                 st.session_state.cart = []
-                st.session_state.pop("pending_whatsapp_order")
+                st.session_state.pop("pending_whatsapp_order", None)
                 st.session_state.current_view = "Home"
                 st.rerun()
 
