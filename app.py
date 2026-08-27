@@ -487,17 +487,19 @@ else:
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form (UPI / Cash on Delivery)")
         
+        # File uploader placed OUTSIDE the form so it successfully captures uploads
+        payment_screenshot = st.file_uploader(
+            "Upload UPI Payment Screenshot (If paid via UPI)", 
+            type=["jpg", "png", "jpeg"],
+            help="200MB per file • JPG, PNG",
+            key="upi_file_upload"
+        )
+        
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             payment_method = st.selectbox("Payment Method", ["Cash on Delivery (COD)", "UPI Payment (GPay / PhonePe / Paytm)"])
-            
-            payment_screenshot = st.file_uploader(
-                "Upload UPI Payment Screenshot (If paid via UPI)", 
-                type=["jpg", "png", "jpeg"],
-                help="200MB per file • JPG, PNG"
-            )
             
             submit_checkout = st.form_submit_button("Complete Order & Send via WhatsApp")
             if submit_checkout:
