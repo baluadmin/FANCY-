@@ -195,7 +195,8 @@ st.markdown("---")
 db_path = "./chroma_db"
 
 try:
-    api_key_input = st.secrets["GOOGLE_API_KEY"]
+    # Paste your Google Gemini API key directly inside the quotes below
+    api_key_input = "AQ.Ab8RN6IFdepGa4xcKZXwHURujdXMmNgOGdkqa3gMY0qyRd99YQ"
     client = genai.Client(api_key=api_key_input)
     chroma_client = chromadb.PersistentClient(path=db_path)
     collection = chroma_client.get_or_create_collection(name="my_inventory_library")
@@ -418,7 +419,7 @@ if st.session_state.current_view == "Home":
                     full_prompt = user_prompt + context_memory
 
                     response = client.models.generate_content(
-                        model="gemini-3.6-flash",
+                        model="gemini-2.5-flash",
                         contents=full_prompt,
                         config=types.GenerateContentConfig(
                             tools=[
@@ -459,7 +460,7 @@ if st.session_state.current_view == "Home":
 
                             followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
                             final_response = client.models.generate_content(
-                                model="gemini-3.6-flash", contents=followup_prompt
+                                model="gemini-2.5-flash", contents=followup_prompt
                             )
                             final_reply = final_response.text
                     else:
