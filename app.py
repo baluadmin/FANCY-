@@ -155,6 +155,23 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_phone = cust_phone.strip()
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
+                        
+                        # Optional: Log Login Event to Google Sheets
+                        try:
+                            google_script_url = "உங்களது_புதிய_கூகுள்_ஷீட்_வெப்_ஆப்_URL"
+                            requests.post(google_script_url, json={
+                                "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                "Customer_Name": cust_name.strip(),
+                                "Primary_Phone": cust_phone.strip(),
+                                "Items": "Customer Login Event",
+                                "Address": "",
+                                "Secondary_Phone": "",
+                                "Description": "User Logged into Portal",
+                                "Live_Location": ""
+                            })
+                        except Exception:
+                            pass
+
                         st.success("✅ Login Successful!")
                         st.rerun()
                     else:
@@ -372,7 +389,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Clean Layout with Professional Image Presentation) ---
+    # --- SECTION 2: ITEMS (Clean Layout with Safe Image Presentation) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -381,9 +398,12 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    # Professional Image Rendering per Item Card using use_container_width
+                    # Safe Image Rendering with fallback protection
                     img_url = prod.get("image", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80")
-                    st.image(img_url, use_container_width=True)
+                    try:
+                        st.image(img_url, use_container_width=True)
+                    except Exception:
+                        st.markdown("📱 *Image unavailable*")
                     
                     st.markdown(f"**{prod['name']}**")
                     st.caption(f"₹{prod['price']}")
