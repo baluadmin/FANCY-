@@ -9,7 +9,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Responsive Mobile/Desktop CSS Styling
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -25,7 +25,7 @@ st.markdown("""
             font-family: 'Inter', sans-serif !important;
         }
 
-        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
+        /* Hide Streamlit default top header, menu, share, github */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -35,12 +35,10 @@ st.markdown("""
         .manage-app {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
-        
-        /* Completely hide header link icons next to section headers */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
+        /* Automatically adapt text color based on Streamlit's active theme */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
             font-weight: 600 !important;
@@ -59,15 +57,15 @@ st.markdown("""
         /* Light Blue Header Banner with White Text */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
-            padding: 18px;
+            padding: 16px;
             border-radius: 10px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .brand-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
@@ -90,23 +88,26 @@ st.markdown("""
             border: 1px solid #7dd3fc !important;
         }
 
-        /* Layout columns adjustment */
-        div[data-testid="stHorizontalBlock"] {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            width: 100%;
+        /* Responsive Mobile Layout Fix: Auto-stack columns on smaller screens to prevent horizontal scrolling */
+        @media (max-width: 900px) {
+            div[data-testid="stHorizontalBlock"] {
+                flex-direction: column !important;
+                flex-wrap: wrap !important;
+            }
+            div[data-testid="column"] {
+                width: 100% !important;
+                flex: 1 1 100% !important;
+                min-width: 100% !important;
+                padding: 4px 0px !important;
+            }
         }
-        div[data-testid="column"] {
-            flex: 1 1 33% !important;
-            min-width: 0px !important;
-            padding: 0px 6px !important;
-        }
+
         .block-container {
             padding-top: 1rem;
             padding-bottom: 0rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            max-width: 100% !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -145,18 +146,18 @@ def log_login_to_sheet(name, phone):
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
-            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 20px; margin-bottom: 15px;'>
+            <h1 style='font-size: 26px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1.3, 1, 1.3])
+    _, mid_col, _ = st.columns([0.2, 1, 0.2])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
+                <div style='padding: 20px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
                     <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
             """, unsafe_allow_html=True)
             
@@ -172,7 +173,6 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Send login details to LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
@@ -192,9 +192,9 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-top_c1, top_c2, top_c3, top_c4 = st.columns([2.2, 1, 1, 1])
+top_c1, top_c2, top_c3, top_c4 = st.columns([2, 1, 1, 1])
 with top_c1:
-    st.markdown(f"👋 Welcome back, **{st.session_state.logged_in_user}**!")
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
 with top_c2:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
@@ -332,7 +332,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
-    # Send Order Details to Google Sheets "HM Mobiles Orders" tab
     try:
         order_data = {
             "Type": "Order",
@@ -390,7 +389,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
+    # --- SECTION 2: ITEMS ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -399,7 +398,6 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    # Rearranged clean layout: Name, Price, Qty and Add button in horizontal alignment
                     p_info_col, p_qty_col, p_btn_col = st.columns([1.5, 1, 1], gap="small")
                     
                     with p_info_col:
