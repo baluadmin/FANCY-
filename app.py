@@ -300,7 +300,7 @@ def update_item_in_sheet(item_id, name, category, stock, price, image_url):
         print(f"Update item error: {e}")
 
 
-def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str) -> str:
+def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -321,7 +321,8 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
             "Items": cart_summary,
             "Address": address,
             "Secondary_Phone": secondary_phone,
-            "Description": description
+            "Description": description,
+            "Payment_Method": "Cash on Delivery (COD)"
         }
         requests.post(GOOGLE_SCRIPT_URL, json=order_data)
     except Exception as e:
@@ -331,11 +332,11 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description])
+            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Payment Method"])
+        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, "Cash on Delivery (COD)"])
 
     st.session_state.cart = []
-    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
+    return f"Checkout complete! Order placed for: {cart_summary}. Payment Method: Cash on Delivery (COD) (TXN ID: {txn_id})."
 
 
 product_records = []
@@ -518,19 +519,21 @@ else:
                     st.rerun()
         
         st.markdown("---")
-        st.subheader("📍 Secure Checkout Form")
+        st.subheader("📍 Secure Checkout Form (Cash on Delivery)")
         
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
-            payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
             
-            submit_checkout = st.form_submit_button("Complete Order & Pay")
+            # Locked display notice for COD
+            st.markdown("💳 **Payment Method:** Cash on Delivery (COD) only")
+            
+            submit_checkout = st.form_submit_button("Complete Order (COD)")
             if submit_checkout:
                 if checkout_address and secondary_phone:
                     result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, payment_method
+                        checkout_address, secondary_phone, product_desc, "Cash on Delivery (COD)"
                     )
                     st.success(result_msg)
                     st.session_state.cart = []
