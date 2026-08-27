@@ -20,10 +20,12 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+        /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
         }
 
+        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -34,14 +36,17 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
+        /* Completely hide header link icons next to section headers */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
+        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
             font-weight: 600 !important;
         }
         
+        /* Input boxes styling supporting both modes */
         input, textarea {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
@@ -51,6 +56,15 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
+        /* Make product images fit nicely in the designated image column area */
+        div[data-testid="column"] img {
+            width: 80px !important;
+            height: 80px !important;
+            object-fit: cover !important;
+            border-radius: 8px !important;
+        }
+
+        /* Light Blue Header Banner with White Text */
         .brand-banner {
             background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
             padding: 18px;
@@ -68,6 +82,7 @@ st.markdown("""
             margin: 0;
         }
 
+        /* Action Buttons Styling */
         div.stButton > button {
             background-color: #e0f2fe !important;
             color: #0369a1 !important;
@@ -83,6 +98,7 @@ st.markdown("""
             border: 1px solid #7dd3fc !important;
         }
 
+        /* Layout columns adjustment */
         div[data-testid="stHorizontalBlock"] {
             display: flex;
             flex-direction: row;
@@ -340,7 +356,6 @@ if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_r
             item_ids = inv_df.iloc[:, 0].astype(str).tolist()
             selected_id = st.selectbox("Select Item ID to Edit:", item_ids)
             
-            # Fetch existing item details
             matched_row = inv_df[inv_df.iloc[:, 0].astype(str) == selected_id]
             if not matched_row.empty:
                 curr_name = str(matched_row.iloc[0, 1])
