@@ -90,23 +90,39 @@ st.markdown("""
             border: 1px solid #7dd3fc !important;
         }
 
-        /* Layout columns adjustment */
-        div[data-testid="stHorizontalBlock"] {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            width: 100%;
+        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
+        @media (max-width: 900px) {
+            /* Keep top nav buttons horizontal */
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
+                width: auto !important;
+                flex: 1 1 auto !important;
+                min-width: 0px !important;
+                padding: 0px 2px !important;
+            }
+
+            /* Stack body content sections vertically on mobile */
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
+                flex-direction: column !important;
+                flex-wrap: wrap !important;
+            }
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) > div[data-testid="column"] {
+                width: 100% !important;
+                flex: 1 1 100% !important;
+                min-width: 100% !important;
+                padding: 4px 0px !important;
+            }
         }
-        div[data-testid="column"] {
-            flex: 1 1 33% !important;
-            min-width: 0px !important;
-            padding: 0px 6px !important;
-        }
+
         .block-container {
             padding-top: 1rem;
             padding-bottom: 0rem;
             padding-left: 1.5rem;
             padding-right: 1.5rem;
+            max-width: 100% !important;
         }
     </style>
 """, unsafe_allow_html=True)
