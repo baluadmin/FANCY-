@@ -126,7 +126,7 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# Direct Google Sheets Helper for LOGIN Tab via Web App
+# Google Sheet Web App Logging Integration for Login Tab
 def log_login_to_sheet(name, phone):
     try:
         google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
@@ -169,7 +169,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Log Login Details directly to the Google Sheet LOGIN Tab
+                        # Background push to Google Sheets LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
