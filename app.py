@@ -195,7 +195,6 @@ st.markdown("---")
 db_path = "./chroma_db"
 
 try:
-    # Paste your Google Gemini API key directly inside the quotes below
     api_key_input = "AQ.Ab8RN6IFdepGa4xcKZXwHURujdXMmNgOGdkqa3gMY0qyRd99YQ"
     client = genai.Client(api_key=api_key_input)
     chroma_client = chromadb.PersistentClient(path=db_path)
@@ -286,7 +285,7 @@ def search_knowledge_base(query: str) -> str:
 
 
 def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight."""
+    """Add a product or service item into the shopping cart with custom quantity."""
     st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
     st.session_state.last_booked_item = product_name
     return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
@@ -313,7 +312,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
-    # உங்களுடைய புதிய Google Apps Script Web App URL-ஐ கீழே உள்ள வரীতে ஒட்டவும்
     google_script_url = "உங்களது_புதிய_கூகுள்_ஷீட்_வெப்_ஆப்_URL"
 
     order_data = {
@@ -332,7 +330,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     except Exception:
         pass
 
-    # லோக்கல் பேக்கப்பிற்காக CSV ஃபைலிலும் சேமிக்கும்
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -374,7 +371,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
+    # --- SECTION 2: ITEMS (Clean Layout) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -386,14 +383,10 @@ if st.session_state.current_view == "Home":
                     st.markdown(f"**{prod['name']}**")
                     st.caption(f"₹{prod['price']}")
                     
-                    q_col, u_col = st.columns(2)
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
+                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
                     
                     if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} {u_val}"
+                        full_q_str = f"{int(q_val)} Units"
                         st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
                         st.success(f"Added!")
                         st.rerun()
@@ -433,7 +426,8 @@ if st.session_state.current_view == "Home":
                             system_instruction=(
                                 "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
                                 "1. Detect user language and ALWAYS respond in that same language. "
-                                "2. When listing products, mention their exact names clearly."
+                                "2. When listing products, mention their exact names clearly and include their prices. "
+                                "3. If the user asks for low price, budget-friendly, or cheapest items, analyze the database using search_knowledge_base, identify the items with the lowest prices, and explicitly list them with their prices."
                             ),
                         ),
                     )
@@ -458,7 +452,7 @@ if st.session_state.current_view == "Home":
                             else:
                                 tool_result = "Tool not found."
 
-                            followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
+                            followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language, emphasizing lowest price options if requested."
                             final_response = client.models.generate_content(
                                 model="gemini-2.5-flash", contents=followup_prompt
                             )
@@ -481,15 +475,13 @@ if st.session_state.current_view == "Home":
                             for p_idx, prod in enumerate(product_records):
                                 if prod['name'].lower() in message["content"].lower():
                                     with st.container():
-                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                        st.markdown(f"👉 **Quick Add: {prod['name']}** (₹{prod['price']})")
+                                        ai_q_col, ai_b_col = st.columns([1, 1])
                                         with ai_q_col:
                                             aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
                                         with ai_b_col:
                                             if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} {au_val}"
+                                                full_aq_str = f"{int(aq_val)} Units"
                                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
                                                 st.success(f"Added!")
                                                 st.rerun()
