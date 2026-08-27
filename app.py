@@ -3,7 +3,6 @@ import csv
 import os
 import random
 import urllib.parse
-import base64
 import chromadb
 from google import genai
 from google.genai import types
@@ -151,6 +150,22 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
+def log_order_to_sheet(name, phone, items, address, alt_phone, desc):
+    try:
+        payload = {
+            "Type": "Order",
+            "Customer_Name": name,
+            "Primary_Phone": phone,
+            "Items": items,
+            "Address": address,
+            "Alt_Phone": alt_phone,
+            "Description": desc
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=payload)
+    except Exception as e:
+        print(f"Order sheet error: {e}")
+
+
 # Owner Login & Customer Login Screen
 if not st.session_state.logged_in_user:
     st.markdown("""
@@ -258,25 +273,16 @@ inv_df = load_inventory_from_sheet()
 
 def upload_image_to_host(uploaded_file):
     try:
-        file_bytes = uploaded_file.getvalue()
-        base64_data = base64.b64encode(file_bytes).decode('utf-8')
-        
-        payload = {
-            "Type": "OrderWithImage",
-            "Customer_Name": st.session_state.get("logged_in_user", "Customer"),
-            "Primary_Phone": st.session_state.get("user_phone", ""),
-            "ImageName": uploaded_file.name,
-            "MimeType": uploaded_file.type,
-            "ImageBase64": base64_data
-        }
-        
-        response = requests.post(GOOGLE_SCRIPT_URL, json=payload)
+        url = "https://api.imgbb.com/1/upload"
+        payload = {"key": "6d207e02198a847aa98d0a2a901485a2"}
+        files = {"image": uploaded_file.getvalue()}
+        response = requests.post(url, data=payload, files=files)
         result = response.json()
-        if result.get("status") == "success":
-            return result.get("fileUrl")
+        if result.get("success"):
+            return result["data"]["url"]
     except Exception as e:
-        print(f"Drive upload error: {e}")
-    return None
+        print(f"Image upload error: {e}")
+    return "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
 
 
 def log_new_item_to_sheet(item_id, name, category, stock, price, image_url):
@@ -353,9 +359,7 @@ if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_r
                 if new_id and new_name and new_cat:
                     image_link = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
                     if uploaded_file is not None:
-                        hosted_img = upload_image_to_host(uploaded_file)
-                        if hosted_img:
-                            image_link = hosted_img
+                        image_link = upload_image_to_host(uploaded_file)
                     
                     log_new_item_to_sheet(new_id, new_name, new_cat, new_stock, new_price, image_link)
                     st.success(f"✅ Successfully added '{new_name}' to your Google Sheet!")
@@ -393,9 +397,7 @@ if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_r
                     if submit_edit:
                         final_img = curr_img
                         if edit_file is not None:
-                            hosted_edit = upload_image_to_host(edit_file)
-                            if hosted_edit:
-                                final_img = hosted_edit
+                            final_img = upload_image_to_host(edit_file)
                             
                         update_item_in_sheet(selected_id, edit_name, edit_cat, edit_stock, edit_price, final_img)
                         st.success(f"✅ Successfully updated Item ID {selected_id}!")
@@ -482,7 +484,7 @@ elif st.session_state.current_view == "Home":
 
 # --- CART / CHECKOUT VIEW ---
 else:
-    st.subheader("🛒 Your Shopping Cart & Checkout")
+    st.subheader("🛒 Your Shopping Cart & Order Checkout")
     
     if st.session_state.cart:
         for c_idx, item in enumerate(st.session_state.cart):
@@ -495,33 +497,27 @@ else:
                     st.rerun()
         
         st.markdown("---")
-        st.subheader("📍 Secure Checkout Form (UPI / Cash on Delivery)")
-        
-        # File uploader placed OUTSIDE the form so it successfully captures uploads
-        payment_screenshot = st.file_uploader(
-            "Upload UPI Payment Screenshot (If paid via UPI)", 
-            type=["jpg", "png", "jpeg"],
-            help="200MB per file • JPG, PNG",
-            key="upi_file_upload"
-        )
+        st.subheader("📍 Customer Delivery Details")
         
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
-            payment_method = st.selectbox("Payment Method", ["Cash on Delivery (COD)", "UPI Payment (GPay / PhonePe / Paytm)"])
             
-            submit_checkout = st.form_submit_button("Complete Order & Send via WhatsApp")
+            submit_checkout = st.form_submit_button("Submit Order & Send via WhatsApp")
             if submit_checkout:
                 if checkout_address and secondary_phone:
-                    screenshot_url = "No UPI Screenshot Provided"
-                    if payment_screenshot is not None:
-                        with st.spinner("Uploading payment screenshot to Drive & Sheet..."):
-                            hosted_url = upload_image_to_host(payment_screenshot)
-                            if hosted_url:
-                                screenshot_url = hosted_url
-                    
                     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+                    
+                    # Automatically log order details to Google Sheet
+                    log_order_to_sheet(
+                        name=st.session_state.logged_in_user,
+                        phone=st.session_state.user_phone,
+                        items=cart_summary,
+                        address=checkout_address,
+                        alt_phone=secondary_phone,
+                        desc=product_desc
+                    )
                     
                     st.session_state.pending_whatsapp_order = {
                         "name": st.session_state.logged_in_user,
@@ -529,11 +525,9 @@ else:
                         "items": cart_summary,
                         "address": checkout_address,
                         "alt_phone": secondary_phone,
-                        "desc": product_desc,
-                        "payment": payment_method,
-                        "screenshot": screenshot_url
+                        "desc": product_desc
                     }
-                    st.success("✅ Order saved to Google Sheet & Drive! Click the WhatsApp button below to send your order.")
+                    st.success("✅ Order logged to Google Sheet successfully! Click below to send your order via WhatsApp.")
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
 
@@ -545,20 +539,13 @@ else:
                 f"Items: {ord_info['items']}\n"
                 f"Address: {ord_info['address']}\n"
                 f"Alt Phone: {ord_info['alt_phone']}\n"
-                f"Description: {ord_info['desc']}\n"
-                f"Payment: {ord_info['payment']}\n"
-                f"Payment Proof Drive Link: {ord_info['screenshot']}"
+                f"Description: {ord_info['desc']}"
             )
             encoded_message = urllib.parse.quote(raw_wa_message)
             wa_url = f"https://wa.me/919840450113?text={encoded_message}"
             
             st.markdown("---")
-            st.markdown("### 📲 Finalize Order via WhatsApp")
-            
-            if ord_info['screenshot'] != "No UPI Screenshot Provided":
-                st.image(ord_info['screenshot'], caption="Uploaded Payment Screenshot", width=200)
-                st.info("💡 Your payment proof has been safely stored in your Google Drive and logged in your sheet!")
-            
+            st.markdown("### 📲 Send Order via WhatsApp")
             st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
             
             if st.button("Clear / Reset Cart & Finish"):
