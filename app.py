@@ -8,6 +8,8 @@ from google.genai import types
 import pandas as pd
 import requests
 import streamlit as st
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 # 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
@@ -126,6 +128,26 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
+# Direct Google Sheets Helper for Login Tab
+def log_login_to_sheet(name, phone):
+    try:
+        # Check if secrets contain google service account credentials
+        if "gcp_service_account" in st.secrets:
+            creds_dict = dict(st.secrets["gcp_service_account"])
+            scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+            client = gspread.authorize(creds)
+            
+            sheet = client.open("need inventory model for this mobile shop").worksheet("LOGIN")
+            next_row = len(sheet.get_all_values()) + 1
+            s_no = next_row - 1
+            
+            # Appends [S.NO, NAME, MOBILE NUMBER] to LOGIN tab
+            sheet.insert_row([s_no, name, phone], next_row)
+    except Exception as e:
+        pass
+
+
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
@@ -156,21 +178,8 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Log Login Event to Google Sheets
-                        try:
-                            google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
-                            requests.post(google_script_url, json={
-                                "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                "Customer_Name": cust_name.strip(),
-                                "Primary_Phone": cust_phone.strip(),
-                                "Items": "Customer Login Event",
-                                "Address": "",
-                                "Secondary_Phone": "",
-                                "Description": "User Logged into Portal",
-                                "Live_Location": ""
-                            })
-                        except Exception:
-                            pass
+                        # Log Directly to Google Sheet "LOGIN" tab
+                        log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
                         st.rerun()
@@ -318,7 +327,7 @@ def calculate_total_price(price: float, quantity: int, discount_percentage: floa
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
-    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet."""
+    """Checkout all items currently in the cart with delivery and payment details, and save order locally."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -329,24 +338,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
-
-    google_script_url = "https://script.google.com/macros/s/YOUR_ACTUAL_SCRIPT_ID/exec"
-
-    order_data = {
-        "Timestamp": timestamp,
-        "Customer_Name": customer_name,
-        "Primary_Phone": primary_phone,
-        "Items": cart_summary,
-        "Address": address,
-        "Secondary_Phone": secondary_phone,
-        "Description": description,
-        "Live_Location": location_link
-    }
-
-    try:
-        requests.post(google_script_url, json=order_data)
-    except Exception:
-        pass
 
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
