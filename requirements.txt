@@ -4,3 +4,4 @@ chromadb
 pandas
 gspread
 oauth2client
+requests
