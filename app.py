@@ -420,7 +420,6 @@ elif st.session_state.current_view == "Home":
                     except Exception:
                         st.markdown("📱")
                 with c_qty:
-                    # Using integer input with min/max or a clean text input to remove the "Units" dropdown box
                     q_val = st.number_input("Qty", min_value=1, value=1, step=1, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
                 with c_btn:
                     if st.button("Add to Cart", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
