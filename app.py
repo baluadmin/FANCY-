@@ -266,7 +266,7 @@ def upload_image_to_host(uploaded_file):
             return result["data"]["url"]
     except Exception as e:
         print(f"Image upload error: {e}")
-    return "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
+    return None  # Return None instead of fallback placeholder if upload fails
 
 
 def log_new_item_to_sheet(item_id, name, category, stock, price, image_url):
@@ -343,7 +343,9 @@ if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_r
                 if new_id and new_name and new_cat:
                     image_link = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
                     if uploaded_file is not None:
-                        image_link = upload_image_to_host(uploaded_file)
+                        hosted_img = upload_image_to_host(uploaded_file)
+                        if hosted_img:
+                            image_link = hosted_img
                     
                     log_new_item_to_sheet(new_id, new_name, new_cat, new_stock, new_price, image_link)
                     st.success(f"✅ Successfully added '{new_name}' to your Google Sheet!")
@@ -381,7 +383,9 @@ if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_r
                     if submit_edit:
                         final_img = curr_img
                         if edit_file is not None:
-                            final_img = upload_image_to_host(edit_file)
+                            hosted_edit = upload_image_to_host(edit_file)
+                            if hosted_edit:
+                                final_img = hosted_edit
                             
                         update_item_in_sheet(selected_id, edit_name, edit_cat, edit_stock, edit_price, final_img)
                         st.success(f"✅ Successfully updated Item ID {selected_id}!")
@@ -541,6 +545,7 @@ else:
             st.markdown("---")
             st.markdown("### 📲 Finalize Order via WhatsApp")
             
+            # STRICT CHECK: Only display the image if a genuine customer-uploaded screenshot URL exists (ignoring defaults/placeholders)
             if ord_info['screenshot'] != "No UPI Screenshot Provided" and "unsplash.com" not in ord_info['screenshot']:
                 st.image(ord_info['screenshot'], caption="Uploaded Payment Screenshot", width=200)
                 st.info("💡 Tip: You can save the image above to attach it directly in your WhatsApp chat.")
