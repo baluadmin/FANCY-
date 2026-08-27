@@ -128,24 +128,27 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
 
-# Direct Google Sheets Helper for Login Tab
+# Direct Google Sheets Helper for LOGIN Tab
 def log_login_to_sheet(name, phone):
     try:
-        # Check if secrets contain google service account credentials
         if "gcp_service_account" in st.secrets:
             creds_dict = dict(st.secrets["gcp_service_account"])
             scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
             creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
             client = gspread.authorize(creds)
             
+            # Opens your Google Sheet and targets the "LOGIN" tab
             sheet = client.open("need inventory model for this mobile shop").worksheet("LOGIN")
-            next_row = len(sheet.get_all_values()) + 1
-            s_no = next_row - 1
             
-            # Appends [S.NO, NAME, MOBILE NUMBER] to LOGIN tab
+            # Calculate next row and incremental S.NO
+            existing_rows = sheet.get_all_values()
+            next_row = len(existing_rows) + 1
+            s_no = len(existing_rows) # Row count excluding header
+            
+            # Inserts [S.NO, NAME, MOBILE NUMBER] into Columns A, B, and C
             sheet.insert_row([s_no, name, phone], next_row)
     except Exception as e:
-        pass
+        st.sidebar.error(f"Sheet Sync Error: {e}")
 
 
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
@@ -178,7 +181,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Log Directly to Google Sheet "LOGIN" tab
+                        # Save Login Details directly to the Google Sheet LOGIN Tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
