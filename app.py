@@ -47,7 +47,7 @@ st.markdown("""
         }
         
         /* Input boxes styling supporting both modes */
-        input, textarea, div[data-baseweb="select"] > div {
+        input, textarea {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
@@ -125,7 +125,7 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
-# Google Apps Script Web App Endpoint URL Updated
+# Google Apps Script Web App Endpoint URL
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
 
@@ -172,7 +172,6 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Send login details to LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
@@ -261,7 +260,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load Product Records from Google Sheet Data dynamically
+# Load Product Records from Google Sheet Data dynamically with image support
 product_records = []
 if not inv_df.empty:
     try:
@@ -271,24 +270,25 @@ if not inv_df.empty:
                 "name": str(row.iloc[1]),
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])
+                "price": str(row.iloc[4]),
+                "image": str(row.iloc[5]) if len(row) > 5 and pd.notna(row.iloc[5]) else "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "https://images.unsplash.com/photo-1544652478-653e94fa1012?w=400&q=80"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "https://images.unsplash.com/photo-1544652478-653e94fa1012?w=400&q=80"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "https://images.unsplash.com/photo-1609592424164-500c73291254?w=400&q=80"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=400&q=80"},
     ]
 
 
@@ -305,7 +305,7 @@ def search_knowledge_base(query: str) -> str:
 
 
 def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight."""
+    """Add a product or service item into the shopping cart with custom quantity."""
     st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
     st.session_state.last_booked_item = product_name
     return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
@@ -332,7 +332,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.last_booked_item = cart_summary
 
-    # Send Order Details to Google Sheets "HM Mobiles Orders" tab
     try:
         order_data = {
             "Type": "Order",
@@ -378,41 +377,48 @@ def add_product_review(rating: int, review_comment: str) -> str:
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
+    col_menu, col_items, col_ai = st.columns([0.8, 1.4, 1.5], gap="small")
 
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=500, border=True):
+        with st.container(height=550, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
+    # --- SECTION 2: ITEMS (Fixed Name/Price Separation & Single Line Layout) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=500, border=True):
+        with st.container(height=550, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    st.markdown(f"**{prod['name']}**")
-                    st.caption(f"₹{prod['price']}")
+                    img_col, info_col, action_col = st.columns([1, 1.8, 1.8], gap="small")
                     
-                    q_col, u_col = st.columns(2)
-                    with q_col:
+                    with img_col:
+                        img_url = prod.get("image", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80")
+                        try:
+                            st.image(img_url, use_container_width=True)
+                        except Exception:
+                            st.markdown("📱")
+                    
+                    with info_col:
+                        st.markdown(f"**{prod['name']}**")
+                        st.caption(f"₹{prod['price']}")
+                    
+                    with action_col:
                         q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
-                    
-                    if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} {u_val}"
-                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added!")
-                        st.rerun()
+                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                            full_q_str = f"{int(q_val)} Units"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success(f"Added!")
+                            st.rerun()
+                            
                     st.markdown("---")
             else:
                 st.info("No items found.")
@@ -487,7 +493,7 @@ if st.session_state.current_view == "Home":
                     st.error(f"Error: {e}")
 
         # Chat container
-        with st.container(height=410, border=True):
+        with st.container(height=460, border=True):
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
@@ -498,14 +504,12 @@ if st.session_state.current_view == "Home":
                                 if prod['name'].lower() in message["content"].lower():
                                     with st.container():
                                         st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                        ai_q_col, ai_b_col = st.columns([1, 1])
                                         with ai_q_col:
                                             aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
                                         with ai_b_col:
                                             if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} {au_val}"
+                                                full_aq_str = f"{int(aq_val)} Units"
                                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
                                                 st.success(f"Added!")
                                                 st.rerun()
