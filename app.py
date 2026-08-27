@@ -8,6 +8,7 @@ from google.genai import types
 import pandas as pd
 import requests
 import streamlit as st
+import streamlit.components.v1 as components
 
 # 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
@@ -300,6 +301,46 @@ def update_item_in_sheet(item_id, name, category, stock, price, image_url):
         print(f"Update item error: {e}")
 
 
+def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
+    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
+    if not st.session_state.cart:
+        return "Your cart is empty. Please add products first."
+    
+    customer_name = st.session_state.logged_in_user
+    primary_phone = st.session_state.user_phone
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
+
+    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+    st.session_state.last_booked_item = cart_summary
+
+    try:
+        order_data = {
+            "Type": "Order",
+            "Timestamp": timestamp,
+            "Customer_Name": customer_name,
+            "Primary_Phone": primary_phone,
+            "Items": cart_summary,
+            "Address": address,
+            "Secondary_Phone": secondary_phone,
+            "Description": description,
+            "Live_Location": location_link
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
+    except Exception as e:
+        print(f"Order sheet error: {e}")
+
+    file_exists = os.path.isfile("orders.csv")
+    with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        if not file_exists:
+            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
+        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
+
+    st.session_state.cart = []
+    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
+
+
 product_records = []
 if not inv_df.empty:
     try:
@@ -480,17 +521,50 @@ else:
         
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form")
+        
+        # HTML/JS widget to fetch browser GPS coordinates automatically
+        loc_component_html = """
+            <div style="font-family: 'Inter', sans-serif; margin-bottom: 10px;">
+                <button onclick="getLocation()" style="background-color: #0284c7; color: white; border: none; padding: 8px 14px; font-weight: 600; border-radius: 6px; cursor: pointer;">📍 Detect My Current GPS Location</button>
+                <span id="loc_status" style="margin-left: 10px; font-size: 13px; font-weight: 500; color: #334155;"></span>
+            </div>
+            <script>
+                function getLocation() {
+                    const status = document.getElementById("loc_status");
+                    if (!navigator.geolocation) {
+                        status.innerHTML = "Geolocation is not supported by your browser";
+                        return;
+                    }
+                    status.innerHTML = "Locating...";
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsUrl = "https://maps.google.com/?q=" + lat + "," + lng;
+                        
+                        status.innerHTML = "✅ GPS captured! Copied link to clipboard.";
+                        navigator.clipboard.writeText(mapsUrl);
+                    }, () => {
+                        status.innerHTML = "Unable to retrieve your location";
+                    });
+                }
+            </script>
+        """
+        components.html(loc_component_html, height=50)
+
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-            live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+            live_location = st.text_input("Live Location Link (Paste GPS link or Google Maps URL):")
             
             submit_checkout = st.form_submit_button("Complete Order & Pay")
             if submit_checkout:
                 if checkout_address and secondary_phone:
-                    st.success("✅ Order placed successfully!")
+                    result_msg = process_cart_checkout(
+                        checkout_address, secondary_phone, product_desc, payment_method, live_location
+                    )
+                    st.success(result_msg)
                     st.session_state.cart = []
                     st.session_state.current_view = "Home"
                     st.rerun()
