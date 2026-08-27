@@ -3,6 +3,7 @@ import csv
 import os
 import random
 import urllib.parse
+import base64
 import chromadb
 from google import genai
 from google.genai import types
@@ -257,15 +258,24 @@ inv_df = load_inventory_from_sheet()
 
 def upload_image_to_host(uploaded_file):
     try:
-        url = "https://api.imgbb.com/1/upload"
-        payload = {"key": "6d207e02198a847aa98d0a2a901485a2"}
-        files = {"image": uploaded_file.getvalue()}
-        response = requests.post(url, data=payload, files=files)
+        file_bytes = uploaded_file.getvalue()
+        base64_data = base64.b64encode(file_bytes).decode('utf-8')
+        
+        payload = {
+            "Type": "OrderWithImage",
+            "Customer_Name": st.session_state.get("logged_in_user", "Customer"),
+            "Primary_Phone": st.session_state.get("user_phone", ""),
+            "ImageName": uploaded_file.name,
+            "MimeType": uploaded_file.type,
+            "ImageBase64": base64_data
+        }
+        
+        response = requests.post(GOOGLE_SCRIPT_URL, json=payload)
         result = response.json()
-        if result.get("success"):
-            return result["data"]["url"]
+        if result.get("status") == "success":
+            return result.get("fileUrl")
     except Exception as e:
-        print(f"Image upload error: {e}")
+        print(f"Drive upload error: {e}")
     return None
 
 
@@ -506,7 +516,7 @@ else:
                 if checkout_address and secondary_phone:
                     screenshot_url = "No UPI Screenshot Provided"
                     if payment_screenshot is not None:
-                        with st.spinner("Uploading payment screenshot..."):
+                        with st.spinner("Uploading payment screenshot to Drive & Sheet..."):
                             hosted_url = upload_image_to_host(payment_screenshot)
                             if hosted_url:
                                 screenshot_url = hosted_url
@@ -523,7 +533,7 @@ else:
                         "payment": payment_method,
                         "screenshot": screenshot_url
                     }
-                    st.success("✅ Order prepared! Click the WhatsApp button below to send your order.")
+                    st.success("✅ Order saved to Google Sheet & Drive! Click the WhatsApp button below to send your order.")
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
 
@@ -537,7 +547,7 @@ else:
                 f"Alt Phone: {ord_info['alt_phone']}\n"
                 f"Description: {ord_info['desc']}\n"
                 f"Payment: {ord_info['payment']}\n"
-                f"Payment Proof Image URL: {ord_info['screenshot']}"
+                f"Payment Proof Drive Link: {ord_info['screenshot']}"
             )
             encoded_message = urllib.parse.quote(raw_wa_message)
             wa_url = f"https://wa.me/919840450113?text={encoded_message}"
@@ -547,7 +557,7 @@ else:
             
             if ord_info['screenshot'] != "No UPI Screenshot Provided":
                 st.image(ord_info['screenshot'], caption="Uploaded Payment Screenshot", width=200)
-                st.info("💡 Tip: You can save the image above to attach it directly in your WhatsApp chat.")
+                st.info("💡 Your payment proof has been safely stored in your Google Drive and logged in your sheet!")
             
             st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Click Here to Send Order on WhatsApp</button></a>', unsafe_allow_html=True)
             
