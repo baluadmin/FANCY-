@@ -172,7 +172,7 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
                         
-                        # Log login details to Google Sheets LOGIN tab
+                        # Send login details to LOGIN tab
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
 
                         st.success("✅ Login Successful!")
