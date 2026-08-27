@@ -2,6 +2,7 @@ from datetime import datetime
 import csv
 import os
 import random
+import urllib.parse
 import chromadb
 from google import genai
 from google.genai import types
@@ -9,7 +10,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Professional Light Theme CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -23,9 +24,11 @@ st.markdown("""
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
         }
 
-        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
+        /* Hide Streamlit default chrome, top header, menu, share, github */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -35,78 +38,69 @@ st.markdown("""
         .manage-app {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
-        
-        /* Completely hide header link icons next to section headers */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
-        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: var(--text-color) !important;
-            font-weight: 600 !important;
-        }
-        
-        /* Input boxes styling supporting both modes */
-        input, textarea, div[data-baseweb="select"] > div {
-            background-color: var(--secondary-background-color) !important;
-            color: var(--text-color) !important;
-            border: 1.5px solid #cbd5e1 !important;
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            border-radius: 6px !important;
+        /* Force Light Theme Component Backgrounds */
+        .stApp {
+            background-color: #f8fafc !important;
         }
 
-        /* Light Blue Header Banner with White Text */
+        /* Typography Colors (Dark text on light background) */
+        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p, h1, h2, h3, h4 {
+            color: #0f172a !important;
+        }
+        
+        /* Form Inputs Light Styling */
+        input, textarea {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+            font-size: 14px !important;
+            border-radius: 8px !important;
+        }
+
+        /* Professional Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
-            padding: 18px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            padding: 24px;
+            border-radius: 12px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+            margin-bottom: 20px;
         }
         .brand-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
         }
 
-        /* Action Buttons Styling */
+        /* Sleek Modern Buttons */
         div.stButton > button {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
-            border: 1px solid #bae6fd !important;
-            font-weight: 700 !important;
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-weight: 600 !important;
             font-size: 14px !important;
-            border-radius: 6px !important;
-            padding: 0.4rem 1rem !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 1rem !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
         div.stButton > button:hover {
-            background-color: #bae6fd !important;
-            color: #0c4a6e !important;
-            border: 1px solid #7dd3fc !important;
+            background-color: #0369a1 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* Layout columns adjustment */
-        div[data-testid="stHorizontalBlock"] {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            width: 100%;
-        }
-        div[data-testid="column"] {
-            flex: 1 1 33% !important;
-            min-width: 0px !important;
-            padding: 0px 6px !important;
-        }
         .block-container {
-            padding-top: 1rem;
-            padding-bottom: 0rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            padding-top: 1.5rem;
+            padding-bottom: 2rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -125,11 +119,10 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
-# Google Apps Script Web App Endpoint URL Updated
+# Google Apps Script Web App Endpoint URL
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
 
-# Function to log customer login into the "LOGIN" tab
 def log_login_to_sheet(name, phone):
     try:
         payload = {
@@ -142,39 +135,58 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Professional Compact Customer Login Screen (Before Login)
+def log_order_to_sheet(name, phone, items, address, alt_phone, desc):
+    try:
+        payload = {
+            "Type": "Order",
+            "Customer_Name": name,
+            "Primary_Phone": phone,
+            "Items": items,
+            "Address": address,
+            "Alt_Phone": alt_phone,
+            "Description": desc
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=payload)
+    except Exception as e:
+        print(f"Order sheet error: {e}")
+
+
+# Owner Login & Customer Login Screen
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
-            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 50px; margin-bottom: 20px;'>
+            <h1 style='font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>HM MOBILES</h1>
+            <p style='font-size: 15px; color: #64748b; font-weight: 500;'>Thiruverkadu - Professional Portal</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1.3, 1, 1.3])
+    _, mid_col, _ = st.columns([1.2, 1, 1.2])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
+                <div style='background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);'>
+                    <h3 style='margin-top: 0; margin-bottom: 20px; font-size: 18px; font-weight: 700; color: #0f172a; text-align: center;'>Account Sign In</h3>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
-                cust_name = st.text_input("Your Name:")
-                cust_phone = st.text_input("Mobile Number:", max_chars=10)
-                login_btn = st.form_submit_button("Secure Login", use_container_width=True)
+                cust_name = st.text_input("Full Name / Owner:")
+                cust_phone = st.text_input("10-Digit Mobile Number:", max_chars=10)
+                login_btn = st.form_submit_button("Sign In Securely", use_container_width=True)
 
                 if login_btn:
                     if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
                         st.session_state.logged_in_user = cust_name.strip()
                         st.session_state.user_phone = cust_phone.strip()
-                        st.session_state.user_role = "Customer"
-                        st.session_state.selected_menu = "Headset"
                         
-                        # Send login details to LOGIN tab
+                        if cust_phone == "9840450113" or "owner" in cust_name.lower():
+                            st.session_state.user_role = "Owner"
+                            st.session_state.current_view = "OwnerDashboard"
+                        else:
+                            st.session_state.user_role = "Customer"
+                            st.session_state.selected_menu = "Headset"
+                        
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
-
                         st.success("✅ Login Successful!")
                         st.rerun()
                     else:
@@ -185,7 +197,7 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MODERN PROFESSIONAL HEADER & NAVIGATION ---
+# --- HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
@@ -194,37 +206,40 @@ st.markdown("""
 
 top_c1, top_c2, top_c3, top_c4 = st.columns([2.2, 1, 1, 1])
 with top_c1:
-    st.markdown(f"👋 Welcome back, **{st.session_state.logged_in_user}**!")
+    role_badge = "👑 [Owner]" if st.session_state.user_role == "Owner" else "👤 [Customer]"
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}** {role_badge}")
 with top_c2:
-    if st.button("Home", use_container_width=True):
+    if st.button("Store Catalog", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
 with top_c3:
-    cart_count = len(st.session_state.cart)
-    if st.button(f"Cart ({cart_count})", use_container_width=True):
-        st.session_state.current_view = "Cart"
-        st.rerun()
+    if st.session_state.user_role == "Owner":
+        if st.button("🛠️ Owner Panel", use_container_width=True):
+            st.session_state.current_view = "OwnerDashboard"
+            st.rerun()
+    else:
+        cart_count = len(st.session_state.cart)
+        if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+            st.session_state.current_view = "Cart"
+            st.rerun()
 with top_c4:
-    if st.button("Logout", use_container_width=True):
+    if st.button("Sign Out", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
-st.markdown("---")
+st.markdown("<br>", unsafe_allow_html=True)
 
-# 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
-
 try:
     api_key_input = st.secrets["GOOGLE_API_KEY"]
     client = genai.Client(api_key=api_key_input)
     chroma_client = chromadb.PersistentClient(path=db_path)
     collection = chroma_client.get_or_create_collection(name="my_inventory_library")
 except Exception as e:
-    st.error(f"Error connecting to Database or API Key missing: {e}")
+    st.error(f"Error connecting to Database: {e}")
     st.stop()
 
 
-# Load Inventory Directly from Google Sheets CSV Link with Cache Bypass
 @st.cache_data(ttl=5)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
@@ -241,27 +256,52 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-def load_inventory_to_chroma():
-    file_name = "inventory.csv"
-    if not os.path.exists(file_name):
-        return
+def upload_image_to_host(uploaded_file):
     try:
-        df = pd.read_csv(file_name)
-        file_text = df.to_string(index=False)
-        if file_text.strip():
-            existing = collection.get(ids=[file_name])
-            if existing and existing["ids"]:
-                collection.update(documents=[file_text], ids=[file_name])
-            else:
-                collection.add(documents=[file_text], ids=[file_name])
-    except Exception:
-        pass
+        url = "https://api.imgbb.com/1/upload"
+        payload = {"key": "6d207e02198a847aa98d0a2a901485a2"}
+        files = {"image": uploaded_file.getvalue()}
+        response = requests.post(url, data=payload, files=files)
+        result = response.json()
+        if result.get("success"):
+            return result["data"]["url"]
+    except Exception as e:
+        print(f"Image upload error: {e}")
+    return "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
 
 
-load_inventory_to_chroma()
+def log_new_item_to_sheet(item_id, name, category, stock, price, image_url):
+    try:
+        payload = {
+            "Type": "AddItem",
+            "Item_ID": item_id,
+            "Item_Name": name,
+            "Category": category,
+            "Stock_Quantity": stock,
+            "Price_INR": price,
+            "Image": image_url
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=payload)
+    except Exception as e:
+        print(f"Add item error: {e}")
 
 
-# Load Product Records from Google Sheet Data dynamically
+def update_item_in_sheet(item_id, name, category, stock, price, image_url):
+    try:
+        payload = {
+            "Type": "UpdateItem",
+            "Item_ID": item_id,
+            "Item_Name": name,
+            "Category": category,
+            "Stock_Quantity": stock,
+            "Price_INR": price,
+            "Image": image_url
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=payload)
+    except Exception as e:
+        print(f"Update item error: {e}")
+
+
 product_records = []
 if not inv_df.empty:
     try:
@@ -271,276 +311,218 @@ if not inv_df.empty:
                 "name": str(row.iloc[1]),
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])
+                "price": str(row.iloc[4]),
+                "image": str(row.iloc[5]) if len(row) > 5 and pd.notna(row.iloc[5]) else "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
             })
     except Exception:
         product_records = []
 
-if not product_records:
-    product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
-    ]
 
-
-# 4. Define Tools
-def search_knowledge_base(query: str) -> str:
-    """Search inventory data, stock details, and products from the vector database."""
-    try:
-        results = collection.query(query_texts=[query], n_results=1)
-        if results["documents"] and len(results["documents"][0]) > 0:
-            return results["documents"][0][0]
-        return "No relevant information found."
-    except Exception as e:
-        return f"Error during search: {e}"
-
-
-def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight."""
-    st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
-    st.session_state.last_booked_item = product_name
-    return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
-
-
-def calculate_total_price(price: float, quantity: int, discount_percentage: float = 0.0) -> str:
-    """Calculate total price including quantity and optional discount."""
-    subtotal = price * quantity
-    discount_amount = subtotal * (discount_percentage / 100)
-    final_total = subtotal - discount_amount
-    return f"Calculation Result: Subtotal = ₹{subtotal}, Discount = ₹{discount_amount}, Final Total = ₹{final_total}"
-
-
-def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
-    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
-    if not st.session_state.cart:
-        return "Your cart is empty. Please add products first."
+# --- OWNER DASHBOARD VIEW ---
+if st.session_state.current_view == "OwnerDashboard" and st.session_state.user_role == "Owner":
+    st.subheader("🛠️ Owner Inventory & Management Dashboard")
     
-    customer_name = st.session_state.logged_in_user
-    primary_phone = st.session_state.user_phone
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
+    owner_tab1, owner_tab2 = st.tabs(["➕ Add New Item", "✏️ Edit Existing Item"])
+    
+    with owner_tab1:
+        with st.form("owner_add_item_form"):
+            col_1, col_2 = st.columns(2)
+            with col_1:
+                new_id = st.text_input("Item ID (e.g., ITM012):")
+                new_name = st.text_input("Product Name:")
+                new_cat = st.text_input("Category (e.g., Charger, Headset):")
+            with col_2:
+                new_stock = st.number_input("Stock Quantity:", min_value=1, value=50)
+                new_price = st.number_input("Price (INR):", min_value=1.0, value=500.0)
+                
+            uploaded_file = st.file_uploader("Upload Product Image", type=["jpg", "png", "jpeg"], key="add_img")
+            submit_item = st.form_submit_button("➕ Add Item to Catalog")
+            
+            if submit_item:
+                if new_id and new_name and new_cat:
+                    image_link = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
+                    if uploaded_file is not None:
+                        image_link = upload_image_to_host(uploaded_file)
+                    log_new_item_to_sheet(new_id, new_name, new_cat, new_stock, new_price, image_link)
+                    st.success(f"✅ Successfully added '{new_name}'!")
+                    st.balloons()
+                else:
+                    st.warning("⚠️ Please fill in Item ID, Name, and Category.")
 
-    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
-    st.session_state.last_booked_item = cart_summary
+    with owner_tab2:
+        if not inv_df.empty:
+            item_ids = inv_df.iloc[:, 0].astype(str).tolist()
+            selected_id = st.selectbox("Select Item ID to Edit:", item_ids)
+            matched_row = inv_df[inv_df.iloc[:, 0].astype(str) == selected_id]
+            if not matched_row.empty:
+                curr_name = str(matched_row.iloc[0, 1])
+                curr_cat = str(matched_row.iloc[0, 2])
+                curr_stock = int(matched_row.iloc[0, 3])
+                curr_price = float(matched_row.iloc[0, 4])
+                curr_img = str(matched_row.iloc[0, 5]) if len(matched_row.columns) > 5 and pd.notna(matched_row.iloc[0, 5]) else ""
+                
+                with st.form("owner_edit_item_form"):
+                    e_col1, e_col2 = st.columns(2)
+                    with e_col1:
+                        edit_name = st.text_input("Product Name:", value=curr_name)
+                        edit_cat = st.text_input("Category:", value=curr_cat)
+                    with e_col2:
+                        edit_stock = st.number_input("Stock Quantity:", min_value=0, value=curr_stock)
+                        edit_price = st.number_input("Price (INR):", min_value=1.0, value=curr_price)
+                        
+                    edit_file = st.file_uploader("Upload New Image (Optional)", type=["jpg", "png", "jpeg"], key="edit_img")
+                    submit_edit = st.form_submit_button("💾 Save Updates")
+                    
+                    if submit_edit:
+                        final_img = curr_img
+                        if edit_file is not None:
+                            final_img = upload_image_to_host(edit_file)
+                        update_item_in_sheet(selected_id, edit_name, edit_cat, edit_stock, edit_price, final_img)
+                        st.success(f"✅ Updated Item ID {selected_id} successfully!")
+        else:
+            st.info("No items found.")
 
-    # Send Order Details to Google Sheets "HM Mobiles Orders" tab
-    try:
-        order_data = {
-            "Type": "Order",
-            "Timestamp": timestamp,
-            "Customer_Name": customer_name,
-            "Primary_Phone": primary_phone,
-            "Items": cart_summary,
-            "Address": address,
-            "Secondary_Phone": secondary_phone,
-            "Description": description,
-            "Live_Location": location_link
-        }
-        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
-    except Exception as e:
-        print(f"Order sheet error: {e}")
+    st.markdown("---")
+    st.subheader("📋 Live Inventory Data")
+    st.dataframe(inv_df, use_container_width=True)
 
-    file_exists = os.path.isfile("orders.csv")
-    with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
+# --- STANDARD CUSTOMER CATALOG & STORE VIEW ---
+elif st.session_state.current_view == "Home":
+    col_menu, col_items, col_ai = st.columns([1, 2.2, 1.8], gap="medium")
 
-    st.session_state.cart = []
-    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
-
-
-def add_product_review(rating: int, review_comment: str) -> str:
-    """Submit a product review and rating (1 to 5 stars)."""
-    item = st.session_state.get("last_booked_item", "General Products")
-    customer_name = st.session_state.logged_in_user
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    file_exists = os.path.isfile("reviews.csv")
-    with open("reviews.csv", mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Product", "Rating", "Comment"])
-        writer.writerow([timestamp, customer_name, item, rating, review_comment])
-
-    return f"Thank you, {customer_name}! Your review ({rating}/5 stars) has been saved."
-
-
-# View Switching: Home View vs Cart/Checkout View
-if st.session_state.current_view == "Home":
-    col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
-
-    # --- SECTION 1: MENU ---
     with col_menu:
-        st.markdown("Menu")
-        with st.container(height=500, border=True):
-            categories = list(set([p['category'] for p in product_records]))
-            for cat in categories:
-                if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
-                    st.session_state.selected_menu = cat
-                    st.rerun()
+        st.markdown("### Categories")
+        categories = list(set([p['category'] for p in product_records])) if product_records else ["Headset"]
+        for cat in categories:
+            if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
+                st.session_state.selected_menu = cat
+                st.rerun()
 
-    # --- SECTION 2: ITEMS (Stock Hidden from Customers) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
-        st.markdown(f"{current_cat}")
-        with st.container(height=500, border=True):
-            filtered_items = [p for p in product_records if p['category'] == current_cat]
-            
-            if filtered_items:
-                for idx, prod in enumerate(filtered_items):
-                    st.markdown(f"**{prod['name']}**")
-                    st.caption(f"₹{prod['price']}")
-                    
-                    q_col, u_col = st.columns(2)
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
-                    
-                    if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} {u_val}"
+        st.markdown(f"### {current_cat}")
+        filtered_items = [p for p in product_records if p['category'] == current_cat]
+        
+        if filtered_items:
+            for idx, prod in enumerate(filtered_items):
+                st.markdown(f"""
+                    <div style='background: #ffffff; padding: 14px 18px; border-radius: 10px; border: 1px solid #cbd5e1; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;'>
+                        <div>
+                            <h4 style='margin: 0 0 4px 0; font-size: 16px; color: #0f172a;'>{prod['name']}</h4>
+                            <span style='color: #0284c7; font-weight: 700; font-size: 15px;'>₹{prod['price']}</span>
+                        </div>
+                """, unsafe_allow_html=True)
+                
+                c_img, c_qty, c_btn = st.columns([1, 1.2, 1.2], gap="small")
+                with c_img:
+                    try:
+                        st.image(prod.get("image", ""), width=65)
+                    except Exception:
+                        st.markdown("📱")
+                with c_qty:
+                    # Using integer input with min/max or a clean text input to remove the "Units" dropdown box
+                    q_val = st.number_input("Qty", min_value=1, value=1, step=1, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                with c_btn:
+                    if st.button("Add to Cart", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                        full_q_str = f"{int(q_val)} Units"
                         st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added!")
+                        st.success("Added!")
                         st.rerun()
-                    st.markdown("---")
-            else:
-                st.info("No items found.")
+                st.markdown("</div>", unsafe_allow_html=True)
+        else:
+            st.info("No items found in this category.")
 
-    # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
     with col_ai:
-        st.markdown("AI Assistant")
-        user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
+        st.markdown("### Assistant")
+        user_prompt = st.text_input("Ask AI Assistant:", placeholder="Type a question...", key="top_ai_search_input", label_visibility="collapsed")
         
         if user_prompt:
             msg_id = len(st.session_state.get("messages", []))
             if "messages" not in st.session_state:
                 st.session_state.messages = []
-            
             st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
             
-            with st.spinner("Processing..."):
+            with st.spinner("Thinking..."):
                 try:
-                    context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
-                    full_prompt = user_prompt + context_memory
-
                     response = client.models.generate_content(
                         model="gemini-3.6-flash",
-                        contents=full_prompt,
-                        config=types.GenerateContentConfig(
-                            tools=[
-                                search_knowledge_base,
-                                add_to_cart,
-                                calculate_total_price,
-                                process_cart_checkout,
-                                add_product_review,
-                            ],
-                            temperature=0.3,
-                            system_instruction=(
-                                "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
-                                "1. Detect user language and ALWAYS respond in that same language. "
-                                "2. When listing products, mention their exact names clearly."
-                            ),
-                        ),
+                        contents=user_prompt,
+                        config=types.GenerateContentConfig(temperature=0.3),
                     )
-
-                    final_reply = ""
-                    if response.function_calls:
-                        for function_call in response.function_calls:
-                            tool_name = function_call.name
-                            tool_args = function_call.args
-
-                            if tool_name == "search_knowledge_base":
-                                tool_result = search_knowledge_base(**tool_args)
-                            elif tool_name == "add_to_cart":
-                                tool_result = add_to_cart(**tool_args)
-                                st.rerun()
-                            elif tool_name == "calculate_total_price":
-                                tool_result = calculate_total_price(**tool_args)
-                            elif tool_name == "process_cart_checkout":
-                                tool_result = process_cart_checkout(**tool_args)
-                            elif tool_name == "add_product_review":
-                                tool_result = add_product_review(**tool_args)
-                            else:
-                                tool_result = "Tool not found."
-
-                            followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
-                            final_response = client.models.generate_content(
-                                model="gemini-3.6-flash", contents=followup_prompt
-                            )
-                            final_reply = final_response.text
-                    else:
-                        final_reply = response.text
-
-                    st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
+                    st.session_state.messages.append({"role": "assistant", "content": response.text, "id": msg_id + 1})
                 except Exception as e:
                     st.error(f"Error: {e}")
 
-        # Chat container
-        with st.container(height=410, border=True):
+        with st.container(height=420, border=False):
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
                         st.markdown(message["content"])
-                        
-                        if message["role"] == "assistant":
-                            for p_idx, prod in enumerate(product_records):
-                                if prod['name'].lower() in message["content"].lower():
-                                    with st.container():
-                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
-                                        with ai_q_col:
-                                            aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_b_col:
-                                            if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} {au_val}"
-                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                st.success(f"Added!")
-                                                st.rerun()
 
+# --- CART & CHECKOUT VIEW ---
 else:
-    st.subheader("🛒 Your Shopping Cart & Checkout")
+    st.markdown("### 🛒 Your Shopping Cart & Checkout")
+    
     if st.session_state.cart:
         for c_idx, item in enumerate(st.session_state.cart):
-            cc1, cc2 = st.columns([4, 1])
-            with cc1:
-                st.markdown(f"- **{item['product']}** ({item['quantity']})")
-            with cc2:
-                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
+            col_item_info, col_item_del = st.columns([5, 1])
+            with col_item_info:
+                st.markdown(f"• **{item['product']}** — *Qty: {item['quantity']}*")
+            with col_item_del:
+                if st.button("Remove", key=f"rem_cart_view_{c_idx}"):
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
-        st.markdown("---")
-        st.subheader("📍 Secure Checkout Form")
-        with st.form("checkout_form_main_view"):
-            checkout_address = st.text_area("Delivery Address:")
-            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
-            product_desc = st.text_area("Product Specifications / Custom Description:")
-            payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-            live_location = st.text_input("Live Location Link (Google Maps Share URL):")
-            
-            submit_checkout = st.form_submit_button("Complete Order & Pay")
-            if submit_checkout:
-                if checkout_address and secondary_phone:
-                    result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, payment_method, live_location
-                    )
-                    st.success(result_msg)
-                    st.session_state.current_view = "Home"
-                    st.rerun()
-                else:
-                    st.warning("⚠️ Please provide delivery address and secondary contact number.")
+        st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
+        st.markdown("#### Delivery Information")
+        
+        if "checkout_address_input" not in st.session_state:
+            st.session_state.checkout_address_input = ""
+        if "checkout_alt_phone" not in st.session_state:
+            st.session_state.checkout_alt_phone = ""
+        if "checkout_desc" not in st.session_state:
+            st.session_state.checkout_desc = ""
+
+        checkout_address = st.text_area("Delivery Address:", value=st.session_state.checkout_address_input)
+        secondary_phone = st.text_input("Alternative Contact Number:", value=st.session_state.checkout_alt_phone, max_chars=10)
+        product_desc = st.text_area("Order Notes / Specifications (Optional):", value=st.session_state.checkout_desc)
+        
+        st.session_state.checkout_address_input = checkout_address
+        st.session_state.checkout_alt_phone = secondary_phone
+        st.session_state.checkout_desc = product_desc
+
+        if st.button("Submit Order & Send via WhatsApp", use_container_width=True):
+            if checkout_address.strip() and len(secondary_phone) == 10 and secondary_phone.isdigit():
+                cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+                
+                # Log order to Google Sheet
+                log_order_to_sheet(
+                    name=st.session_state.logged_in_user,
+                    phone=st.session_state.user_phone,
+                    items=cart_summary,
+                    address=checkout_address,
+                    alt_phone=secondary_phone,
+                    desc=product_desc
+                )
+                
+                # Build WhatsApp URL
+                raw_wa_message = (
+                    f"New Order - HM Mobiles\n"
+                    f"Customer: {st.session_state.logged_in_user} ({st.session_state.user_phone})\n"
+                    f"Items: {cart_summary}\n"
+                    f"Address: {checkout_address}\n"
+                    f"Alt Phone: {secondary_phone}\n"
+                    f"Description: {product_desc}"
+                )
+                encoded_message = urllib.parse.quote(raw_wa_message)
+                wa_url = f"https://wa.me/919840450113?text={encoded_message}"
+                
+                st.success("✅ Order logged to Google Sheet successfully! Click below to open WhatsApp.")
+                st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Open WhatsApp Chat Now</button></a>', unsafe_allow_html=True)
+                
+                st.session_state.cart = []
+            else:
+                st.warning("⚠️ Please enter a valid delivery address and a 10-digit alternative contact number.")
+
     else:
-        st.info("Your cart is empty. Click **Home** above to browse and add products.")
+        st.info("Your cart is empty. Click **Store Catalog** above to browse products.")
