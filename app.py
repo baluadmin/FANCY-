@@ -559,18 +559,31 @@ else:
                         return;
                     }
                     status.innerHTML = "Fetching GPS coordinates...";
+                    
+                    const options = {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    };
+
                     navigator.geolocation.getCurrentPosition((position) => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         const mapsUrl = "https://maps.google.com/?q=" + lat + "," + lng;
                         
-                        status.innerHTML = "✅ Location captured! Refreshing page...";
+                        status.innerHTML = "✅ Location captured! Refreshing...";
                         
                         const currentUrl = window.parent.location.href.split('?')[0];
                         window.parent.location.href = currentUrl + "?lat=" + lat + "&lng=" + lng;
-                    }, () => {
-                        status.innerHTML = "⚠️ Permission denied or unavailable.";
-                    });
+                    }, (error) => {
+                        if(error.code == 1) {
+                            status.innerHTML = "⚠️ Permission denied. Please enable location access in browser settings.";
+                        } else if(error.code == 2) {
+                            status.innerHTML = "⚠️ Position unavailable. Turn on device GPS.";
+                        } else {
+                            status.innerHTML = "⚠️ Timeout getting location.";
+                        }
+                    }, options);
                 }
             </script>
         """
