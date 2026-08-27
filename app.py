@@ -56,11 +56,15 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Remove box border and background styling specifically for selectboxes */
+        /* Completely remove border, background, and shadow from selectboxes and wrappers */
         div[data-baseweb="select"] > div {
             background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
+        }
+        div[data-baseweb="select"] {
+            border: none !important;
+            background-color: transparent !important;
         }
 
         /* Light Blue Header Banner with White Text */
