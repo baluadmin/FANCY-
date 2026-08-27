@@ -191,7 +191,7 @@ with top_c4:
 
 st.markdown("---")
 
-# 3. Gemini API Configuration & Database Setup (Secure Secrets Implementation)
+# 3. Gemini API Configuration & Database Setup
 db_path = "./chroma_db"
 
 try:
@@ -412,7 +412,7 @@ if st.session_state.current_view == "Home":
                     full_prompt = user_prompt + context_memory
 
                     response = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-3.6-flash",
                         contents=full_prompt,
                         config=types.GenerateContentConfig(
                             tools=[
@@ -454,7 +454,7 @@ if st.session_state.current_view == "Home":
 
                             followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language, emphasizing lowest price options if requested."
                             final_response = client.models.generate_content(
-                                model="gemini-2.5-flash", contents=followup_prompt
+                                model="gemini-3.6-flash", contents=followup_prompt
                             )
                             final_reply = final_response.text
                     else:
