@@ -241,7 +241,7 @@ def load_inventory_to_chroma():
 load_inventory_to_chroma()
 
 
-# Load Product Records from Google Sheet Data dynamically
+# Load Product Records from Google Sheet Data dynamically with fallback images
 product_records = []
 if not inv_df.empty:
     try:
@@ -251,24 +251,25 @@ if not inv_df.empty:
                 "name": str(row.iloc[1]),
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])
+                "price": str(row.iloc[4]),
+                "image": str(row.iloc[5]) if len(row) > 5 and pd.notna(row.iloc[5]) else "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "https://images.unsplash.com/photo-1544652478-653e94fa1012?w=400&q=80"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "https://images.unsplash.com/photo-1544652478-653e94fa1012?w=400&q=80"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "https://images.unsplash.com/photo-1609592424164-500c73291254?w=400&q=80"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=400&q=80"},
     ]
 
 
@@ -371,7 +372,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Clean Layout) ---
+    # --- SECTION 2: ITEMS (Clean Layout with Professional Image Presentation) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -380,6 +381,10 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
+                    # Professional Image Rendering per Item Card
+                    img_url = prod.get("image", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80")
+                    st.image(img_url, use_column_width=True)
+                    
                     st.markdown(f"**{prod['name']}**")
                     st.caption(f"₹{prod['price']}")
                     
@@ -412,7 +417,7 @@ if st.session_state.current_view == "Home":
                     full_prompt = user_prompt + context_memory
 
                     response = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-3.6-flash",
                         contents=full_prompt,
                         config=types.GenerateContentConfig(
                             tools=[
@@ -454,7 +459,7 @@ if st.session_state.current_view == "Home":
 
                             followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language, emphasizing lowest price options if requested."
                             final_response = client.models.generate_content(
-                                model="gemini-2.5-flash", contents=followup_prompt
+                                model="gemini-3.6-flash", contents=followup_prompt
                             )
                             final_reply = final_response.text
                     else:
