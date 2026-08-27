@@ -581,8 +581,11 @@ else:
             product_desc = st.text_area("Product Specifications / Custom Description:")
             payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
             
-            # Display current capture status of the location
-            loc_status_display = st.text(f"📍 GPS Location Status: {st.session_state.auto_gps_link}")
+            # Displays the clickable map link or status directly inside the form workflow
+            if st.session_state.auto_gps_link != "Not Fetched":
+                st.markdown(f"**🔗 Captured Map Link:** [{st.session_state.auto_gps_link}]({st.session_state.auto_gps_link})")
+            else:
+                st.info("ℹ️ Click the 'Fetch & Fill Current GPS Location' button above to capture your map link.")
             
             submit_checkout = st.form_submit_button("Complete Order & Pay")
             if submit_checkout:
