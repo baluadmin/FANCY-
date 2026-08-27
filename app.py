@@ -499,50 +499,53 @@ else:
         st.markdown("---")
         st.subheader("📍 Customer Delivery Details")
         
-        with st.form("checkout_form_main_view"):
-            checkout_address = st.text_area("Delivery Address:")
-            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
-            product_desc = st.text_area("Product Specifications / Custom Description:")
-            
-            submit_checkout = st.form_submit_button("Submit Order & Send via WhatsApp")
-            if submit_checkout:
-                if checkout_address and secondary_phone:
-                    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
-                    
-                    # 1. Instantly log order to Google Sheet
-                    log_order_to_sheet(
-                        name=st.session_state.logged_in_user,
-                        phone=st.session_state.user_phone,
-                        items=cart_summary,
-                        address=checkout_address,
-                        alt_phone=secondary_phone,
-                        desc=product_desc
-                    )
-                    
-                    # 2. Build WhatsApp redirect URL
-                    raw_wa_message = (
-                        f"New Order - HM Mobiles\n"
-                        f"Customer: {st.session_state.logged_in_user} ({st.session_state.user_phone})\n"
-                        f"Items: {cart_summary}\n"
-                        f"Address: {checkout_address}\n"
-                        f"Alt Phone: {secondary_phone}\n"
-                        f"Description: {product_desc}"
-                    )
-                    encoded_message = urllib.parse.quote(raw_wa_message)
-                    wa_url = f"https://wa.me/919840450113?text={encoded_message}"
-                    
-                    # 3. Cleanly redirect user to WhatsApp instantly and clear cart
-                    st.success("✅ Order logged to Google Sheet successfully! Opening WhatsApp...")
-                    st.markdown(f"""
-                        <meta http-equiv="refresh" content="0;url={wa_url}">
-                        <script>
-                            window.location.href = "{wa_url}";
-                        </script>
-                    """, unsafe_allow_html=True)
-                    
-                    st.session_state.cart = []
-                else:
-                    st.warning("⚠️ Please provide delivery address and secondary contact number.")
+        if "checkout_address_input" not in st.session_state:
+            st.session_state.checkout_address_input = ""
+        if "checkout_alt_phone" not in st.session_state:
+            st.session_state.checkout_alt_phone = ""
+        if "checkout_desc" not in st.session_state:
+            st.session_state.checkout_desc = ""
+
+        checkout_address = st.text_area("Delivery Address:", value=st.session_state.checkout_address_input)
+        secondary_phone = st.text_input("Alternative Contact Number:", value=st.session_state.checkout_alt_phone, max_chars=10)
+        product_desc = st.text_area("Product Specifications / Custom Description:", value=st.session_state.checkout_desc)
+        
+        st.session_state.checkout_address_input = checkout_address
+        st.session_state.checkout_alt_phone = secondary_phone
+        st.session_state.checkout_desc = product_desc
+
+        if st.button("Submit Order & Send via WhatsApp", use_container_width=True):
+            if checkout_address.strip() and len(secondary_phone) == 10 and secondary_phone.isdigit():
+                cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+                
+                # Log order to Google Sheet
+                log_order_to_sheet(
+                    name=st.session_state.logged_in_user,
+                    phone=st.session_state.user_phone,
+                    items=cart_summary,
+                    address=checkout_address,
+                    alt_phone=secondary_phone,
+                    desc=product_desc
+                )
+                
+                # Build WhatsApp URL
+                raw_wa_message = (
+                    f"New Order - HM Mobiles\n"
+                    f"Customer: {st.session_state.logged_in_user} ({st.session_state.user_phone})\n"
+                    f"Items: {cart_summary}\n"
+                    f"Address: {checkout_address}\n"
+                    f"Alt Phone: {secondary_phone}\n"
+                    f"Description: {product_desc}"
+                )
+                encoded_message = urllib.parse.quote(raw_wa_message)
+                wa_url = f"https://wa.me/919840450113?text={encoded_message}"
+                
+                st.success("✅ Order logged to Google Sheet successfully! Click the button below if WhatsApp didn't open automatically.")
+                st.markdown(f'<a href="{wa_url}" target="_blank"><button style="background-color: #25D366; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;">💬 Open WhatsApp Chat Now</button></a>', unsafe_allow_html=True)
+                
+                st.session_state.cart = []
+            else:
+                st.warning("⚠️ Please provide a valid delivery address and a 10-digit alternative contact number.")
 
     else:
         st.info("Your cart is empty. Click **Home / Menu** above to browse products.")
