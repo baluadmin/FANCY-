@@ -10,7 +10,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional E-Commerce Styling CSS
+# 1. Streamlit Page Configuration & Dynamic Auto Light/Dark Theme CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -24,7 +24,6 @@ st.markdown("""
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
-            background-color: #f8fafc !important;
         }
 
         /* Hide Streamlit default chrome, top header, menu, share, github */
@@ -40,17 +39,42 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Modern Typography & Colors */
-        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #0f172a !important;
-            font-weight: 500 !important;
+        /* Dynamic Theme Auto-Adaptation (Light vs Dark Mode variables) */
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
         }
         
-        /* Clean Input Boxes */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0e1117;
+                --card-bg: #1e293b;
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --border-color: #334155;
+                --input-bg: #0f172a;
+            }
+        }
+
+        /* Streamlit native theme variable hooks */
+        .stApp {
+            background-color: var(--bg-color) !important;
+        }
+
+        /* Typography Auto Color */
+        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p, h1, h2, h3, h4 {
+            color: var(--text-main) !important;
+        }
+        
+        /* Form Inputs Auto Theme */
         input, textarea {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #e2e8f0 !important;
+            background-color: var(--input-bg) !important;
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-color) !important;
             font-size: 14px !important;
             border-radius: 8px !important;
         }
@@ -91,12 +115,12 @@ st.markdown("""
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* Clean Card Layouts */
+        /* Custom Cards for Products */
         .product-card {
-            background: #ffffff;
+            background: var(--card-bg);
             padding: 16px;
             border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
@@ -160,8 +184,8 @@ def log_order_to_sheet(name, phone, items, address, alt_phone, desc):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 50px; margin-bottom: 20px;'>
-            <h1 style='font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>HM MOBILES</h1>
-            <p style='font-size: 15px; color: #64748b; font-weight: 500;'>Thiruverkadu - Professional Portal</p>
+            <h1 style='font-size: 32px; font-weight: 800; margin-bottom: 6px;'>HM MOBILES</h1>
+            <p style='font-size: 15px; font-weight: 500;'>Thiruverkadu - Professional Portal</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -170,8 +194,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);'>
-                    <h3 style='margin-top: 0; margin-bottom: 20px; font-size: 18px; font-weight: 700; color: #1e293b; text-align: center;'>Account Sign In</h3>
+                <div style='padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--card-bg); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);'>
+                    <h3 style='margin-top: 0; margin-bottom: 20px; font-size: 18px; font-weight: 700; text-align: center;'>Account Sign In</h3>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
@@ -411,9 +435,9 @@ elif st.session_state.current_view == "Home":
         if filtered_items:
             for idx, prod in enumerate(filtered_items):
                 st.markdown(f"""
-                    <div style='background: #ffffff; padding: 14px 18px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;'>
+                    <div style='background: var(--card-bg); padding: 14px 18px; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;'>
                         <div>
-                            <h4 style='margin: 0 0 4px 0; font-size: 16px; color: #0f172a;'>{prod['name']}</h4>
+                            <h4 style='margin: 0 0 4px 0; font-size: 16px;'>{prod['name']}</h4>
                             <span style='color: #0284c7; font-weight: 700; font-size: 15px;'>₹{prod['price']}</span>
                         </div>
                 """, unsafe_allow_html=True)
@@ -477,7 +501,7 @@ else:
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
-        st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='margin: 20px 0; border: none; border-top: 1px solid var(--border-color);'>", unsafe_allow_html=True)
         st.markdown("#### Delivery Information")
         
         if "checkout_address_input" not in st.session_state:
