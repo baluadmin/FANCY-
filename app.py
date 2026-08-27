@@ -389,7 +389,7 @@ if st.session_state.current_view == "Home":
                     st.session_state.selected_menu = cat
                     st.rerun()
 
-    # --- SECTION 2: ITEMS (Single Line Layout with Image Space) ---
+    # --- SECTION 2: ITEMS (Fixed Name/Price Separation & Single Line Layout) ---
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
@@ -398,7 +398,6 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    # Single-line horizontal arrangement: [Image Space] | [Details] | [Qty & Add Button]
                     img_col, info_col, action_col = st.columns([1, 1.8, 1.8], gap="small")
                     
                     with img_col:
