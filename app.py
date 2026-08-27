@@ -402,14 +402,10 @@ if st.session_state.current_view == "Home":
                     st.markdown(f"**{prod['name']}**")
                     st.caption(f"₹{prod['price']}")
                     
-                    q_col, u_col = st.columns(2)
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    with u_col:
-                        u_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"unit_{current_cat}_{idx}", label_visibility="collapsed")
+                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
                     
                     if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                        full_q_str = f"{int(q_val)} {u_val}"
+                        full_q_str = f"{int(q_val)} Units"
                         st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
                         st.success(f"Added!")
                         st.rerun()
@@ -498,14 +494,12 @@ if st.session_state.current_view == "Home":
                                 if prod['name'].lower() in message["content"].lower():
                                     with st.container():
                                         st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_u_col, ai_b_col = st.columns([1, 1, 1])
+                                        ai_q_col, ai_b_col = st.columns([1, 1])
                                         with ai_q_col:
                                             aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_u_col:
-                                            au_val = st.selectbox("Unit", ["Units", "Pieces"], key=f"ai_u_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
                                         with ai_b_col:
                                             if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} {au_val}"
+                                                full_aq_str = f"{int(aq_val)} Units"
                                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
                                                 st.success(f"Added!")
                                                 st.rerun()
