@@ -171,6 +171,7 @@ if not st.session_state.logged_in_user:
             st.markdown("""
                 <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
                     <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
+                </div>
             """, unsafe_allow_html=True)
             
             with st.form("customer_direct_login_center"):
@@ -191,12 +192,279 @@ if not st.session_state.logged_in_user:
                         st.rerun()
                     else:
                         st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-            
-            st.markdown("</div>", unsafe_allow_html=True)
     
     st.stop()
 
 
 # --- AFTER LOGIN: MODERN PROFESSIONAL HEADER & NAVIGATION ---
 st.markdown("""
-    <div class="brand-
+    <div class="brand-banner">
+        <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
+    </div>
+""", unsafe_allow_html=True)
+
+top_c1, top_c2, top_c3, top_c4 = st.columns([2, 1, 1, 1])
+with top_c1:
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
+with top_c2:
+    if st.button("Home", use_container_width=True):
+        st.session_state.current_view = "Home"
+        st.rerun()
+with top_c3:
+    cart_count = len(st.session_state.cart)
+    if st.button(f"Cart ({cart_count})", use_container_width=True):
+        st.session_state.current_view = "Cart"
+        st.rerun()
+with top_c4:
+    if st.button("Logout", use_container_width=True):
+        st.session_state.clear()
+        st.rerun()
+
+st.markdown("---")
+
+
+# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
+@st.cache_data(ttl=2)
+def load_inventory_from_sheet():
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
+    try:
+        df = pd.read_csv(sheet_csv_url)
+        df.to_csv("inventory.csv", index=False)
+        return df
+    except Exception as e:
+        if os.path.exists("inventory.csv"):
+            return pd.read_csv("inventory.csv")
+        return pd.DataFrame()
+
+
+inv_df = load_inventory_from_sheet()
+
+
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
+product_records = []
+if not inv_df.empty:
+    try:
+        for _, row in inv_df.iterrows():
+            product_records.append({
+                "id": str(row.iloc[0]),
+                "name": str(row.iloc[1]),
+                "category": str(row.iloc[2]),
+                "stock": str(row.iloc[3]),
+                "price": str(row.iloc[4]),
+                "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
+            })
+    except Exception:
+        product_records = []
+
+if not product_records:
+    product_records = [
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+    ]
+
+
+def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
+    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
+    if not st.session_state.cart:
+        return "Your cart is empty. Please add products first."
+    
+    customer_name = st.session_state.logged_in_user
+    primary_phone = st.session_state.user_phone
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
+
+    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+    st.session_state.last_booked_item = cart_summary
+
+    try:
+        order_data = {
+            "Type": "Order",
+            "Timestamp": timestamp,
+            "Customer_Name": customer_name,
+            "Primary_Phone": primary_phone,
+            "Items": cart_summary,
+            "Address": address,
+            "Secondary_Phone": secondary_phone,
+            "Description": description,
+            "Live_Location": location_link
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
+    except Exception as e:
+        print(f"Order sheet error: {e}")
+
+    file_exists = os.path.isfile("orders.csv")
+    with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        if not file_exists:
+            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
+        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
+
+    st.session_state.cart = []
+    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
+
+
+# View Switching: Home View vs Cart/Checkout View vs Full-Screen Dual Image View
+if st.session_state.current_view == "Fullscreen":
+    st.subheader("🖼️ Dual Image Full-Screen View")
+    if st.button("← Back to Store"):
+        st.session_state.current_view = "Home"
+        st.rerun()
+    
+    st.markdown("---")
+    fs_col1, fs_col2 = st.columns(2, gap="medium")
+    
+    demo_paths = ["images/Headset 1 1.jpg", "images/Headset 1 2.jpg"]
+    with fs_col1:
+        if os.path.exists(demo_paths[0]):
+            st.image(demo_paths[0], use_container_width=True)
+        else:
+            st.info("Full-screen Image 1 not found.")
+    with fs_col2:
+        if os.path.exists(demo_paths[1]):
+            st.image(demo_paths[1], use_container_width=True)
+        else:
+            st.info("Full-screen Image 2 not found.")
+
+elif st.session_state.current_view == "Home":
+    col_menu, col_items = st.columns([1, 2], gap="small")
+
+    # --- SECTION 1: MENU ---
+    with col_menu:
+        st.markdown("Menu")
+        with st.container(height=500, border=True):
+            categories = list(set([p['category'] for p in product_records]))
+            for cat in categories:
+                if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
+                    st.session_state.selected_menu = cat
+                    st.rerun()
+            
+            st.markdown("---")
+            if st.button("View Full-Screen Images", use_container_width=True):
+                st.session_state.current_view = "Fullscreen"
+                st.rerun()
+
+    # --- SECTION 2: ITEMS ---
+    with col_items:
+        current_cat = st.session_state.get("selected_menu", "Headset")
+        st.markdown(f"{current_cat}")
+        with st.container(height=500, border=True):
+            filtered_items = [p for p in product_records if p['category'] == current_cat]
+            
+            if filtered_items:
+                for idx, prod in enumerate(filtered_items):
+                    slide_key = f"slide_{current_cat}_{idx}"
+                    
+                    if slide_key not in st.session_state:
+                        st.session_state[slide_key] = 0
+
+                    p_img_col, p_div1_col, p_details_col, p_div2_col, p_desc_col = st.columns([2.5, 0.05, 1.8, 0.05, 2.2], gap="small")
+                    
+                    with p_img_col:
+                        raw_img = prod.get("image", "")
+                        if raw_img:
+                            img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                            valid_paths = [p for p in img_paths if os.path.exists(p)]
+                            if valid_paths:
+                                total_imgs = len(valid_paths)
+                                current_idx = st.session_state[slide_key]
+                                
+                                l_btn, img_display, r_btn = st.columns([0.4, 3.2, 0.4])
+                                
+                                with l_btn:
+                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] > 0:
+                                            st.session_state[slide_key] -= 1
+                                            st.rerun()
+                                            
+                                with img_display:
+                                    if current_idx < total_imgs:
+                                        _, center_img_col, _ = st.columns([1, 4, 1])
+                                        with center_img_col:
+                                            st.image(valid_paths[current_idx], width=140)
+                                            
+                                with r_btn:
+                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] + 1 < total_imgs:
+                                            st.session_state[slide_key] += 1
+                                            st.rerun()
+                            else:
+                                st.caption("No Image")
+                        else:
+                            st.caption("No Image")
+                            
+                    with p_div1_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
+                    with p_details_col:
+                        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+                        st.markdown(f"**{prod['name']}**")
+                        st.markdown(f"₹{prod['price']}")
+                        
+                        q_col, b_col = st.columns([1, 1], gap="small")
+                        with q_col:
+                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                        with b_col:
+                            if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                                full_q_str = f"{int(q_val)} Units"
+                                st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                st.success(f"Added!")
+                                st.rerun()
+
+                    with p_div2_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
+                    with p_desc_col:
+                        st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
+                        st.markdown("**Description:**")
+                        st.caption(prod.get('description', ''))
+                                    
+                    st.markdown("---")
+            else:
+                st.info("No items found.")
+
+else:
+    st.subheader("🛒 Your Shopping Cart & Checkout")
+    if st.session_state.cart:
+        for c_idx, item in enumerate(st.session_state.cart):
+            cc1, cc2 = st.columns([4, 1])
+            with cc1:
+                st.markdown(f"- **{item['product']}** ({item['quantity']})")
+            with cc2:
+                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
+                    st.session_state.cart.pop(c_idx)
+                    st.rerun()
+        
+        st.markdown("---")
+        st.subheader("📍 Secure Checkout Form")
+        with st.form("checkout_form_main_view"):
+            checkout_address = st.text_area("Delivery Address:")
+            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            product_desc = st.text_area("Product Specifications / Custom Description:")
+            payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
+            live_location = st.text_input("Live Location Link (Google Maps Share URL):")
+            
+            submit_checkout = st.form_submit_button("Complete Order & Pay")
+            if submit_checkout:
+                if checkout_address and secondary_phone:
+                    result_msg = process_cart_checkout(
+                        checkout_address, secondary_phone, product_desc, payment_method, live_location
+                    )
+                    st.success(result_msg)
+                    st.session_state.current_view = "Home"
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Please provide delivery address and secondary contact number.")
+    else:
+        st.info("Your cart is empty. Click **Home** above to browse and add products.")
