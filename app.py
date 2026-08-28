@@ -338,94 +338,48 @@ if st.session_state.current_view == "Home":
                 for idx, prod in enumerate(filtered_items):
                     p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([3.5, 1.5, 1, 1], gap="small")
                     
-                    slide_key = f"slide_{current_cat}_{idx}"
-                    zoom_key = f"zoom_{current_cat}_{idx}"
-                    zoom_idx_key = f"zoom_idx_{current_cat}_{idx}"
-                    
-                    if slide_key not in st.session_state:
-                        st.session_state[slide_key] = 0
-                    if zoom_key not in st.session_state:
-                        st.session_state[zoom_key] = False
-                    if zoom_idx_key not in st.session_state:
-                        st.session_state[zoom_idx_key] = 0
-
                     with p_img_col:
                         raw_img = prod.get("image", "")
                         if raw_img:
                             img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                             valid_paths = [p for p in img_paths if os.path.exists(p)]
                             if valid_paths:
+                                slide_key = f"slide_{current_cat}_{idx}"
+                                if slide_key not in st.session_state:
+                                    st.session_state[slide_key] = 0
+                                
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                # If zoom modal is open for this item, show Flipkart-style lightbox popup
-                                if st.session_state[zoom_key]:
-                                    st.markdown("---")
-                                    st.markdown(f"**🔍 Large Preview: {prod['name']}**")
-                                    
-                                    z_l, z_img, z_r = st.columns([0.5, 4, 0.5])
-                                    zoom_current = st.session_state[zoom_idx_key]
-                                    
-                                    with z_l:
-                                        st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
-                                        if st.button("‹", key=f"zoom_prev_{current_cat}_{idx}"):
-                                            if zoom_current > 0:
-                                                st.session_state[zoom_idx_key] -= 1
-                                                st.rerun()
-                                                
-                                    with z_img:
-                                        st.image(valid_paths[zoom_current], width=260)
-                                        st.caption(f"Image {zoom_current + 1} of {total_imgs}")
+                                # Layout: Left Arrow, Image 1, Image 2, Right Arrow
+                                l_btn, img_col1, img_col2, r_btn = st.columns([0.5, 2, 2, 0.5])
+                                
+                                with l_btn:
+                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] > 0:
+                                            st.session_state[slide_key] -= 1
+                                            st.rerun()
+                                            
+                                with img_col1:
+                                    if current_idx < total_imgs:
+                                        st.image(valid_paths[current_idx], width=110)
                                         
-                                    with z_r:
-                                        st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
-                                        if st.button("›", key=f"zoom_next_{current_cat}_{idx}"):
-                                            if zoom_current + 1 < total_imgs:
-                                                st.session_state[zoom_idx_key] += 1
-                                                st.rerun()
-                                                
-                                    if st.button("❌ Close Preview", key=f"close_zoom_{current_cat}_{idx}", use_container_width=True):
-                                        st.session_state[zoom_key] = False
-                                        st.rerun()
-                                    st.markdown("---")
-                                else:
-                                    # Normal thumbnail carousel view
-                                    l_btn, img_col1, img_col2, r_btn = st.columns([0.5, 2, 2, 0.5])
-                                    
-                                    with l_btn:
-                                        st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-                                        if st.button("‹", key=f"prev_{current_cat}_{idx}"):
-                                            if st.session_state[slide_key] > 0:
-                                                st.session_state[slide_key] -= 1
-                                                st.rerun()
-                                                
-                                    with img_col1:
-                                        if current_idx < total_imgs:
-                                            st.image(valid_paths[current_idx], width=110)
-                                            if st.button("🔍 Zoom", key=f"z1_{current_cat}_{idx}_{current_idx}"):
-                                                st.session_state[zoom_key] = True
-                                                st.session_state[zoom_idx_key] = current_idx
-                                                st.rerun()
-                                            
-                                    with img_col2:
-                                        if current_idx + 1 < total_imgs:
-                                            st.image(valid_paths[current_idx + 1], width=110)
-                                            if st.button("🔍 Zoom", key=f"z2_{current_cat}_{idx}_{current_idx+1}"):
-                                                st.session_state[zoom_key] = True
-                                                st.session_state[zoom_idx_key] = current_idx + 1
-                                                st.rerun()
-                                            
-                                    with r_btn:
-                                        st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-                                        if st.button("›", key=f"next_{current_cat}_{idx}"):
-                                            if st.session_state[slide_key] + 2 < total_imgs:
-                                                st.session_state[slide_key] += 1
-                                                st.rerun()
+                                with img_col2:
+                                    if current_idx + 1 < total_imgs:
+                                        st.image(valid_paths[current_idx + 1], width=110)
+                                        
+                                with r_btn:
+                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] + 2 < total_imgs:
+                                            st.session_state[slide_key] += 1
+                                            st.rerun()
                             else:
                                 st.caption("No Image")
                         else:
                             st.caption("No Image")
-
+                            
                     with p_info_col:
                         st.markdown(f"**{prod['name']}**")
                         st.caption(f"₹{prod['price']}")
