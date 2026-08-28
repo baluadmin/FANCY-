@@ -71,7 +71,7 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact, Half-Width Buttons with Larger Prominent Text */
+        /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
@@ -80,9 +80,8 @@ st.markdown("""
             font-size: 16px !important;
             border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
-            width: 50% !important;
+            width: 100% !important;
             display: block !important;
-            margin: 0 0 0 auto !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
@@ -204,8 +203,8 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Compact header navigation columns pushed to the right with tight custom proportions for small spacing
-top_space, top_c1, top_c2, top_c3 = st.columns([3.4, 0.55, 0.55, 0.55], gap="small")
+# Right-aligned header layout with tight columns and minimal spacing (using a spacer followed by 3 compact button columns)
+top_space, top_c1, top_c2, top_c3 = st.columns([4.2, 0.8, 0.8, 0.8], gap="small")
 with top_space:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
 with top_c1:
