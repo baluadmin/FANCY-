@@ -341,7 +341,7 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # Swapped columns 2 and 3: Column layout now [2.5 (Image), 0.05 (Div), 2.2 (Description), 0.05 (Div), 1.8 (Details & Add)]
+                    # Layout arrangement: Image (Column 1), Description (Column 2), Details & Add (Column 3) displayed side by side
                     p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
                     
                     with p_img_col:
@@ -366,7 +366,15 @@ if st.session_state.current_view == "Home":
                                     if current_idx < total_imgs:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
-                                            st.image(valid_paths[current_idx], width=140)
+                                            # Displaying two images side-by-side if multiple valid paths exist, or single image smoothly
+                                            if current_idx + 1 < total_imgs:
+                                                img_sub1, img_sub2 = st.columns(2, gap="small")
+                                                with img_sub1:
+                                                    st.image(valid_paths[current_idx], width=110)
+                                                with img_sub2:
+                                                    st.image(valid_paths[current_idx + 1], width=110)
+                                            else:
+                                                st.image(valid_paths[current_idx], width=140)
                                             
                                 with r_btn:
                                     st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
