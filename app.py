@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & High-Contrast Black & White Styling CSS
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -20,8 +20,6 @@ st.markdown("""
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Poppins', sans-serif !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -39,30 +37,30 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* High-Contrast Black Text Adaptation */
-        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p, h1, h2, h3, h4, h5, h6 {
-            color: #000000 !important;
+        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
+        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
+            color: var(--text-color) !important;
             font-weight: 500 !important;
         }
         
-        /* Input boxes styling - Pure Black & White */
+        /* Input boxes styling supporting both modes */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 2px solid #000000 !important;
+            background-color: var(--secondary-background-color) !important;
+            color: var(--text-color) !important;
+            border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
-            font-weight: 500 !important;
+            font-weight: 400 !important;
             border-radius: 6px !important;
         }
 
-        /* Clean Black and White Header Banner */
+        /* Professional Neutral Dark/Slate Header Banner */
         .brand-banner {
-            background: #000000 !important;
+            background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
             padding: 14px 18px;
             border-radius: 8px;
-            border: 2px solid #000000;
+            color: #ffffff !important;
             text-align: center;
-            box-shadow: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 12px;
         }
         .brand-title {
@@ -73,23 +71,22 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Professional Black & White Styled Buttons */
+        /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 2px solid #000000 !important;
-            font-weight: 700 !important;
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
+            border: 1.5px solid #cbd5e1 !important;
+            font-weight: 600 !important;
             font-size: 15px !important;
             border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: none;
         }
         div.stButton > button:hover {
-            background-color: #000000 !important;
-            color: #ffffff !important;
-            border: 2px solid #000000 !important;
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            border: 1px solid #94a3b8 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
@@ -162,8 +159,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px; color: #000000;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 600; color: #000000;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -172,8 +169,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; background-color: #ffffff; border: 2px solid #000000; text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #000000;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -246,7 +243,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
 product_records = []
 if not inv_df.empty:
     try:
@@ -399,7 +396,7 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #000000; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
@@ -407,7 +404,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 2px solid #000000; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
@@ -424,7 +421,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 2px solid #000000;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
@@ -459,6 +456,7 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
+    # Centering container for the cart empty state message and button alignment
         _, center_msg_col, _ = st.columns([1, 2, 1])
         with center_msg_col:
             st.info("Your cart is empty. Click **Home** above to browse and add products.")
