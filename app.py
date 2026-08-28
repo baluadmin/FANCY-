@@ -53,11 +53,11 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Light Blue Header Banner with White Text */
+        /* Professional Neutral Dark/Slate Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
+            background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
             padding: 18px;
-            border-radius: 10px;
+            border-radius: 8px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -71,20 +71,20 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Action Buttons Styling */
+        /* Clean Neutral Action Buttons Styling */
         div.stButton > button {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
-            border: 1px solid #bae6fd !important;
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
+            border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
             font-size: 14px !important;
             border-radius: 6px !important;
             padding: 0.4rem 1rem !important;
         }
         div.stButton > button:hover {
-            background-color: #bae6fd !important;
-            color: #0c4a6e !important;
-            border: 1px solid #7dd3fc !important;
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            border: 1px solid #94a3b8 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
