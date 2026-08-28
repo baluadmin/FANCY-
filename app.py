@@ -227,26 +227,25 @@ st.markdown("---")
 
 
 # --- OFFER OF THE DAY BANNER SECTION ---
-with st.container():
-    banner_bg, banner_img = st.columns([5, 1], gap="small")
-    
-    with banner_bg:
-        st.markdown("""
-            <div style='background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 14px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; height: 100%; display: flex; flex-direction: column; justify-content: center;'>
-                <h4 style='margin: 0 0 4px 0; color: #1e293b; font-size: 15px; font-weight: 800;'>🔥 OFFER OF THE DAY</h4>
-                <p style='margin: 0; color: #334155; font-size: 13px; font-weight: 600;'>Get special discounts on premium accessories today! Check out our featured items below.</p>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with banner_img:
-        # 📌 CHANGE IMAGE PATH HERE: Update this file path to change the offer image
-        promo_image_path = "images/Headset 1 1.jpg" 
-        if os.path.exists(promo_image_path):
-            st.image(promo_image_path, width=70)
-        else:
-            st.markdown("<div style='text-align: center; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 11px;'>Image</div>", unsafe_allow_html=True)
+promo_image_path = "images/Headset 1 1.jpg"
+img_html = ""
 
-st.markdown("<div style='margin-bottom: 6px;'></div>", unsafe_allow_html=True)
+if os.path.exists(promo_image_path):
+    img_html = f"<img src='{promo_image_path}' style='width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;'>"
+else:
+    img_html = "<div style='font-size: 11px; color: #64748b;'>No Image</div>"
+
+st.markdown(f"""
+    <div style='background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 14px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;'>
+        <div style='flex-grow: 1; padding-right: 15px;'>
+            <h4 style='margin: 0 0 4px 0; color: #1e293b; font-size: 15px; font-weight: 800;'>🔥 OFFER OF THE DAY</h4>
+            <p style='margin: 0; color: #334155; font-size: 13px; font-weight: 600;'>Get special discounts on premium accessories today! Check out our featured items below.</p>
+        </div>
+        <div>
+            {img_html}
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
