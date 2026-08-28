@@ -2,7 +2,6 @@ from datetime import datetime
 import csv
 import os
 import random
-import chromadb
 import pandas as pd
 import requests
 import streamlit as st
@@ -242,7 +241,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (including image column at index 6)
 product_records = []
 if not inv_df.empty:
     try:
@@ -252,24 +251,25 @@ if not inv_df.empty:
                 "name": str(row.iloc[1]),  # Product Name is at column index 1
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])   # Price is at column index 4
+                "price": str(row.iloc[4]),  # Price is at column index 4
+                "image": str(row.iloc[6]) if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "images/Headset 1 2.jpg"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": ""},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": ""},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": ""},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": ""},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": ""},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": ""},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": ""},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": ""},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": ""},
     ]
 
 
@@ -336,8 +336,15 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    p_info_col, p_qty_col, p_btn_col = st.columns([1.5, 1, 1], gap="small")
+                    p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([1, 1.5, 1, 1], gap="small")
                     
+                    with p_img_col:
+                        img_path = prod.get("image", "")
+                        if img_path and os.path.exists(img_path):
+                            st.image(img_path, width=70)
+                        else:
+                            st.caption("No Image")
+                            
                     with p_info_col:
                         st.markdown(f"**{prod['name']}**")
                         st.caption(f"₹{prod['price']}")
