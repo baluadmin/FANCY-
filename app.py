@@ -226,28 +226,6 @@ with top_c3:
 st.markdown("---")
 
 
-# --- OFFER OF THE DAY BANNER SECTION ---
-promo_image_path = "images/Headset 1 1.jpg"
-img_html = ""
-
-if os.path.exists(promo_image_path):
-    img_html = f"<img src='{promo_image_path}' style='width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;'>"
-else:
-    img_html = "<div style='font-size: 11px; color: #64748b;'>No Image</div>"
-
-st.markdown(f"""
-    <div style='background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 14px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;'>
-        <div style='flex-grow: 1; padding-right: 15px;'>
-            <h4 style='margin: 0 0 4px 0; color: #1e293b; font-size: 15px; font-weight: 800;'>🔥 OFFER OF THE DAY</h4>
-            <p style='margin: 0; color: #334155; font-size: 13px; font-weight: 600;'>Get special discounts on premium accessories today! Check out our featured items below.</p>
-        </div>
-        <div>
-            {img_html}
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
 @st.cache_data(ttl=2)
 def load_inventory_from_sheet():
