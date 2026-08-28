@@ -367,10 +367,14 @@ if st.session_state.current_view == "Home":
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
-                                            st.image(valid_paths[current_idx], width=110)
+                                            _, center_sub1, _ = st.columns([1, 4, 1])
+                                            with center_sub1:
+                                                st.image(valid_paths[current_idx], width=110)
                                         with sub_col2:
-                                            next_idx = (current_idx + 1) % total_imgs
-                                            st.image(valid_paths[next_idx], width=110)
+                                            _, center_sub2, _ = st.columns([1, 4, 1])
+                                            with center_sub2:
+                                                next_idx = (current_idx + 1) % total_imgs
+                                                st.image(valid_paths[next_idx], width=110)
                                     else:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
@@ -415,7 +419,6 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    # Extended horizontal dividing line spanning across all columns underneath each product card row
                     st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
