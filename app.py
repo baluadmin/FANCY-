@@ -341,8 +341,8 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # 3-column split for Image Carousel | Vertical Divider Line | Product Details & Add to Cart
-                    p_img_col, p_div_col, p_details_col = st.columns([3, 0.1, 2], gap="small")
+                    # 3-column split for Single Big Image Carousel | Vertical Divider Line | Product Details & Add to Cart
+                    p_img_col, p_div_col, p_details_col = st.columns([2.5, 0.1, 2.5], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -353,27 +353,23 @@ if st.session_state.current_view == "Home":
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                l_btn, img_col1, img_col2, r_btn = st.columns([0.4, 2.3, 2.3, 0.4])
+                                l_btn, img_display, r_btn = st.columns([0.5, 4, 0.5])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
                                             st.rerun()
                                             
-                                with img_col1:
+                                with img_display:
                                     if current_idx < total_imgs:
-                                        st.image(valid_paths[current_idx], width=150)
-                                            
-                                with img_col2:
-                                    if current_idx + 1 < total_imgs:
-                                        st.image(valid_paths[current_idx + 1], width=150)
+                                        st.image(valid_paths[current_idx], width=200)
                                             
                                 with r_btn:
-                                    st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] + 2 < total_imgs:
+                                        if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
                                             st.rerun()
                             else:
@@ -382,8 +378,7 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div_col:
-                        # Professional vertical separator line matching the layout
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 180px; margin-top: 10px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 200px; margin-top: 10px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown(f"**{prod['name']}**")
