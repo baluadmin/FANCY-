@@ -224,8 +224,8 @@ with top_c4:
 st.markdown("---")
 
 
-# Load Inventory Directly from Google Sheets CSV Link with Cache Bypass
-@st.cache_data(ttl=5)
+# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
+@st.cache_data(ttl=2)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
@@ -241,7 +241,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (including image column at index 6)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Column G is index 6 for images)
 product_records = []
 if not inv_df.empty:
     try:
@@ -252,7 +252,7 @@ if not inv_df.empty:
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
                 "price": str(row.iloc[4]),  # Price is at column index 4
-                "image": str(row.iloc[6]) if len(row) > 6 and pd.notna(row.iloc[6]) else ""
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
     except Exception:
         product_records = []
@@ -261,7 +261,7 @@ if not product_records:
     product_records = [
         {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg"},
         {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "images/Headset 1 2.jpg"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": ""},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "images/Headset 1 3.jpg"},
         {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": ""},
         {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": ""},
         {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": ""},
