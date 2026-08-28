@@ -336,7 +336,6 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    # Expanded layout ratio to accommodate N horizontal images nicely
                     p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([3.5, 1.5, 1, 1], gap="small")
                     
                     with p_img_col:
@@ -345,11 +344,37 @@ if st.session_state.current_view == "Home":
                             img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                             valid_paths = [p for p in img_paths if os.path.exists(p)]
                             if valid_paths:
-                                # Dynamically render any number of images horizontally side-by-side
-                                img_cols = st.columns(len(valid_paths))
-                                for i, path in enumerate(valid_paths):
-                                    with img_cols[i]:
-                                        st.image(path, width=90)
+                                slide_key = f"slide_{current_cat}_{idx}"
+                                if slide_key not in st.session_state:
+                                    st.session_state[slide_key] = 0
+                                
+                                total_imgs = len(valid_paths)
+                                current_idx = st.session_state[slide_key]
+                                
+                                # Layout: Left Arrow, Image 1, Image 2, Right Arrow
+                                l_btn, img_col1, img_col2, r_btn = st.columns([0.5, 2, 2, 0.5])
+                                
+                                with l_btn:
+                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] > 0:
+                                            st.session_state[slide_key] -= 1
+                                            st.rerun()
+                                            
+                                with img_col1:
+                                    if current_idx < total_imgs:
+                                        st.image(valid_paths[current_idx], width=110)
+                                        
+                                with img_col2:
+                                    if current_idx + 1 < total_imgs:
+                                        st.image(valid_paths[current_idx + 1], width=110)
+                                        
+                                with r_btn:
+                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] + 2 < total_imgs:
+                                            st.session_state[slide_key] += 1
+                                            st.rerun()
                             else:
                                 st.caption("No Image")
                         else:
