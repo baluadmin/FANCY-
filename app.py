@@ -352,36 +352,45 @@ if st.session_state.current_view == "Home":
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                l_btn, img_display, r_btn = st.columns([0.4, 3.2, 0.4])
-                                
-                                with l_btn:
-                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
-                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
-                                        # Circular wrap-around: if at first image, wrap to last image (total_imgs - 2 or similar)
-                                        if st.session_state[slide_key] > 0:
-                                            st.session_state[slide_key] -= 1
+                                # Show navigation buttons only if there is more than 1 image
+                                if total_imgs > 1:
+                                    l_btn, img_display, r_btn = st.columns([0.4, 3.2, 0.4])
+                                    
+                                    with l_btn:
+                                        st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+                                        if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                            if st.session_state[slide_key] > 0:
+                                                st.session_state[slide_key] -= 1
+                                            else:
+                                                st.session_state[slide_key] = total_imgs - 1
+                                            st.rerun()
+                                                
+                                    with img_display:
+                                        if total_imgs >= 2:
+                                            sub_col1, sub_col2 = st.columns(2, gap="small")
+                                            with sub_col1:
+                                                st.image(valid_paths[current_idx], width=110)
+                                            with sub_col2:
+                                                next_idx = (current_idx + 1) % total_imgs
+                                                st.image(valid_paths[next_idx], width=110)
                                         else:
-                                            st.session_state[slide_key] = max(0, total_imgs - 2)
-                                        st.rerun()
-                                            
-                                with img_display:
-                                    if current_idx < total_imgs:
-                                        sub_col1, sub_col2 = st.columns(2, gap="small")
-                                        with sub_col1:
-                                            st.image(valid_paths[current_idx], width=110)
-                                        with sub_col2:
-                                            next_idx = (current_idx + 1) % total_imgs
-                                            st.image(valid_paths[next_idx], width=110)
-                                            
-                                with r_btn:
-                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
-                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
-                                        # Circular wrap-around for right button
-                                        if st.session_state[slide_key] + 1 < total_imgs:
-                                            st.session_state[slide_key] += 1
-                                        else:
-                                            st.session_state[slide_key] = 0
-                                        st.rerun()
+                                            _, center_img_col, _ = st.columns([1, 4, 1])
+                                            with center_img_col:
+                                                st.image(valid_paths[current_idx], width=140)
+                                                
+                                    with r_btn:
+                                        st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+                                        if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                            if st.session_state[slide_key] + 1 < total_imgs:
+                                                st.session_state[slide_key] += 1
+                                            else:
+                                                st.session_state[slide_key] = 0
+                                            st.rerun()
+                                else:
+                                    # Exactly 1 image: display only that single image without duplication or arrows
+                                    _, center_img_col, _ = st.columns([1, 4, 1])
+                                    with center_img_col:
+                                        st.image(valid_paths[0], width=140)
                             else:
                                 st.caption("No Image")
                         else:
