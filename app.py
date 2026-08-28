@@ -72,9 +72,9 @@ st.markdown("""
             text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* Fixed Adaptive Image Container with a clean contrasting background for dark & light modes */
+        /* Fixed Pure White Background Container for Images in BOTH Dark and Light Mode */
         .image-container {
-            background-color: rgba(255, 255, 255, 0.85);
+            background-color: #ffffff !important;
             border: 2px solid #d8b4fe;
             border-radius: 10px;
             padding: 10px;
@@ -83,7 +83,7 @@ st.markdown("""
             justify-content: center;
             align-items: center;
             min-height: 140px;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.12);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
         }
 
         /* Colorful & Professional Buttons */
