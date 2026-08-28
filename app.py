@@ -15,11 +15,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'Poppins', sans-serif !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -40,7 +40,7 @@ st.markdown("""
         /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
-            font-weight: 600 !important;
+            font-weight: 500 !important;
         }
         
         /* Input boxes styling supporting both modes */
@@ -49,7 +49,7 @@ st.markdown("""
             color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
-            font-weight: 500 !important;
+            font-weight: 400 !important;
             border-radius: 6px !important;
         }
 
@@ -65,7 +65,7 @@ st.markdown("""
         }
         .brand-title {
             font-size: 20px;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
@@ -76,8 +76,8 @@ st.markdown("""
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
-            font-weight: 750 !important;
-            font-size: 16px !important;
+            font-weight: 600 !important;
+            font-size: 15px !important;
             border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
@@ -159,8 +159,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 800; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -170,7 +170,7 @@ if not st.session_state.logged_in_user:
         with st.container():
             st.markdown("""
                 <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 750;'>Customer Portal Login</h3>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -456,4 +456,7 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
-        st.info("Your cart is empty. Click **Home** above to browse and add products.")
+    # Centering container for the cart empty state message and button alignment
+        _, center_msg_col, _ = st.columns([1, 2, 1])
+        with center_msg_col:
+            st.info("Your cart is empty. Click **Home** above to browse and add products.")
