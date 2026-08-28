@@ -357,27 +357,31 @@ if st.session_state.current_view == "Home":
                                 with l_btn:
                                     st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                        # Circular wrap-around: if at first image, wrap to last image (total_imgs - 2 or similar)
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
-                                            st.rerun()
+                                        else:
+                                            st.session_state[slide_key] = max(0, total_imgs - 2)
+                                        st.rerun()
                                             
                                 with img_display:
                                     if current_idx < total_imgs:
-                                        # Showing exactly 2 images side by side inside the image slot container
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
                                             st.image(valid_paths[current_idx], width=110)
                                         with sub_col2:
-                                            # If a next image exists in path list, show it side-by-side, otherwise loop or duplicate
                                             next_idx = (current_idx + 1) % total_imgs
                                             st.image(valid_paths[next_idx], width=110)
                                             
                                 with r_btn:
                                     st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                        # Circular wrap-around for right button
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
-                                            st.rerun()
+                                        else:
+                                            st.session_state[slide_key] = 0
+                                        st.rerun()
                             else:
                                 st.caption("No Image")
                         else:
