@@ -47,81 +47,70 @@ st.markdown("""
         input, textarea, div[data-baseweb="select"] > div {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
-            border: 1.5px solid #d8b4fe !important;
+            border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
             font-weight: 400 !important;
             border-radius: 6px !important;
         }
 
-        /* Vibrant Purple Gradient Header Banner */
+        /* Professional Neutral Dark/Slate Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
-            padding: 16px 20px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
+            padding: 14px 18px;
+            border-radius: 8px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 4px 15px -3px rgba(168, 85, 247, 0.4);
-            margin-bottom: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 12px;
         }
         .brand-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* Fixed Pure White Background Container for Images across Dark & Light Modes */
-        .image-container {
-            background-color: #ffffff !important;
-            border: 2px solid #d8b4fe;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 140px;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
-        }
-        
-        /* Force image text or captions inside white container to dark for absolute clarity */
-        .image-container p, .image-container span {
-            color: #0f172a !important;
-        }
-
-        /* Colorful & Professional Buttons */
+        /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
-            background: linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%) !important;
-            color: #6b21a8 !important;
-            border: 1.5px solid #d8b4fe !important;
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
+            border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
-            font-size: 14px !important;
-            border-radius: 8px !important;
+            font-size: 15px !important;
+            border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
-            white-space: nowrap !important;
-            box-shadow: 0 2px 4px rgba(168, 85, 247, 0.05);
-            transition: all 0.2s ease;
+            display: block !important;
         }
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #e9d5ff 0%, #f5d0fe 100%) !important;
-            color: #581c87 !important;
-            border: 1.5px solid #a855f7 !important;
-            box-shadow: 0 4px 8px rgba(168, 85, 247, 0.2);
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            border: 1px solid #94a3b8 !important;
         }
 
-        /* Robust Auto-Reflowing Columns for Zoom / Resize Handling */
-        @media (max-width: 1100px) {
-            div[data-testid="stHorizontalBlock"] {
+        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
+        @media (max-width: 900px) {
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
+                width: auto !important;
+                flex: 1 1 auto !important;
+                min-width: 0px !important;
+                padding: 0px 2px !important;
+            }
+
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
+                flex-direction: column !important;
                 flex-wrap: wrap !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) > div[data-testid="column"] {
                 width: 100% !important;
                 flex: 1 1 100% !important;
                 min-width: 100% !important;
-                margin-bottom: 8px !important;
+                padding: 4px 0px !important;
             }
         }
 
@@ -170,8 +159,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; background: linear-gradient(135deg, #7c3aed, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -180,8 +169,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 12px; border: 2px solid #d8b4fe; box-shadow: 0 6px 16px -3px rgba(168, 85, 247, 0.15); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: #7c3aed;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -254,7 +243,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
 product_records = []
 if not inv_df.empty:
     try:
@@ -273,12 +262,22 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High quality wireless sound"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Rapid wall adapter"}
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
     ]
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
+    """Checkout all items currently in the cart with delivery details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -318,7 +317,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str) 
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items = st.columns([1, 2.8], gap="small")
+    col_menu, col_items = st.columns([1, 2.5], gap="small")
 
     # --- SECTION 1: MENU ---
     with col_menu:
@@ -344,7 +343,7 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    p_img_col, p_desc_col, p_details_col = st.columns([1.8, 1.6, 1.2], gap="small")
+                    p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -355,10 +354,10 @@ if st.session_state.current_view == "Home":
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                l_btn, img_display, r_btn = st.columns([0.2, 3.6, 0.2])
+                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 55px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -367,20 +366,24 @@ if st.session_state.current_view == "Home":
                                         st.rerun()
                                         
                                 with img_display:
-                                    st.markdown("<div class='image-container'>", unsafe_allow_html=True)
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
-                                            st.image(valid_paths[current_idx], width=110)
+                                            _, center_sub1, _ = st.columns([1, 4, 1])
+                                            with center_sub1:
+                                                st.image(valid_paths[current_idx], width=95)
                                         with sub_col2:
-                                            next_idx = (current_idx + 1) % total_imgs
-                                            st.image(valid_paths[next_idx], width=110)
+                                            _, center_sub2, _ = st.columns([1, 4, 1])
+                                            with center_sub2:
+                                                next_idx = (current_idx + 1) % total_imgs
+                                                st.image(valid_paths[next_idx], width=95)
                                     else:
-                                        st.image(valid_paths[0], width=120)
-                                    st.markdown("</div>", unsafe_allow_html=True)
+                                        _, center_img_col, _ = st.columns([1, 4, 1])
+                                        with center_img_col:
+                                            st.image(valid_paths[0], width=95)
                                         
                                 with r_btn:
-                                    st.markdown("<div style='height: 55px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
@@ -388,15 +391,23 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
-                                st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#0f172a;'>No Image</p></div>", unsafe_allow_html=True)
+                                st.caption("No Image")
                         else:
-                            st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#0f172a;'>No Image</p></div>", unsafe_allow_html=True)
+                            st.caption("No Image")
                             
+                    with p_div1_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
                     with p_desc_col:
+                        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
                         st.markdown("**Description:**")
                         st.caption(prod.get('description', ''))
 
+                    with p_div2_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
                     with p_details_col:
+                        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
@@ -407,10 +418,10 @@ if st.session_state.current_view == "Home":
                             if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
                                 full_q_str = f"{int(q_val)} Units"
                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                st.success("Added!")
+                                st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 12px; margin-bottom: 12px; border: none; border-top: 1px solid #e9d5ff;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
@@ -445,6 +456,7 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
+    # Centering container for the cart empty state message and button alignment
         _, center_msg_col, _ = st.columns([1, 2, 1])
         with center_msg_col:
             st.info("Your cart is empty. Click **Home** above to browse and add products.")
