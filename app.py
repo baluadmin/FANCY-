@@ -313,27 +313,22 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
 
 
-# View Switching: Home View vs Cart/Checkout View vs Full-Screen Dual Image View
+# View Switching: Home View vs Cart/Checkout View vs Full-Screen Image Modal View
 if st.session_state.current_view == "Fullscreen":
-    st.subheader("🖼️ Dual Image Full-Screen View")
+    st.subheader("🖼️ Full-Screen Image View")
     if st.button("← Back to Store"):
         st.session_state.current_view = "Home"
+        st.session_state.fullscreen_image = None
         st.rerun()
     
     st.markdown("---")
-    fs_col1, fs_col2 = st.columns(2, gap="medium")
-    
-    demo_paths = ["images/Headset 1 1.jpg", "images/Headset 1 2.jpg"]
-    with fs_col1:
-        if os.path.exists(demo_paths[0]):
-            st.image(demo_paths[0], use_container_width=True)
-        else:
-            st.info("Full-screen Image 1 not found.")
-    with fs_col2:
-        if os.path.exists(demo_paths[1]):
-            st.image(demo_paths[1], use_container_width=True)
-        else:
-            st.info("Full-screen Image 2 not found.")
+    img_to_show = st.session_state.get("fullscreen_image", "")
+    if img_to_show and os.path.exists(img_to_show):
+        _, center_fs, _ = st.columns([1, 4, 1])
+        with center_fs:
+            st.image(img_to_show, use_container_width=True)
+    else:
+        st.info("No image selected or image file not found.")
 
 elif st.session_state.current_view == "Home":
     col_menu, col_items = st.columns([1, 2], gap="small")
@@ -347,11 +342,6 @@ elif st.session_state.current_view == "Home":
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                     st.session_state.selected_menu = cat
                     st.rerun()
-            
-            st.markdown("---")
-            if st.button("View Full-Screen Images", use_container_width=True):
-                st.session_state.current_view = "Fullscreen"
-                st.rerun()
 
     # --- SECTION 2: ITEMS ---
     with col_items:
@@ -391,6 +381,11 @@ elif st.session_state.current_view == "Home":
                                     if current_idx < total_imgs:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
+                                            # Clickable image button / action to view full-screen
+                                            if st.button("🔍 Click to Zoom", key=f"zoom_img_{current_cat}_{idx}_{current_idx}", use_container_width=True):
+                                                st.session_state.fullscreen_image = valid_paths[current_idx]
+                                                st.session_state.current_view = "Fullscreen"
+                                                st.rerun()
                                             st.image(valid_paths[current_idx], width=140)
                                             
                                 with r_btn:
