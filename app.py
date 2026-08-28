@@ -53,12 +53,12 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Light Lavender Header Banner matching provided swatch */
+        /* Much lighter soft pastel purple/lavender gradient blending into pure white */
         .brand-banner {
-            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
             padding: 14px 18px;
             border-radius: 8px;
-            border: 1px solid #d8b4fe;
+            border: 1px solid #e9d5ff;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
             margin-bottom: 12px;
@@ -67,7 +67,7 @@ st.markdown("""
             font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #581c87 !important;
+            color: #6b21a8 !important;
             margin: 0;
         }
 
@@ -244,7 +244,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping
 product_records = []
 if not inv_df.empty:
     try:
