@@ -338,20 +338,23 @@ if st.session_state.current_view == "Home":
                 for idx, prod in enumerate(filtered_items):
                     p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([3.5, 1.5, 1, 1], gap="small")
                     
+                    slide_key = f"slide_{current_cat}_{idx}"
+                    zoom_key = f"zoom_{current_cat}_{idx}"
+                    
+                    if slide_key not in st.session_state:
+                        st.session_state[slide_key] = 0
+                    if zoom_key not in st.session_state:
+                        st.session_state[zoom_key] = None
+
                     with p_img_col:
                         raw_img = prod.get("image", "")
                         if raw_img:
                             img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                             valid_paths = [p for p in img_paths if os.path.exists(p)]
                             if valid_paths:
-                                slide_key = f"slide_{current_cat}_{idx}"
-                                if slide_key not in st.session_state:
-                                    st.session_state[slide_key] = 0
-                                
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                # Layout: Left Arrow, Image 1, Image 2, Right Arrow
                                 l_btn, img_col1, img_col2, r_btn = st.columns([0.5, 2, 2, 0.5])
                                 
                                 with l_btn:
@@ -364,10 +367,16 @@ if st.session_state.current_view == "Home":
                                 with img_col1:
                                     if current_idx < total_imgs:
                                         st.image(valid_paths[current_idx], width=110)
+                                        if st.button("🔍 Zoom", key=f"z1_{current_cat}_{idx}_{current_idx}"):
+                                            st.session_state[zoom_key] = valid_paths[current_idx]
+                                            st.rerun()
                                         
                                 with img_col2:
                                     if current_idx + 1 < total_imgs:
                                         st.image(valid_paths[current_idx + 1], width=110)
+                                        if st.button("🔍 Zoom", key=f"z2_{current_cat}_{idx}_{current_idx+1}"):
+                                            st.session_state[zoom_key] = valid_paths[current_idx + 1]
+                                            st.rerun()
                                         
                                 with r_btn:
                                     st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
@@ -380,6 +389,18 @@ if st.session_state.current_view == "Home":
                         else:
                             st.caption("No Image")
                             
+                    # Display Zoom Overlay if active for this item
+                    if st.session_state[zoom_key]:
+                        st.markdown("---")
+                        st.markdown(f"### 🔍 Zoomed View: {prod['name']}")
+                        z_col1, z_col2, z_col3 = st.columns([1, 3, 1])
+                        with z_col2:
+                            st.image(st.session_state[zoom_key], width=350)
+                            if st.button("❌ Close Zoom", key=f"close_zoom_{current_cat}_{idx}"):
+                                st.session_state[zoom_key] = None
+                                st.rerun()
+                        st.markdown("---")
+
                     with p_info_col:
                         st.markdown(f"**{prod['name']}**")
                         st.caption(f"₹{prod['price']}")
