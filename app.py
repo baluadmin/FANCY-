@@ -71,7 +71,7 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact, Half-Width Buttons, Centered Horizontally with Larger Prominent Text */
+        /* Compact, Half-Width Buttons with Larger Prominent Text */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
@@ -82,7 +82,7 @@ st.markdown("""
             padding: 0.4rem 0.5rem !important;
             width: 50% !important;
             display: block !important;
-            margin: 0 auto !important;
+            margin: 0 0 0 auto !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
@@ -204,8 +204,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Compact header navigation columns perfectly centered on the screen
-top_space_l, top_c1, top_c2, top_c3, top_space_r = st.columns([1.5, 1.0, 1.0, 1.0, 1.5], gap="small")
+# Compact header navigation columns pushed to the right with tight custom proportions for small spacing
+top_space, top_c1, top_c2, top_c3 = st.columns([3.4, 0.55, 0.55, 0.55], gap="small")
+with top_space:
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
 with top_c1:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
