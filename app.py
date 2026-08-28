@@ -241,35 +241,36 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (Column G is index 6 for images)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Column G is index 6 for images, Column H is index 7 for descriptions)
 product_records = []
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
             product_records.append({
                 "id": str(row.iloc[0]),
-                "name": str(row.iloc[1]),  # Product Name is at column index 1
+                "name": str(row.iloc[1]),
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4]),  # Price is at column index 4
-                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
+                "price": str(row.iloc[4]),
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else "",
+                "description": str(row.iloc[7]).strip() if len(row) > 7 and pd.notna(row.iloc[7]) else "No description available."
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": ""},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": ""},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": ""},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": ""},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": ""},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": ""},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": ""},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": ""},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": ""},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": ""},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "High quality wireless bluetooth headset with deep bass and crystal clear audio."},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "Immersive gaming headset with ergonomic comfort and noise isolation."},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Ultra fast wall charger supporting 33W Power Delivery."},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "Charge two devices simultaneously with smart protection."},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "Durable tangle-free braided charging and data cable."},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "Heavy duty fast charging type-c cable."},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "Studio-grade microphone for crystal-clear vocals and live streaming."},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "Compact clip-on microphone ideal for interviews and videos."},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "Reliable high-capacity replacement battery for long-lasting power."},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "9H hardness tough protective screen guard."},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "True wireless earbuds with charging case and smart touch controls."},
     ]
 
 
@@ -341,7 +342,7 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # 3-column split for Image Carousel with Centered Image | Vertical Divider Line | Product Details & Add to Cart
+                    # 3-column split for Image Carousel with Centered Image | Vertical Divider Line | Product Details, Description & Add to Cart
                     p_img_col, p_div_col, p_details_col = st.columns([3, 0.1, 2.5], gap="small")
                     
                     with p_img_col:
@@ -364,7 +365,6 @@ if st.session_state.current_view == "Home":
                                             
                                 with img_display:
                                     if current_idx < total_imgs:
-                                        # Centering the image wrapper using columns
                                         _, center_img_col, _ = st.columns([1, 6, 1])
                                         with center_img_col:
                                             st.image(valid_paths[current_idx], width=180)
@@ -381,11 +381,14 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 200px; margin-top: 10px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 220px; margin-top: 10px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
+                        
+                        # Product description text block
+                        st.caption(prod.get('description', ''))
                         
                         q_col, b_col = st.columns([1, 1], gap="small")
                         with q_col:
