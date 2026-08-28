@@ -259,9 +259,9 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "images/Headset 1 2.jpg"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "images/Headset 1 3.jpg"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": ""},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": ""},
         {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": ""},
         {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": ""},
         {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": ""},
@@ -339,9 +339,17 @@ if st.session_state.current_view == "Home":
                     p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([1, 1.5, 1, 1], gap="small")
                     
                     with p_img_col:
-                        img_path = prod.get("image", "")
-                        if img_path and os.path.exists(img_path):
-                            st.image(img_path, width=70)
+                        raw_img = prod.get("image", "")
+                        if raw_img:
+                            # Split multiple images separated by backslash or comma
+                            img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                            found_any = False
+                            for path in img_paths:
+                                if os.path.exists(path):
+                                    st.image(path, width=60)
+                                    found_any = True
+                            if not found_any:
+                                st.caption("No Image")
                         else:
                             st.caption("No Image")
                             
