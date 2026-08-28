@@ -72,7 +72,7 @@ st.markdown("""
             text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* Fixed Pure White Background Container for Images in BOTH Dark and Light Mode */
+        /* Fixed Pure White Background Container for Images across Dark & Light Modes */
         .image-container {
             background-color: #ffffff !important;
             border: 2px solid #d8b4fe;
@@ -83,7 +83,12 @@ st.markdown("""
             justify-content: center;
             align-items: center;
             min-height: 140px;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+        }
+        
+        /* Force image text or captions inside white container to dark for absolute clarity */
+        .image-container p, .image-container span {
+            color: #0f172a !important;
         }
 
         /* Colorful & Professional Buttons */
@@ -383,9 +388,9 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
-                                st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#475569;'>No Image</p></div>", unsafe_allow_html=True)
+                                st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#0f172a;'>No Image</p></div>", unsafe_allow_html=True)
                         else:
-                            st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#475569;'>No Image</p></div>", unsafe_allow_html=True)
+                            st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#0f172a;'>No Image</p></div>", unsafe_allow_html=True)
                             
                     with p_desc_col:
                         st.markdown("**Description:**")
