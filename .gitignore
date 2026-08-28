@@ -1,0 +1,6 @@
+.env
+.streamlit/secrets.toml
+chroma_db/
+inventory.csv
+orders.csv
+reviews.csv
