@@ -336,19 +336,21 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([1, 1.5, 1, 1], gap="small")
+                    # Adjusted column widths to give more space for horizontal images
+                    p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([2.5, 1.5, 1, 1], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
                         if raw_img:
-                            # Split multiple images separated by backslash or comma
                             img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
-                            found_any = False
-                            for path in img_paths:
-                                if os.path.exists(path):
-                                    st.image(path, width=60)
-                                    found_any = True
-                            if not found_any:
+                            valid_paths = [p for p in img_paths if os.path.exists(p)]
+                            if valid_paths:
+                                # Render multiple images horizontally in sub-columns with larger size
+                                img_cols = st.columns(len(valid_paths))
+                                for i, path in enumerate(valid_paths):
+                                    with img_cols[i]:
+                                        st.image(path, width=120)
+                            else:
                                 st.caption("No Image")
                         else:
                             st.caption("No Image")
