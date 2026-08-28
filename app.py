@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & High-Contrast Black & White Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -20,6 +20,8 @@ st.markdown("""
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Poppins', sans-serif !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -37,57 +39,57 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Light Theme Text Adaptation */
-        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #334155 !important;
+        /* High-Contrast Black Text Adaptation */
+        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p, h1, h2, h3, h4, h5, h6 {
+            color: #000000 !important;
             font-weight: 500 !important;
         }
         
-        /* Input boxes styling - Light & Clean */
+        /* Input boxes styling - Pure Black & White */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1.5px solid #cbd5e1 !important;
+            color: #000000 !important;
+            border: 2px solid #000000 !important;
             font-size: 14px !important;
-            font-weight: 400 !important;
+            font-weight: 500 !important;
             border-radius: 6px !important;
         }
 
-        /* Much lighter soft pastel purple/lavender gradient blending into pure white */
+        /* Clean Black and White Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            background: #000000 !important;
             padding: 14px 18px;
             border-radius: 8px;
-            border: 1px solid #e9d5ff;
+            border: 2px solid #000000;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            box-shadow: none;
             margin-bottom: 12px;
         }
         .brand-title {
             font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #6b21a8 !important;
+            color: #ffffff !important;
             margin: 0;
         }
 
-        /* Compact, Light-Styled Buttons */
+        /* Professional Black & White Styled Buttons */
         div.stButton > button {
             background-color: #ffffff !important;
-            color: #1e293b !important;
-            border: 1.5px solid #cbd5e1 !important;
-            font-weight: 600 !important;
+            color: #000000 !important;
+            border: 2px solid #000000 !important;
+            font-weight: 700 !important;
             font-size: 15px !important;
             border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            box-shadow: none;
         }
         div.stButton > button:hover {
-            background-color: #f1f5f9 !important;
-            color: #0f172a !important;
-            border: 1.5px solid #94a3b8 !important;
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            border: 2px solid #000000 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
@@ -160,8 +162,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px; color: #000000;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 600; color: #000000;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -170,8 +172,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 10px; background-color: #ffffff; border: 2px solid #000000; text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #000000;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -397,7 +399,7 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #000000; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
@@ -405,7 +407,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #000000; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
@@ -422,7 +424,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 2px solid #000000;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
