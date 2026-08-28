@@ -71,21 +71,23 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact & Professional Action Buttons Styling */
+        /* Compact, Half-Width Buttons with Larger Prominent Text */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
-            border: 1px solid #cbd5e1 !important;
-            font-weight: 650 !important;
-            font-size: 13px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            font-weight: 750 !important;
+            font-size: 16px !important;
             border-radius: 6px !important;
-            padding: 0.25rem 0.75rem !important;
-            min-height: unset !important;
+            padding: 0.4rem 0.5rem !important;
+            width: 50% !important;
+            display: block !important;
+            margin: 0 auto !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
-            border: 1px solid #94a3b8 !important;
+            border: 1.5px solid #94a3b8 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
