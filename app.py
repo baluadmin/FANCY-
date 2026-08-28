@@ -86,7 +86,7 @@ st.markdown("""
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
-            border: 1.5px solid #94a3b8 !important;
+            border: 1px solid #94a3b8 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
@@ -203,10 +203,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Top Bar layout: Welcome message on the left, right-aligned navigation buttons on the right
+# Commercial banner area on the left and right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
-    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**! | 📢 **Special Offer: Free Delivery on orders above ₹999!**")
 with top_space:
     st.empty()
 with top_c1:
@@ -226,8 +226,8 @@ with top_c3:
 st.markdown("---")
 
 
-# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache (Forcing reload to instantly catch column H additions)
-@st.cache_data(ttl=1)
+# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
+@st.cache_data(ttl=2)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
@@ -243,8 +243,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically
-# Column mapping: 0:ID, 1:Name, 2:Category, 3:Stock, 4:Price, 5:Description, 6:Images, 7:Offer Image (Column H)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
 product_records = []
 if not inv_df.empty:
     try:
@@ -256,15 +255,24 @@ if not inv_df.empty:
                 "stock": str(row.iloc[3]),
                 "price": str(row.iloc[4]),
                 "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
-                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else "",
-                "offer_image": str(row.iloc[7]).strip() if len(row) > 7 and pd.notna(row.iloc[7]) else ""
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg", "offer_image": ""},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
     ]
 
 
@@ -359,7 +367,6 @@ if st.session_state.current_view == "Home":
                                         st.rerun()
                                             
                                 with img_display:
-                                    # Support up to 6 images or more with circular carousel scrolling
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
@@ -396,14 +403,6 @@ if st.session_state.current_view == "Home":
                         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
                         st.markdown("**Description:**")
                         st.caption(prod.get('description', ''))
-                        
-                        # Full-width commercial / offer image reflecting directly from Column H of the worksheet
-                        offer_img = prod.get('offer_image', '')
-                        if offer_img:
-                            offer_paths = [p.strip() for p in offer_img.replace("\\", ",").split(",") if p.strip()]
-                            for opath in offer_paths:
-                                if os.path.exists(opath):
-                                    st.image(opath, use_column_width=True)
 
                     with p_div2_col:
                         st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
