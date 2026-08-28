@@ -341,7 +341,8 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    p_img_col, p_div1_col, p_details_col, p_div2_col, p_desc_col = st.columns([2.5, 0.05, 1.8, 0.05, 2.2], gap="small")
+                    # Swapped columns 2 and 3: Column layout now [2.5 (Image), 0.05 (Div), 2.2 (Description), 0.05 (Div), 1.8 (Details & Add)]
+                    p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -381,6 +382,14 @@ if st.session_state.current_view == "Home":
                     with p_div1_col:
                         st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
+                    with p_desc_col:
+                        st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
+                        st.markdown("**Description:**")
+                        st.caption(prod.get('description', ''))
+
+                    with p_div2_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
                     with p_details_col:
                         st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
                         st.markdown(f"**{prod['name']}**")
@@ -395,16 +404,8 @@ if st.session_state.current_view == "Home":
                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
                                 st.success(f"Added!")
                                 st.rerun()
-
-                    with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
-
-                    with p_desc_col:
-                        st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
-                        st.markdown("**Description:**")
-                        st.caption(prod.get('description', ''))
                                     
-                    st.markdown("---")
+                    st.markdown("")
             else:
                 st.info("No items found.")
 
