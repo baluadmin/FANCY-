@@ -501,8 +501,8 @@ if st.session_state.current_view == "Home":
                 except Exception as e:
                     st.error(f"Error: {e}")
 
-        # Chat container
-        with st.container(height=410, border=True):
+        # Chat container (border removed)
+        with st.container(height=410, border=False):
             if "messages" in st.session_state:
                 for message in st.session_state.messages:
                     with st.chat_message(message["role"]):
