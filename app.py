@@ -241,7 +241,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (Column G is index 6 for images, Column H is index 7 for description)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
 product_records = []
 if not inv_df.empty:
     try:
@@ -252,8 +252,8 @@ if not inv_df.empty:
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
                 "price": str(row.iloc[4]),
-                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else "",
-                "description": str(row.iloc[7]).strip() if len(row) > 7 and pd.notna(row.iloc[7]) else "High-quality mobile accessory built for reliable everyday performance."
+                "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
     except Exception:
         product_records = []
@@ -342,7 +342,7 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # 4-column layout: Image Carousel | Divider | Product Pricing & Add Controls | Description Text
+                    # 4-column layout: Image Carousel | Divider | Product Pricing & Add Controls | Divider | Description Text
                     p_img_col, p_div1_col, p_details_col, p_div2_col, p_desc_col = st.columns([2.5, 0.05, 1.8, 0.05, 2.2], gap="small")
                     
                     with p_img_col:
