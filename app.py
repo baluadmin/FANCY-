@@ -276,7 +276,7 @@ if not product_records:
     ]
 
 
-def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
+def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str) -> str:
     """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
@@ -298,8 +298,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
             "Items": cart_summary,
             "Address": address,
             "Secondary_Phone": secondary_phone,
-            "Description": description,
-            "Live_Location": location_link
+            "Description": description
         }
         requests.post(GOOGLE_SCRIPT_URL, json=order_data)
     except Exception as e:
@@ -309,8 +308,8 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
+            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description"])
+        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description])
 
     st.session_state.cart = []
     return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
@@ -445,13 +444,12 @@ else:
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-            live_location = st.text_input("Live Location Link (Google Maps Share URL):")
             
             submit_checkout = st.form_submit_button("Complete Order & Pay")
             if submit_checkout:
                 if checkout_address and secondary_phone:
                     result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, payment_method, live_location
+                        checkout_address, secondary_phone, product_desc, payment_method
                     )
                     st.success(result_msg)
                     st.session_state.current_view = "Home"
