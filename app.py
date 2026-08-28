@@ -342,7 +342,7 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # 4-column layout: Image Carousel | Divider | Product Pricing & Add Controls | Divider | Description Text (Centered vertically using markdown spacing)
+                    # 4-column layout: Image Carousel | Divider | Product Pricing & Add Controls | Divider | Description Text (All vertically centered)
                     p_img_col, p_div1_col, p_details_col, p_div2_col, p_desc_col = st.columns([2.5, 0.05, 1.8, 0.05, 2.2], gap="small")
                     
                     with p_img_col:
@@ -384,6 +384,8 @@ if st.session_state.current_view == "Home":
                         st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
+                        # Vertically centering details block
+                        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
@@ -401,8 +403,8 @@ if st.session_state.current_view == "Home":
                         st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
-                        # Pushing description down to align vertically in the center
-                        st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                        # Vertically centering description block
+                        st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
                         st.markdown("**Description:**")
                         st.caption(prod.get('description', ''))
                                     
