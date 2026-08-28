@@ -3,8 +3,6 @@ import csv
 import os
 import random
 import chromadb
-from google import genai
-from google.genai import types
 import pandas as pd
 import requests
 import streamlit as st
@@ -226,18 +224,6 @@ with top_c4:
 
 st.markdown("---")
 
-# 3. Gemini API Configuration & Database Setup
-db_path = "./chroma_db"
-
-try:
-    api_key_input = st.secrets["GOOGLE_API_KEY"]
-    client = genai.Client(api_key=api_key_input)
-    chroma_client = chromadb.PersistentClient(path=db_path)
-    collection = chroma_client.get_or_create_collection(name="my_inventory_library")
-except Exception as e:
-    st.error(f"Error connecting to Database or API Key missing: {e}")
-    st.stop()
-
 
 # Load Inventory Directly from Google Sheets CSV Link with Cache Bypass
 @st.cache_data(ttl=5)
@@ -254,26 +240,6 @@ def load_inventory_from_sheet():
 
 
 inv_df = load_inventory_from_sheet()
-
-
-def load_inventory_to_chroma():
-    file_name = "inventory.csv"
-    if not os.path.exists(file_name):
-        return
-    try:
-        df = pd.read_csv(file_name)
-        file_text = df.to_string(index=False)
-        if file_text.strip():
-            existing = collection.get(ids=[file_name])
-            if existing and existing["ids"]:
-                collection.update(documents=[file_text], ids=[file_name])
-            else:
-                collection.add(documents=[file_text], ids=[file_name])
-    except Exception:
-        pass
-
-
-load_inventory_to_chroma()
 
 
 # Load Product Records from Google Sheet Data dynamically with correct index mapping
@@ -305,33 +271,6 @@ if not product_records:
         {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
         {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
     ]
-
-
-# 4. Define Tools
-def search_knowledge_base(query: str) -> str:
-    """Search inventory data, stock details, and products from the vector database."""
-    try:
-        results = collection.query(query_texts=[query], n_results=1)
-        if results["documents"] and len(results["documents"][0]) > 0:
-            return results["documents"][0][0]
-        return "No relevant information found."
-    except Exception as e:
-        return f"Error during search: {e}"
-
-
-def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight."""
-    st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
-    st.session_state.last_booked_item = product_name
-    return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
-
-
-def calculate_total_price(price: float, quantity: int, discount_percentage: float = 0.0) -> str:
-    """Calculate total price including quantity and optional discount."""
-    subtotal = price * quantity
-    discount_amount = subtotal * (discount_percentage / 100)
-    final_total = subtotal - discount_amount
-    return f"Calculation Result: Subtotal = ₹{subtotal}, Discount = ₹{discount_amount}, Final Total = ₹{final_total}"
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
@@ -374,25 +313,9 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
 
 
-def add_product_review(rating: int, review_comment: str) -> str:
-    """Submit a product review and rating (1 to 5 stars)."""
-    item = st.session_state.get("last_booked_item", "General Products")
-    customer_name = st.session_state.logged_in_user
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    file_exists = os.path.isfile("reviews.csv")
-    with open("reviews.csv", mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Product", "Rating", "Comment"])
-        writer.writerow([timestamp, customer_name, item, rating, review_comment])
-
-    return f"Thank you, {customer_name}! Your review ({rating}/5 stars) has been saved."
-
-
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
+    col_menu, col_items = st.columns([1, 2], gap="small")
 
     # --- SECTION 1: MENU ---
     with col_menu:
@@ -431,97 +354,6 @@ if st.session_state.current_view == "Home":
                     st.markdown("---")
             else:
                 st.info("No items found.")
-
-    # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
-    with col_ai:
-        st.markdown("AI Assistant")
-        user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
-        
-        if user_prompt:
-            msg_id = len(st.session_state.get("messages", []))
-            if "messages" not in st.session_state:
-                st.session_state.messages = []
-            
-            st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
-            
-            with st.spinner("Processing..."):
-                try:
-                    context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
-                    full_prompt = user_prompt + context_memory
-
-                    response = client.models.generate_content(
-                        model="gemini-3.6-flash",
-                        contents=full_prompt,
-                        config=types.GenerateContentConfig(
-                            tools=[
-                                search_knowledge_base,
-                                add_to_cart,
-                                calculate_total_price,
-                                process_cart_checkout,
-                                add_product_review,
-                            ],
-                            temperature=0.3,
-                            system_instruction=(
-                                "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
-                                "1. Detect user language and ALWAYS respond in that same language. "
-                                "2. When listing products, mention their exact names clearly."
-                            ),
-                        ),
-                    )
-
-                    final_reply = ""
-                    if response.function_calls:
-                        for function_call in response.function_calls:
-                            tool_name = function_call.name
-                            tool_args = function_call.args
-
-                            if tool_name == "search_knowledge_base":
-                                tool_result = search_knowledge_base(**tool_args)
-                            elif tool_name == "add_to_cart":
-                                tool_result = add_to_cart(**tool_args)
-                                st.rerun()
-                            elif tool_name == "calculate_total_price":
-                                tool_result = calculate_total_price(**tool_args)
-                            elif tool_name == "process_cart_checkout":
-                                tool_result = process_cart_checkout(**tool_args)
-                            elif tool_name == "add_product_review":
-                                tool_result = add_product_review(**tool_args)
-                            else:
-                                tool_result = "Tool not found."
-
-                            followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
-                            final_response = client.models.generate_content(
-                                model="gemini-3.6-flash", contents=followup_prompt
-                            )
-                            final_reply = final_response.text
-                    else:
-                        final_reply = response.text
-
-                    st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
-                except Exception as e:
-                    st.error(f"Error: {e}")
-
-        # Chat container (border removed)
-        with st.container(height=410, border=False):
-            if "messages" in st.session_state:
-                for message in st.session_state.messages:
-                    with st.chat_message(message["role"]):
-                        st.markdown(message["content"])
-                        
-                        if message["role"] == "assistant":
-                            for p_idx, prod in enumerate(product_records):
-                                if prod['name'].lower() in message["content"].lower():
-                                    with st.container():
-                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_b_col = st.columns([1, 1])
-                                        with ai_q_col:
-                                            aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_b_col:
-                                            if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} Units"
-                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                st.success(f"Added!")
-                                                st.rerun()
 
 else:
     st.subheader("🛒 Your Shopping Cart & Checkout")
