@@ -415,7 +415,8 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("")
+                    # Extended horizontal dividing line spanning across all columns underneath each product card row
+                    st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
