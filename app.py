@@ -203,7 +203,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Top Bar layout: Welcome message on the left, right-aligned navigation buttons on the right
+# Commercial banner area on the left (showing only welcome message) and right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -226,7 +226,7 @@ with top_c3:
 st.markdown("---")
 
 
-# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache (Forcing reload to instantly catch column H additions)
+# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache (Fast reload to catch Column H commercial/offer images)
 @st.cache_data(ttl=1)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
@@ -310,13 +310,12 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    # Full-width commercial offer banner section directly under the top navigation bar, reflecting Column H images dynamically
     categories = list(set([p['category'] for p in product_records]))
     current_cat = st.session_state.get("selected_menu", categories[0] if categories else "Headset")
     filtered_items = [p for p in product_records if p['category'] == current_cat]
 
+    # Full-width commercial offer banner section directly under the top navigation bar, reflecting Column H images dynamically
     if filtered_items:
-        # Check if any product in the current category has an offer image specified in Column H
         for prod in filtered_items:
             offer_img = prod.get('offer_image', '')
             if offer_img:
