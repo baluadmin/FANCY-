@@ -203,7 +203,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Welcome info on the left, right-aligned navigation buttons on the right
+# Top Bar layout: Welcome message / Commercial banner spot on the left, right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -244,7 +244,7 @@ inv_df = load_inventory_from_sheet()
 
 
 # Load Product Records from Google Sheet Data dynamically
-# Index mapping: Name(1), Category(2), Stock(3), Price(4), Description(5), Image(6), Offer/Banner Image(7)
+# Column mapping: 0:ID, 1:Name, 2:Category, 3:Stock, 4:Price, 5:Description, 6:Images, 7:Offer Image (Column H)
 product_records = []
 if not inv_df.empty:
     try:
@@ -359,7 +359,7 @@ if st.session_state.current_view == "Home":
                                         st.rerun()
                                             
                                 with img_display:
-                                    # Carousel supporting up to 6 images (displaying 2 side-by-side or scrolling through them)
+                                    # Support up to 6 images or more with circular carousel scrolling
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
@@ -396,10 +396,11 @@ if st.session_state.current_view == "Home":
                         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
                         st.markdown("**Description:**")
                         st.caption(prod.get('description', ''))
-                        # Display offer banner/image column content below description if available
+                        
+                        # Full-width commercial / offer image reflecting directly from Column H of the worksheet
                         offer_img = prod.get('offer_image', '')
                         if offer_img and os.path.exists(offer_img):
-                            st.image(offer_img, width=120)
+                            st.image(offer_img, use_column_width=True)
 
                     with p_div2_col:
                         st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
