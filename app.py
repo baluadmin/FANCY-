@@ -341,8 +341,8 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # 3-column split for Single Big Image Carousel | Vertical Divider Line | Product Details & Add to Cart
-                    p_img_col, p_div_col, p_details_col = st.columns([2.5, 0.1, 2.5], gap="small")
+                    # 3-column split for Image Carousel with Centered Image | Vertical Divider Line | Product Details & Add to Cart
+                    p_img_col, p_div_col, p_details_col = st.columns([3, 0.1, 2.5], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -364,7 +364,10 @@ if st.session_state.current_view == "Home":
                                             
                                 with img_display:
                                     if current_idx < total_imgs:
-                                        st.image(valid_paths[current_idx], width=200)
+                                        # Centering the image wrapper using columns
+                                        _, center_img_col, _ = st.columns([1, 6, 1])
+                                        with center_img_col:
+                                            st.image(valid_paths[current_idx], width=180)
                                             
                                 with r_btn:
                                     st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
