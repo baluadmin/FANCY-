@@ -56,30 +56,31 @@ st.markdown("""
         /* Professional Neutral Dark/Slate Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 18px;
+            padding: 14px 18px;
             border-radius: 8px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .brand-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
         }
 
-        /* Clean Neutral Action Buttons Styling */
+        /* Compact & Professional Action Buttons Styling */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1px solid #cbd5e1 !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
+            font-weight: 650 !important;
+            font-size: 13px !important;
             border-radius: 6px !important;
-            padding: 0.4rem 1rem !important;
+            padding: 0.25rem 0.75rem !important;
+            min-height: unset !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
@@ -89,7 +90,6 @@ st.markdown("""
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
         @media (max-width: 900px) {
-            /* Keep top nav buttons horizontal */
             .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
@@ -101,7 +101,6 @@ st.markdown("""
                 padding: 0px 2px !important;
             }
 
-            /* Stack body content sections vertically on mobile */
             div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
                 flex-direction: column !important;
                 flex-wrap: wrap !important;
@@ -115,10 +114,10 @@ st.markdown("""
         }
 
         .block-container {
-            padding-top: 1rem;
+            padding-top: 0.8rem;
             padding-bottom: 0rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            padding-left: 1.2rem;
+            padding-right: 1.2rem;
             max-width: 100% !important;
         }
     </style>
@@ -158,19 +157,19 @@ def log_login_to_sheet(name, phone):
 # 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
-            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
+            <h1 style='font-size: 26px; font-weight: 800; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1.3, 1, 1.3])
+    _, mid_col, _ = st.columns([1.5, 1, 1.5])
     
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 750;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -196,14 +195,15 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: MODERN PROFESSIONAL HEADER & NAVIGATION ---
+# --- AFTER LOGIN: COMPACT PROFESSIONAL HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-top_c1, top_c2, top_c3, top_c4 = st.columns([2, 1, 1, 1])
+# Compact tight header navigation columns
+top_c1, top_c2, top_c3, top_c4 = st.columns([2.5, 0.8, 0.8, 0.8], gap="small")
 with top_c1:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
 with top_c2:
@@ -315,12 +315,12 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items = st.columns([1, 2], gap="small")
+    col_menu, col_items = st.columns([1, 2.5], gap="small")
 
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=500, border=True):
+        with st.container(height=480, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -331,7 +331,7 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=500, border=True):
+        with st.container(height=480, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
@@ -352,10 +352,10 @@ if st.session_state.current_view == "Home":
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                l_btn, img_display, r_btn = st.columns([0.4, 3.2, 0.4])
+                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -369,19 +369,19 @@ if st.session_state.current_view == "Home":
                                         with sub_col1:
                                             _, center_sub1, _ = st.columns([1, 4, 1])
                                             with center_sub1:
-                                                st.image(valid_paths[current_idx], width=110)
+                                                st.image(valid_paths[current_idx], width=95)
                                         with sub_col2:
                                             _, center_sub2, _ = st.columns([1, 4, 1])
                                             with center_sub2:
                                                 next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=110)
+                                                st.image(valid_paths[next_idx], width=95)
                                     else:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
-                                            st.image(valid_paths[0], width=110)
+                                            st.image(valid_paths[0], width=95)
                                             
                                 with r_btn:
-                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
@@ -394,18 +394,18 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
-                        st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
                         st.markdown("**Description:**")
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
-                        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
@@ -419,7 +419,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
