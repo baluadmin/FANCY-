@@ -336,63 +336,116 @@ if st.session_state.current_view == "Home":
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    p_img_col, p_info_col, p_qty_col, p_btn_col = st.columns([3.5, 1.5, 1, 1], gap="small")
+                    slide_key = f"slide_{current_cat}_{idx}"
+                    zoom_key = f"zoom_{current_cat}_{idx}"
+                    zoom_idx_key = f"zoom_idx_{current_cat}_{idx}"
                     
-                    with p_img_col:
-                        raw_img = prod.get("image", "")
-                        if raw_img:
-                            img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
-                            valid_paths = [p for p in img_paths if os.path.exists(p)]
-                            if valid_paths:
-                                slide_key = f"slide_{current_cat}_{idx}"
-                                if slide_key not in st.session_state:
-                                    st.session_state[slide_key] = 0
-                                
-                                total_imgs = len(valid_paths)
-                                current_idx = st.session_state[slide_key]
-                                
-                                # Layout: Left Arrow, Image 1, Image 2, Right Arrow
-                                l_btn, img_col1, img_col2, r_btn = st.columns([0.5, 2, 2, 0.5])
-                                
-                                with l_btn:
-                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] > 0:
-                                            st.session_state[slide_key] -= 1
-                                            st.rerun()
+                    if slide_key not in st.session_state:
+                        st.session_state[slide_key] = 0
+                    if zoom_key not in st.session_state:
+                        st.session_state[zoom_key] = False
+                    if zoom_idx_key not in st.session_state:
+                        st.session_state[zoom_idx_key] = 0
+
+                    # Flipkart-style Lightbox Popup View when Zoom is active
+                    if st.session_state[zoom_key]:
+                        st.markdown("---")
+                        st.markdown(f"**🔍 Large Preview: {prod['name']}**")
+                        
+                        raw_img_z = prod.get("image", "")
+                        img_paths_z = [img.strip() for img in raw_img_z.replace("\\", ",").split(",") if img.strip()]
+                        valid_paths_z = [p for p in img_paths_z if os.path.exists(p)]
+                        total_imgs_z = len(valid_paths_z)
+                        
+                        z_l, z_img, z_r = st.columns([0.5, 4, 0.5])
+                        zoom_current = st.session_state[zoom_idx_key]
+                        
+                        with z_l:
+                            st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
+                            if st.button("‹", key=f"zoom_prev_{current_cat}_{idx}"):
+                                if zoom_current > 0:
+                                    st.session_state[zoom_idx_key] -= 1
+                                    st.rerun()
+                                    
+                        with z_img:
+                            if valid_paths_z and zoom_current < total_imgs_z:
+                                st.image(valid_paths_z[zoom_current], width=280)
+                                st.caption(f"Image {zoom_current + 1} of {total_imgs_z}")
+                            
+                        with z_r:
+                            st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
+                            if st.button("›", key=f"zoom_next_{current_cat}_{idx}"):
+                                if zoom_current + 1 < total_imgs_z:
+                                    st.session_state[zoom_idx_key] += 1
+                                    st.rerun()
+                                    
+                        if st.button("❌ Close Preview", key=f"close_zoom_{current_cat}_{idx}", use_container_width=True):
+                            st.session_state[zoom_key] = False
+                            st.rerun()
+                        st.markdown("---")
+                    else:
+                        # Standard Product Card layout with Image Carousel on left, details and controls on right
+                        p_img_col, p_details_col = st.columns([2.5, 2.5], gap="small")
+                        
+                        with p_img_col:
+                            raw_img = prod.get("image", "")
+                            if raw_img:
+                                img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                                valid_paths = [p for p in img_paths if os.path.exists(p)]
+                                if valid_paths:
+                                    total_imgs = len(valid_paths)
+                                    current_idx = st.session_state[slide_key]
+                                    
+                                    l_btn, img_col1, img_col2, r_btn = st.columns([0.5, 2, 2, 0.5])
+                                    
+                                    with l_btn:
+                                        st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                        if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                            if st.session_state[slide_key] > 0:
+                                                st.session_state[slide_key] -= 1
+                                                st.rerun()
+                                                
+                                    with img_col1:
+                                        if current_idx < total_imgs:
+                                            st.image(valid_paths[current_idx], width=90)
+                                            if st.button("🔍 Zoom", key=f"z1_{current_cat}_{idx}_{current_idx}"):
+                                                st.session_state[zoom_key] = True
+                                                st.session_state[zoom_idx_key] = current_idx
+                                                st.rerun()
                                             
-                                with img_col1:
-                                    if current_idx < total_imgs:
-                                        st.image(valid_paths[current_idx], width=110)
-                                        
-                                with img_col2:
-                                    if current_idx + 1 < total_imgs:
-                                        st.image(valid_paths[current_idx + 1], width=110)
-                                        
-                                with r_btn:
-                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] + 2 < total_imgs:
-                                            st.session_state[slide_key] += 1
-                                            st.rerun()
+                                    with img_col2:
+                                        if current_idx + 1 < total_imgs:
+                                            st.image(valid_paths[current_idx + 1], width=90)
+                                            if st.button("🔍 Zoom", key=f"z2_{current_cat}_{idx}_{current_idx+1}"):
+                                                st.session_state[zoom_key] = True
+                                                st.session_state[zoom_idx_key] = current_idx + 1
+                                                st.rerun()
+                                            
+                                    with r_btn:
+                                        st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                        if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                            if st.session_state[slide_key] + 2 < total_imgs:
+                                                st.session_state[slide_key] += 1
+                                                st.rerun()
+                                else:
+                                    st.caption("No Image")
                             else:
                                 st.caption("No Image")
-                        else:
-                            st.caption("No Image")
+                                
+                        with p_details_col:
+                            st.markdown(f"**{prod['name']}**")
+                            st.markdown(f"₹{prod['price']}")
                             
-                    with p_info_col:
-                        st.markdown(f"**{prod['name']}**")
-                        st.caption(f"₹{prod['price']}")
-                        
-                    with p_qty_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                        
-                    with p_btn_col:
-                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                            full_q_str = f"{int(q_val)} Units"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success(f"Added!")
-                            st.rerun()
+                            q_col, b_col = st.columns([1, 1], gap="small")
+                            with q_col:
+                                q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                            with b_col:
+                                if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                                    full_q_str = f"{int(q_val)} Units"
+                                    st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                    st.success(f"Added!")
+                                    st.rerun()
+                                    
                     st.markdown("---")
             else:
                 st.info("No items found.")
