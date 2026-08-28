@@ -86,7 +86,7 @@ st.markdown("""
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
-            border: 1.5px solid #94a3b8 !important;
+            border: 1px solid #94a3b8 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
@@ -203,10 +203,12 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Right-aligned header layout with tight columns and minimal spacing (using a spacer followed by 3 compact button columns)
-top_space, top_c1, top_c2, top_c3 = st.columns([4.2, 0.8, 0.8, 0.8], gap="small")
+# Commercial banner area on the left and right-aligned navigation buttons on the right
+top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
+with top_comm:
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**! | 📢 **Special Offer: Free Delivery on orders above ₹999!**")
 with top_space:
-    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
+    st.empty()
 with top_c1:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
