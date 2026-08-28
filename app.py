@@ -203,27 +203,59 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Commercial banner area on the left and right-aligned navigation buttons on the right
-top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
+# Perfectly aligned top navigation bar with vertical centering applied to the welcome text and buttons
+top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.6, 1.4, 1.0, 1.0, 1.0], gap="small")
+
 with top_comm:
-    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
+    st.markdown(f"""
+        <div style='display: flex; align-items: center; height: 38px;'>
+            <span style='font-size: 14px; font-weight: 600; color: var(--text-color);'>👋 Welcome, <strong>{st.session_state.logged_in_user}</strong>!</span>
+        </div>
+    """, unsafe_allow_html=True)
+
 with top_space:
     st.empty()
+
 with top_c1:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
+
 with top_c2:
     cart_count = len(st.session_state.cart)
     if st.button(f"Cart ({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
+
 with top_c3:
     if st.button("Logout", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
+st.markdown("<div style='margin-top: -8px;'></div>", unsafe_allow_html=True)
 st.markdown("---")
+
+
+# --- OFFER OF THE DAY BANNER SECTION ---
+promo_image_path = "images/Headset 1 1.jpg"
+img_html = ""
+
+if os.path.exists(promo_image_path):
+    img_html = f"<img src='{promo_image_path}' style='width: 55px; height: 55px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;'>"
+else:
+    img_html = "<div style='font-size: 11px; color: #64748b;'>No Image</div>"
+
+st.markdown(f"""
+    <div style='background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 12px 16px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;'>
+        <div style='flex-grow: 1; padding-right: 15px;'>
+            <h4 style='margin: 0 0 3px 0; color: #1e293b; font-size: 14px; font-weight: 800;'>🔥 OFFER OF THE DAY</h4>
+            <p style='margin: 0; color: #334155; font-size: 12px; font-weight: 600;'>Get special discounts on premium accessories today! Check out our featured items below.</p>
+        </div>
+        <div>
+            {img_html}
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
