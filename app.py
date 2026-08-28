@@ -241,7 +241,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (Column G is index 6 for images, Column H is index 7 for descriptions)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Column G is index 6 for images, Column H is index 7 for description)
 product_records = []
 if not inv_df.empty:
     try:
@@ -253,14 +253,14 @@ if not inv_df.empty:
                 "stock": str(row.iloc[3]),
                 "price": str(row.iloc[4]),
                 "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else "",
-                "description": str(row.iloc[7]).strip() if len(row) > 7 and pd.notna(row.iloc[7]) else "No description available."
+                "description": str(row.iloc[7]).strip() if len(row) > 7 and pd.notna(row.iloc[7]) else "High-quality mobile accessory built for reliable everyday performance."
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "High quality wireless bluetooth headset with deep bass and crystal clear audio."},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "High-quality wireless bluetooth headset with deep bass and crystal clear audio."},
         {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "Immersive gaming headset with ergonomic comfort and noise isolation."},
         {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Ultra fast wall charger supporting 33W Power Delivery."},
         {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "Charge two devices simultaneously with smart protection."},
@@ -342,8 +342,8 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # 3-column split for Image Carousel with Centered Image | Vertical Divider Line | Product Details, Description & Add to Cart
-                    p_img_col, p_div_col, p_details_col = st.columns([3, 0.1, 2.5], gap="small")
+                    # 4-column layout: Image Carousel | Divider | Product Pricing & Add Controls | Description Text
+                    p_img_col, p_div1_col, p_details_col, p_div2_col, p_desc_col = st.columns([2.5, 0.05, 1.8, 0.05, 2.2], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -354,10 +354,10 @@ if st.session_state.current_view == "Home":
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                l_btn, img_display, r_btn = st.columns([0.5, 4, 0.5])
+                                l_btn, img_display, r_btn = st.columns([0.4, 3.2, 0.4])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -365,12 +365,12 @@ if st.session_state.current_view == "Home":
                                             
                                 with img_display:
                                     if current_idx < total_imgs:
-                                        _, center_img_col, _ = st.columns([1, 6, 1])
+                                        _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
-                                            st.image(valid_paths[current_idx], width=180)
+                                            st.image(valid_paths[current_idx], width=140)
                                             
                                 with r_btn:
-                                    st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
@@ -380,15 +380,12 @@ if st.session_state.current_view == "Home":
                         else:
                             st.caption("No Image")
                             
-                    with p_div_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 220px; margin-top: 10px;'></div>", unsafe_allow_html=True)
+                    with p_div1_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
-                        
-                        # Product description text block
-                        st.caption(prod.get('description', ''))
                         
                         q_col, b_col = st.columns([1, 1], gap="small")
                         with q_col:
@@ -399,6 +396,13 @@ if st.session_state.current_view == "Home":
                                 st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
                                 st.success(f"Added!")
                                 st.rerun()
+
+                    with p_div2_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 160px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
+                    with p_desc_col:
+                        st.markdown("**Description:**")
+                        st.caption(prod.get('description', ''))
                                     
                     st.markdown("---")
             else:
