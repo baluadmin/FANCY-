@@ -47,46 +47,64 @@ st.markdown("""
         input, textarea, div[data-baseweb="select"] > div {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
-            border: 1.5px solid #cbd5e1 !important;
+            border: 1.5px solid #d8b4fe !important;
             font-size: 14px !important;
             font-weight: 400 !important;
             border-radius: 6px !important;
         }
 
-        /* Professional Neutral Dark/Slate Header Banner */
+        /* Vibrant Purple Gradient Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 14px 18px;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+            padding: 16px 20px;
+            border-radius: 10px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 12px;
+            box-shadow: 0 4px 15px -3px rgba(168, 85, 247, 0.4);
+            margin-bottom: 14px;
         }
         .brand-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* Compact, Full-Width Buttons tightly fitted inside columns */
+        /* Adaptive Image Container with subtle vibrant border styling */
+        .image-container {
+            background-color: var(--secondary-background-color);
+            border: 2px solid #e9d5ff;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 110px;
+            box-shadow: 0 2px 8px rgba(168, 85, 247, 0.08);
+        }
+
+        /* Colorful & Professional Buttons */
         div.stButton > button {
-            background-color: #f1f5f9 !important;
-            color: #1e293b !important;
-            border: 1.5px solid #cbd5e1 !important;
+            background: linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%) !important;
+            color: #6b21a8 !important;
+            border: 1.5px solid #d8b4fe !important;
             font-weight: 600 !important;
             font-size: 14px !important;
-            border-radius: 6px !important;
+            border-radius: 8px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
             white-space: nowrap !important;
+            box-shadow: 0 2px 4px rgba(168, 85, 247, 0.05);
+            transition: all 0.2s ease;
         }
         div.stButton > button:hover {
-            background-color: #e2e8f0 !important;
-            color: #0f172a !important;
-            border: 1px solid #94a3b8 !important;
+            background: linear-gradient(135deg, #e9d5ff 0%, #f5d0fe 100%) !important;
+            color: #581c87 !important;
+            border: 1.5px solid #a855f7 !important;
+            box-shadow: 0 4px 8px rgba(168, 85, 247, 0.2);
         }
 
         /* Robust Auto-Reflowing Columns for Zoom / Resize Handling */
@@ -147,8 +165,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; background: linear-gradient(135deg, #7c3aed, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -157,8 +175,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 12px; border: 2px solid #d8b4fe; box-shadow: 0 6px 16px -3px rgba(168, 85, 247, 0.15); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: #7c3aed;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -231,7 +249,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping
+# Load Product Records from Google Sheet Data dynamically
 product_records = []
 if not inv_df.empty:
     try:
@@ -256,7 +274,6 @@ if not product_records:
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
-    """Checkout all items currently in the cart with delivery details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -322,7 +339,6 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # Flexible 3-column layout optimized for zoom scaling and screen responsiveness
                     p_img_col, p_desc_col, p_details_col = st.columns([1.5, 1.8, 1.2], gap="small")
                     
                     with p_img_col:
@@ -346,21 +362,17 @@ if st.session_state.current_view == "Home":
                                         st.rerun()
                                         
                                 with img_display:
+                                    st.markdown("<div class='image-container'>", unsafe_allow_html=True)
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
-                                            _, center_sub1, _ = st.columns([1, 4, 1])
-                                            with center_sub1:
-                                                st.image(valid_paths[current_idx], width=95)
+                                            st.image(valid_paths[current_idx], width=85)
                                         with sub_col2:
-                                            _, center_sub2, _ = st.columns([1, 4, 1])
-                                            with center_sub2:
-                                                next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=95)
+                                            next_idx = (current_idx + 1) % total_imgs
+                                            st.image(valid_paths[next_idx], width=85)
                                     else:
-                                        _, center_img_col, _ = st.columns([1, 4, 1])
-                                        with center_img_col:
-                                            st.image(valid_paths[0], width=95)
+                                        st.image(valid_paths[0], width=95)
+                                    st.markdown("</div>", unsafe_allow_html=True)
                                         
                                 with r_btn:
                                     st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
@@ -371,9 +383,9 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
-                                st.caption("No Image")
+                                st.markdown("<div class='image-container'><p style='font-size:12px; margin:0;'>No Image</p></div>", unsafe_allow_html=True)
                         else:
-                            st.caption("No Image")
+                            st.markdown("<div class='image-container'><p style='font-size:12px; margin:0;'>No Image</p></div>", unsafe_allow_html=True)
                             
                     with p_desc_col:
                         st.markdown("**Description:**")
@@ -393,7 +405,7 @@ if st.session_state.current_view == "Home":
                                 st.success("Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #e9d5ff;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
