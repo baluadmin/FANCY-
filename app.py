@@ -72,18 +72,18 @@ st.markdown("""
             text-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* Adaptive Image Container with subtle vibrant border styling */
+        /* Fixed Adaptive Image Container with a clean contrasting background for dark & light modes */
         .image-container {
-            background-color: var(--secondary-background-color);
-            border: 2px solid #e9d5ff;
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 2px solid #d8b4fe;
             border-radius: 10px;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 110px;
-            box-shadow: 0 2px 8px rgba(168, 85, 247, 0.08);
+            min-height: 140px;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.12);
         }
 
         /* Colorful & Professional Buttons */
@@ -339,7 +339,7 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    p_img_col, p_desc_col, p_details_col = st.columns([1.5, 1.8, 1.2], gap="small")
+                    p_img_col, p_desc_col, p_details_col = st.columns([1.8, 1.6, 1.2], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -350,10 +350,10 @@ if st.session_state.current_view == "Home":
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
                                 
-                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
+                                l_btn, img_display, r_btn = st.columns([0.2, 3.6, 0.2])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 55px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -366,16 +366,16 @@ if st.session_state.current_view == "Home":
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
                                         with sub_col1:
-                                            st.image(valid_paths[current_idx], width=85)
+                                            st.image(valid_paths[current_idx], width=110)
                                         with sub_col2:
                                             next_idx = (current_idx + 1) % total_imgs
-                                            st.image(valid_paths[next_idx], width=85)
+                                            st.image(valid_paths[next_idx], width=110)
                                     else:
-                                        st.image(valid_paths[0], width=95)
+                                        st.image(valid_paths[0], width=120)
                                     st.markdown("</div>", unsafe_allow_html=True)
                                         
                                 with r_btn:
-                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 55px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
@@ -383,9 +383,9 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
-                                st.markdown("<div class='image-container'><p style='font-size:12px; margin:0;'>No Image</p></div>", unsafe_allow_html=True)
+                                st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#475569;'>No Image</p></div>", unsafe_allow_html=True)
                         else:
-                            st.markdown("<div class='image-container'><p style='font-size:12px; margin:0;'>No Image</p></div>", unsafe_allow_html=True)
+                            st.markdown("<div class='image-container'><p style='font-size:12px; margin:0; color:#475569;'>No Image</p></div>", unsafe_allow_html=True)
                             
                     with p_desc_col:
                         st.markdown("**Description:**")
@@ -405,7 +405,7 @@ if st.session_state.current_view == "Home":
                                 st.success("Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #e9d5ff;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 12px; margin-bottom: 12px; border: none; border-top: 1px solid #e9d5ff;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
