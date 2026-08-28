@@ -206,7 +206,7 @@ st.markdown("""
 # Commercial banner area on the left and right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
-    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**! | 📢 **Special Offer: Free Delivery on orders above ₹999!**")
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
 with top_space:
     st.empty()
 with top_c1:
@@ -365,7 +365,7 @@ if st.session_state.current_view == "Home":
                                         else:
                                             st.session_state[slide_key] = total_imgs - 1
                                         st.rerun()
-                                            
+                                        
                                 with img_display:
                                     if total_imgs >= 2:
                                         sub_col1, sub_col2 = st.columns(2, gap="small")
@@ -382,7 +382,7 @@ if st.session_state.current_view == "Home":
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
                                             st.image(valid_paths[0], width=95)
-                                            
+                                        
                                 with r_btn:
                                     st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
