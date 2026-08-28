@@ -203,10 +203,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Commercial banner area on the left and right-aligned navigation buttons on the right
+# Commercial banner area on the left (showing shop address) and right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
-    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**! | 📍 **No 54, Abirami Nagar, Thiruverkadu**")
 with top_space:
     st.empty()
 with top_c1:
@@ -224,6 +224,28 @@ with top_c3:
         st.rerun()
 
 st.markdown("---")
+
+
+# --- OFFER OF THE DAY BANNER SECTION ---
+promo_image_path = "images/Headset 1 1.jpg"
+img_html = ""
+
+if os.path.exists(promo_image_path):
+    img_html = f"<img src='{promo_image_path}' style='width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;'>"
+else:
+    img_html = "<div style='font-size: 11px; color: #64748b;'>No Image</div>"
+
+st.markdown(f"""
+    <div style='background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 14px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;'>
+        <div style='flex-grow: 1; padding-right: 15px;'>
+            <h4 style='margin: 0 0 4px 0; color: #1e293b; font-size: 15px; font-weight: 800;'>🔥 OFFER OF THE DAY</h4>
+            <p style='margin: 0; color: #334155; font-size: 13px; font-weight: 600;'>Get special discounts on premium accessories today! Check out our featured items below.</p>
+        </div>
+        <div>
+            {img_html}
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
