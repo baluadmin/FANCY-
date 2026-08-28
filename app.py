@@ -203,7 +203,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Top Bar layout: Welcome message / Commercial banner spot on the left, right-aligned navigation buttons on the right
+# Top Bar layout: Welcome message on the left, right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -226,8 +226,8 @@ with top_c3:
 st.markdown("---")
 
 
-# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
-@st.cache_data(ttl=2)
+# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache (Forcing reload to instantly catch column H additions)
+@st.cache_data(ttl=1)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
@@ -399,8 +399,11 @@ if st.session_state.current_view == "Home":
                         
                         # Full-width commercial / offer image reflecting directly from Column H of the worksheet
                         offer_img = prod.get('offer_image', '')
-                        if offer_img and os.path.exists(offer_img):
-                            st.image(offer_img, use_column_width=True)
+                        if offer_img:
+                            offer_paths = [p.strip() for p in offer_img.replace("\\", ",").split(",") if p.strip()]
+                            for opath in offer_paths:
+                                if os.path.exists(opath):
+                                    st.image(opath, use_column_width=True)
 
                     with p_div2_col:
                         st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
