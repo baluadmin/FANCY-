@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Meesho Theme Styling (Magenta/Pink & Clean Sans-Serif)
+# 1. Streamlit Page Configuration & Light Professional Theme Styling
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -15,11 +15,13 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Muller:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Clean Modern Sans-Serif Typography Match */
+        /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
         }
 
         /* Hide Streamlit default elements */
@@ -35,57 +37,59 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Theme Text Color Support */
+        /* Force clean professional light text and labels */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: var(--text-color) !important;
+            color: #1e293b !important;
             font-weight: 500 !important;
         }
         
-        /* Input boxes styling */
+        /* Light professional input boxes styling */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: var(--secondary-background-color) !important;
-            color: var(--text-color) !important;
-            border: 1.5px solid #e2e8f0 !important;
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
             font-weight: 400 !important;
             border-radius: 8px !important;
         }
 
-        /* Meesho-Inspired Signature Header Banner (Vibrant Pink/Magenta Brand Identity) */
+        /* Light Professional Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #f43397 100%, #e21b78 0%);
+            background: linear-gradient(135deg, #ffffff 100%, #f1f5f9 0%);
             padding: 16px 20px;
             border-radius: 10px;
-            color: #ffffff !important;
+            border: 1.5px solid #e2e8f0;
+            color: #0f172a !important;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(244, 51, 151, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
             margin-bottom: 12px;
         }
         .brand-title {
             font-size: 22px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #ffffff !important;
+            color: #0f172a !important;
             margin: 0;
         }
 
-        /* Action Buttons Styled with eCommerce Accent Standards */
+        /* Clean Light Professional Buttons */
         div.stButton > button {
             background-color: #ffffff !important;
-            color: #f43397 !important;
-            border: 1.5px solid #f43397 !important;
+            color: #1e293b !important;
+            border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
             font-size: 15px !important;
             border-radius: 8px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
             display: block !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background-color: #f43397 !important;
-            color: #ffffff !important;
-            border: 1.5px solid #f43397 !important;
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+            border: 1.5px solid #94a3b8 !important;
         }
 
         /* Mobile Responsive Layout Handlers */
@@ -158,8 +162,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; color: #f43397; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 400; color: #475569;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -168,8 +172,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #e2e8f0; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 10px; background-color: #ffffff; border: 1.5px solid #e2e8f0; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: #0f172a;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
