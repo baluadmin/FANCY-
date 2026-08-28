@@ -341,8 +341,8 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # Standard Product Card layout with Big Image Carousel on left, details and controls on right
-                    p_img_col, p_details_col = st.columns([3, 2], gap="small")
+                    # 3-column split for Image Carousel | Vertical Divider Line | Product Details & Add to Cart
+                    p_img_col, p_div_col, p_details_col = st.columns([3, 0.1, 2], gap="small")
                     
                     with p_img_col:
                         raw_img = prod.get("image", "")
@@ -381,6 +381,10 @@ if st.session_state.current_view == "Home":
                         else:
                             st.caption("No Image")
                             
+                    with p_div_col:
+                        # Professional vertical separator line matching the layout
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 180px; margin-top: 10px;'></div>", unsafe_allow_html=True)
+
                     with p_details_col:
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
