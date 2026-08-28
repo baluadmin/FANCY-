@@ -341,7 +341,6 @@ if st.session_state.current_view == "Home":
                     if slide_key not in st.session_state:
                         st.session_state[slide_key] = 0
 
-                    # Layout arrangement: Image (Column 1), Description (Column 2), Details & Add (Column 3) displayed side by side
                     p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
                     
                     with p_img_col:
@@ -364,17 +363,14 @@ if st.session_state.current_view == "Home":
                                             
                                 with img_display:
                                     if current_idx < total_imgs:
-                                        _, center_img_col, _ = st.columns([1, 4, 1])
-                                        with center_img_col:
-                                            # Displaying two images side-by-side if multiple valid paths exist, or single image smoothly
-                                            if current_idx + 1 < total_imgs:
-                                                img_sub1, img_sub2 = st.columns(2, gap="small")
-                                                with img_sub1:
-                                                    st.image(valid_paths[current_idx], width=110)
-                                                with img_sub2:
-                                                    st.image(valid_paths[current_idx + 1], width=110)
-                                            else:
-                                                st.image(valid_paths[current_idx], width=140)
+                                        # Showing exactly 2 images side by side inside the image slot container
+                                        sub_col1, sub_col2 = st.columns(2, gap="small")
+                                        with sub_col1:
+                                            st.image(valid_paths[current_idx], width=110)
+                                        with sub_col2:
+                                            # If a next image exists in path list, show it side-by-side, otherwise loop or duplicate
+                                            next_idx = (current_idx + 1) % total_imgs
+                                            st.image(valid_paths[next_idx], width=110)
                                             
                                 with r_btn:
                                     st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
