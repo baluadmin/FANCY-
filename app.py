@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Light Professional Theme Styling
+# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -15,16 +15,14 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
-            font-family: 'Inter', sans-serif !important;
-            background-color: #f8fafc !important;
-            color: #0f172a !important;
+            font-family: 'Poppins', sans-serif !important;
         }
 
-        /* Hide Streamlit default elements */
+        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -34,65 +32,64 @@ st.markdown("""
         .manage-app {display: none !important;}
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
+        
+        /* Completely hide header link icons next to section headers */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Force clean professional light text and labels */
+        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #1e293b !important;
+            color: var(--text-color) !important;
             font-weight: 500 !important;
         }
         
-        /* Light professional input boxes styling */
+        /* Input boxes styling supporting both modes */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
+            background-color: var(--secondary-background-color) !important;
+            color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
             font-weight: 400 !important;
-            border-radius: 8px !important;
+            border-radius: 6px !important;
         }
 
-        /* Light Professional Header Banner */
+        /* Professional Neutral Dark/Slate Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #ffffff 100%, #f1f5f9 0%);
-            padding: 16px 20px;
-            border-radius: 10px;
-            border: 1.5px solid #e2e8f0;
-            color: #0f172a !important;
+            background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
+            padding: 14px 18px;
+            border-radius: 8px;
+            color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 12px;
         }
         .brand-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #0f172a !important;
+            color: #ffffff !important;
             margin: 0;
         }
 
-        /* Clean Light Professional Buttons */
+        /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
-            background-color: #ffffff !important;
+            background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
             font-size: 15px !important;
-            border-radius: 8px !important;
+            border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background-color: #f1f5f9 !important;
+            background-color: #e2e8f0 !important;
             color: #0f172a !important;
-            border: 1.5px solid #94a3b8 !important;
+            border: 1px solid #94a3b8 !important;
         }
 
-        /* Mobile Responsive Layout Handlers */
+        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
         @media (max-width: 900px) {
             .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
                 flex-direction: row !important;
@@ -162,8 +159,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 400; color: #475569;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -172,8 +169,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; background-color: #ffffff; border: 1.5px solid #e2e8f0; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: #0f172a;'>Customer Portal Login</h3>
+                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -399,7 +396,7 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 1px solid #e2e8f0; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
@@ -407,7 +404,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #e2e8f0; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
@@ -424,7 +421,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #e2e8f0;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
@@ -459,6 +456,7 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
+    # Centering container for the cart empty state message and button alignment
         _, center_msg_col, _ = st.columns([1, 2, 1])
         with center_msg_col:
             st.info("Your cart is empty. Click **Home** above to browse and add products.")
