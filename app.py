@@ -404,7 +404,7 @@ if st.session_state.current_view == "Home":
                         st.markdown("**Description:**")
                         st.caption(prod.get('description', ''))
                                     
-                    st.markdown("")
+                    st.markdown("---")
             else:
                 st.info("No items found.")
 
