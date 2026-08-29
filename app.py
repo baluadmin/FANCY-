@@ -53,21 +53,22 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Professional Neutral Dark/Slate Header Banner */
+        /* Professional Light Blue Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
+            background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
             padding: 14px 18px;
             border-radius: 8px;
-            color: #ffffff !important;
+            color: #0f172a !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 12px;
+            border: 1.5px solid #7dd3fc;
         }
         .brand-title {
             font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #ffffff !important;
+            color: #0f172a !important;
             margin: 0;
         }
 
