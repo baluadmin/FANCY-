@@ -308,6 +308,7 @@ else:
             if st.form_submit_button("Complete Order", use_container_width=True):
                 if checkout_address and len(secondary_phone) == 10:
                     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+                    txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
                     try:
                         requests.post(GOOGLE_SCRIPT_URL, json={
                             "Type": "Order",
@@ -323,7 +324,7 @@ else:
                         pass
                     
                     st.session_state.cart = []
-                    st.success("🎉 Order placed successfully!")
+                    st.success(f"Order placed successfully! Order placed for: {cart_summary}. Order successful (TXN ID: {txn_id}).")
                     st.session_state.current_view = "Home"
                     st.rerun()
                 else:
