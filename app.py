@@ -6,11 +6,11 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Responsive Mobile View Styling
+# 1. Streamlit Page Configuration & Responsive Hybrid CSS (Auto-adapts to Computer & Mobile)
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
-    layout="centered",
+    layout="wide",
 )
 
 st.markdown("""
@@ -42,16 +42,16 @@ st.markdown("""
 
         .brand-banner {
             background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
-            padding: 12px;
+            padding: 14px 18px;
             border-radius: 8px;
             color: #0f172a !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border: 1.5px solid #7dd3fc;
         }
         .brand-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: #0f172a !important;
             margin: 0;
@@ -62,7 +62,7 @@ st.markdown("""
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
-            font-size: 14px !important;
+            font-size: 15px !important;
             border-radius: 6px !important;
             padding: 0.4rem 0.5rem !important;
             width: 100% !important;
@@ -72,12 +72,26 @@ st.markdown("""
             color: #0f172a !important;
         }
 
+        /* Responsive Layout Engine: Keeps Desktop layout wide, automatically stacks for Mobile screens */
+        @media (max-width: 900px) {
+            div[data-testid="stHorizontalBlock"] {
+                flex-direction: column !important;
+                flex-wrap: wrap !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+                width: 100% !important;
+                flex: 1 1 100% !important;
+                min-width: 100% !important;
+                padding: 4px 0px !important;
+            }
+        }
+
         .block-container {
-            padding-top: 0.5rem;
+            padding-top: 0.8rem;
             padding-bottom: 1rem;
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
-            max-width: 480px !important;
+            padding-left: 1.2rem;
+            padding-right: 1.2rem;
+            max-width: 100% !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -106,45 +120,49 @@ def log_login_to_sheet(name, phone):
 # --- CUSTOMER LOGIN SCREEN ---
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
-            <h1 style='font-size: 24px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px;'>Thiruverkadu - Mobile Accessories & Service</p>
+        <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
+            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 13px;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
-    with st.form("customer_direct_login_center"):
-        cust_name = st.text_input("Your Name:")
-        cust_phone = st.text_input("Mobile Number:", max_chars=10)
-        login_btn = st.form_submit_button("Secure Login", use_container_width=True)
+    _, mid_col, _ = st.columns([1.5, 1, 1.5])
+    with mid_col:
+        with st.form("customer_direct_login_center"):
+            cust_name = st.text_input("Your Name:")
+            cust_phone = st.text_input("Mobile Number:", max_chars=10)
+            login_btn = st.form_submit_button("Secure Login", use_container_width=True)
 
-        if login_btn:
-            if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                st.session_state.logged_in_user = cust_name.strip()
-                st.session_state.user_phone = cust_phone.strip()
-                log_login_to_sheet(cust_name.strip(), cust_phone.strip())
-                st.success("✅ Login Successful!")
-                st.rerun()
-            else:
-                st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
+            if login_btn:
+                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                    st.session_state.logged_in_user = cust_name.strip()
+                    st.session_state.user_phone = cust_phone.strip()
+                    log_login_to_sheet(cust_name.strip(), cust_phone.strip())
+                    st.success("✅ Login Successful!")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- MOBILE APP HEADER & NAVIGATION ---
+# --- HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-top_comm, top_c1, top_c2, top_c3 = st.columns([1.5, 1, 1, 1], gap="small")
+top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
-    st.markdown(f"Hi, **{st.session_state.logged_in_user.split()[0]}**")
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
+with top_space:
+    st.empty()
 with top_c1:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
 with top_c2:
-    cart_cnt = len(st.session_state.cart)
-    if st.button(f"Cart({cart_cnt})", use_container_width=True):
+    cart_count = len(st.session_state.cart)
+    if st.button(f"Cart ({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
 with top_c3:
@@ -189,59 +207,107 @@ if not product_records:
         {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Quick charging support"}
     ]
 
-# --- HOME / SHOP VIEW ---
+# --- VIEW ROUTING ---
 if st.session_state.current_view == "Home":
-    categories = list(set([p['category'] for p in product_records]))
-    if categories:
-        selected_cat = st.selectbox("Select Category:", categories, key="category_selector_mobile")
-        st.session_state.selected_menu = selected_cat
+    col_menu, col_items = st.columns([1, 2.5], gap="small")
 
-    current_cat = st.session_state.get("selected_menu", categories[0] if categories else "Headset")
-    filtered_items = [p for p in product_records if p['category'] == current_cat]
+    # Categories Column
+    with col_menu:
+        st.markdown("**Menu Categories**")
+        with st.container(height=480, border=True):
+            categories = list(set([p['category'] for p in product_records]))
+            for cat in categories:
+                if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
+                    st.session_state.selected_menu = cat
+                    st.rerun()
 
-    if filtered_items:
-        for idx, prod in enumerate(filtered_items):
-            with st.container(border=True):
-                st.markdown(f"**{prod['name']}**")
-                st.markdown(f"Price: **₹{prod['price']}**")
-                if prod.get('description'):
-                    st.caption(prod['description'])
-                
-                q_col, b_col = st.columns([1, 1], gap="small")
-                with q_col:
-                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"q_{current_cat}_{idx}")
-                with b_col:
-                    st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
-                    if st.button("Add to Cart", key=f"add_{current_cat}_{idx}", use_container_width=True):
-                        st.session_state.cart.append({"product": prod['name'], "quantity": f"{int(q_val)} Units"})
-                        st.success("Added!")
-                        st.rerun()
-    else:
-        st.info("No items found in this category.")
+    # Items Column
+    with col_items:
+        current_cat = st.session_state.get("selected_menu", "Headset")
+        st.markdown(f"**Items: {current_cat}**")
+        with st.container(height=480, border=True):
+            filtered_items = [p for p in product_records if p['category'] == current_cat]
+            
+            if filtered_items:
+                for idx, prod in enumerate(filtered_items):
+                    slide_key = f"slide_{current_cat}_{idx}"
+                    if slide_key not in st.session_state:
+                        st.session_state[slide_key] = 0
 
-# --- CART / CHECKOUT VIEW ---
+                    p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
+                    
+                    with p_img_col:
+                        raw_img = prod.get("image", "")
+                        if raw_img:
+                            img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                            valid_paths = [p for p in img_paths if os.path.exists(p)]
+                            if valid_paths:
+                                total_imgs = len(valid_paths)
+                                current_idx = st.session_state[slide_key]
+                                
+                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
+                                with l_btn:
+                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                        st.session_state[slide_key] = (current_idx - 1) % total_imgs
+                                        st.rerun()
+                                with img_display:
+                                    st.image(valid_paths[current_idx], width=95)
+                                with r_btn:
+                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                        st.session_state[slide_key] = (current_idx + 1) % total_imgs
+                                        st.rerun()
+                            else:
+                                st.caption("No Image")
+                        else:
+                            st.caption("No Image")
+                            
+                    with p_div1_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 110px;'></div>", unsafe_allow_html=True)
+
+                    with p_desc_col:
+                        st.markdown("**Desc:**")
+                        st.caption(prod.get('description', ''))
+
+                    with p_div2_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 110px;'></div>", unsafe_allow_html=True)
+
+                    with p_details_col:
+                        st.markdown(f"**{prod['name']}**")
+                        st.markdown(f"₹{prod['price']}")
+                        q_col, b_col = st.columns([1, 1], gap="small")
+                        with q_col:
+                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                        with b_col:
+                            if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                                st.session_state.cart.append({"product": prod['name'], "quantity": f"{int(q_val)} Units"})
+                                st.success("Added!")
+                                st.rerun()
+                    st.markdown("<hr style='margin-top: 8px; margin-bottom: 8px;'>", unsafe_allow_html=True)
+            else:
+                st.info("No items found.")
+
 else:
-    st.subheader("🛒 Your Cart")
+    st.subheader("🛒 Your Shopping Cart & Checkout")
     if st.session_state.cart:
         for c_idx, item in enumerate(st.session_state.cart):
-            col_info, col_del = st.columns([3, 1])
-            with col_info:
-                st.markdown(f"• **{item['product']}** ({item['quantity']})")
-            with col_del:
-                if st.button("X", key=f"rem_{c_idx}"):
+            cc1, cc2 = st.columns([4, 1])
+            with cc1:
+                st.markdown(f"- **{item['product']}** ({item['quantity']})")
+            with cc2:
+                if st.button("Remove", key=f"rem_cart_view_{c_idx}"):
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
         st.markdown("---")
-        st.subheader("📍 Checkout Details")
-        with st.form("mobile_checkout_form"):
-            address = st.text_area("Delivery Address:")
-            sec_phone = st.text_input("Alternative Mobile Number:", max_chars=10)
-            custom_notes = st.text_area("Special Instructions (Optional):")
+        st.subheader("📍 Secure Checkout Form")
+        with st.form("checkout_form_main_view"):
+            checkout_address = st.text_area("Delivery Address:")
+            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            product_desc = st.text_area("Product Specifications / Custom Description:")
             
-            if st.form_submit_button("Confirm Order", use_container_width=True):
-                if address and len(sec_phone) == 10:
-                    cart_summary = ", ".join([f"{i['quantity']} {i['product']}" for i in st.session_state.cart])
+            if st.form_submit_button("Complete Order", use_container_width=True):
+                if checkout_address and len(secondary_phone) == 10:
+                    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
                     try:
                         requests.post(GOOGLE_SCRIPT_URL, json={
                             "Type": "Order",
@@ -249,9 +315,9 @@ else:
                             "Customer_Name": st.session_state.logged_in_user,
                             "Primary_Phone": st.session_state.user_phone,
                             "Items": cart_summary,
-                            "Address": address,
-                            "Secondary_Phone": sec_phone,
-                            "Description": custom_notes
+                            "Address": checkout_address,
+                            "Secondary_Phone": secondary_phone,
+                            "Description": product_desc
                         }, timeout=3)
                     except Exception:
                         pass
@@ -261,6 +327,6 @@ else:
                     st.session_state.current_view = "Home"
                     st.rerun()
                 else:
-                    st.warning("⚠️ Please provide a valid address and 10-digit alternative number.")
+                    st.warning("⚠️ Provide a valid address and 10-digit alternate number.")
     else:
         st.info("Your cart is empty.")
