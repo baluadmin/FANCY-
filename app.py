@@ -36,11 +36,11 @@ st.markdown("""
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
-            font-size: 14px !important;
-            border-radius: 6px !important;
+            font-size: 13px !important;
+            border-radius: 4px !important;
         }
 
-        /* Sticky Header Panel Container with tightly minimized padding */
+        /* Completely lock header to absolute top zero padding/margin with zero dead space */
         .sticky-header-container {
             position: fixed;
             top: 0;
@@ -48,50 +48,55 @@ st.markdown("""
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
-            padding: 2px 6px 2px 6px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            padding: 0px 4px 0px 4px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Tightly reduced top padding for page content */
+        /* Remove default Streamlit block spacing completely */
         .block-container {
-            padding-top: 4.2rem !important;
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
+            padding-top: 2.5rem !important;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
             max-width: 100% !important;
         }
+        
+        div.block-container {
+            padding-top: 2.5rem !important;
+        }
 
-        /* 1/3 Reduced Compact Header Banner */
+        /* Tightly fitted single line header banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 1px 2px;
+            border-radius: 3px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1px;
+            margin: 0px !important;
         }
         .brand-title {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.3px;
             color: #ffffff !important;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
+            white-space: nowrap;
         }
 
-        /* Compact Navigation Buttons sized strictly side-by-side */
+        /* Ultra-small compact buttons */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 10px !important;
+            font-size: 9px !important;
             border-radius: 3px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.1rem 0.1rem !important;
+            padding: 0.02rem 0.02rem !important;
             white-space: nowrap !important;
+            margin: 0px !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
@@ -99,19 +104,28 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Force single row alignment for navigation columns */
+        /* Force single row layout for navigation with zero vertical element gaps */
         .sticky-header-container div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            gap: 2px !important;
+            gap: 1px !important;
+            margin: 0px !important;
+            padding: 0px !important;
         }
         .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
             width: auto !important;
             flex: 1 1 auto !important;
             min-width: 0px !important;
             padding: 0px 1px !important;
+        }
+        
+        /* Eliminate vertical margins on markdown paragraphs inside sticky header */
+        .sticky-header-container p {
+            margin: 0px !important;
+            padding: 0px !important;
+            line-height: 1.1 !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -138,7 +152,7 @@ def log_login_to_sheet(name, phone):
 # Customer Login Gateway
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div class='brand-banner' style='margin-top: 10px;'>
+        <div class='brand-banner' style='margin-top: 5px;'>
             <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
         </div>
     """, unsafe_allow_html=True)
@@ -161,7 +175,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- STICKY TOP HEADER WITH ZERO EXTRA SPACES & REDUCED HEADER SIZE ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER REMOVING ALL YELLOW SHADED SPACES ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -170,9 +184,9 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"<p style='font-size: 10px; margin: 1px 0;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='font-size: 9px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
-# Row layout: Store, Cart(0), Exit side-by-side with zero wasted vertical gap
+# Row layout: Store, Cart, Exit side-by-side with zero wasted vertical gap
 nav_col1, nav_col2, nav_col3 = st.columns([1, 1, 1], gap="small")
 with nav_col1:
     if st.button("Store", use_container_width=True):
