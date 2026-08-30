@@ -1,11 +1,12 @@
 from datetime import datetime
 import pandas as pd
 import requests
+import re
 import streamlit as st
 
 
 # ============================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -24,40 +25,21 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-
-/* ============================================================
-   GENERAL
-   ============================================================ */
-
-html,
-body,
-[class*="css"] {
+html, body, [class*="css"] {
     font-family: 'Inter', sans-serif !important;
 }
 
-#MainMenu {
-    visibility: hidden !important;
-}
-
-header {
-    visibility: hidden !important;
-}
-
-footer {
-    visibility: hidden !important;
-}
-
-div[data-testid="stToolbar"] {
-    display: none !important;
-}
-
+#MainMenu,
+header,
+footer,
+div[data-testid="stToolbar"],
 section[data-testid="stStatusWidget"] {
     display: none !important;
 }
 
 
 /* ============================================================
-   MAIN CONTAINER
+   MAIN
    ============================================================ */
 
 .stMainBlockContainer,
@@ -65,15 +47,21 @@ div[data-testid="stMainBlockContainer"],
 .block-container {
     padding-top: 0rem !important;
     margin-top: 0rem !important;
-    padding-left: 0.4rem !important;
-    padding-right: 0.4rem !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
     max-width: 100% !important;
 }
 
 
 /* ============================================================
-   HM MOBILES HEADER
+   HEADER
    ============================================================ */
+
+.sticky-header-container {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
 .brand-banner {
     background: #2563eb;
@@ -85,14 +73,12 @@ div[data-testid="stMainBlockContainer"],
     text-align: center;
 
     margin: 0 0 2px 0 !important;
-
-    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
 .brand-title {
     color: white !important;
 
-    font-size: 12px !important;
+    font-size: 11px !important;
 
     font-weight: 800 !important;
 
@@ -107,7 +93,7 @@ div[data-testid="stMainBlockContainer"],
 
 
 /* ============================================================
-   STORE / CART NAVIGATION
+   STORE / CART
    ============================================================ */
 
 .hm-nav-box {
@@ -122,8 +108,6 @@ div[data-testid="stMainBlockContainer"],
     border: none !important;
 
     background: transparent !important;
-
-    box-shadow: none !important;
 }
 
 .hm-nav-box [data-testid="stRadio"] {
@@ -135,6 +119,8 @@ div[data-testid="stMainBlockContainer"],
 }
 
 .hm-nav-box [data-testid="stRadio"] > div {
+    width: 100% !important;
+
     display: flex !important;
 
     flex-direction: row !important;
@@ -210,13 +196,13 @@ div[data-testid="stMainBlockContainer"],
 .category-area {
     margin-top: 0 !important;
 
-    margin-bottom: 3px !important;
+    margin-bottom: 4px !important;
 }
 
 .category-area label {
-    font-size: 12px !important;
+    font-size: 11px !important;
 
-    margin-bottom: 2px !important;
+    margin-bottom: 1px !important;
 }
 
 
@@ -227,27 +213,25 @@ div[data-testid="stMainBlockContainer"],
 .product-card {
     width: 100% !important;
 
-    border: 1px solid #e2e8f0;
+    border: 1px solid #dfe3e8;
 
     border-radius: 7px;
 
-    padding: 5px;
+    padding: 4px;
 
-    margin-bottom: 8px;
-
-    box-sizing: border-box;
+    margin-bottom: 7px;
 
     background: white;
+
+    box-sizing: border-box;
 }
 
 
 /* ============================================================
    IMAGE ROW
-   IMPORTANT:
-   LEFT BUTTON + IMAGE + RIGHT BUTTON
    ============================================================ */
 
-.product-image-row {
+.image-row {
     width: 100% !important;
 
     display: flex !important;
@@ -259,63 +243,62 @@ div[data-testid="stMainBlockContainer"],
     align-items: center !important;
 
     justify-content: center !important;
-
-    gap: 2px !important;
 }
 
 
 /* ============================================================
-   IMAGE COLUMN
+   IMAGE
    ============================================================ */
 
-.product-image-wrapper {
-    flex: 1 1 auto !important;
-
-    min-width: 0 !important;
-
-    max-width: 430px !important;
+.product-image-box {
+    width: 100% !important;
 
     display: flex !important;
 
     justify-content: center !important;
 
     align-items: center !important;
+
+    overflow: hidden !important;
 }
 
-
-/* ============================================================
-   SMALLER PRODUCT IMAGE
-   ============================================================ */
-
-.product-image-wrapper img {
+.product-image-box img {
     width: 100% !important;
 
-    max-width: 390px !important;
-
-    height: 185px !important;
+    height: 170px !important;
 
     object-fit: contain !important;
 
     display: block !important;
 
-    border-radius: 5px !important;
+    margin: auto !important;
 }
 
 
 /* ============================================================
-   LEFT / RIGHT IMAGE BUTTON
+   ARROW BUTTONS
    ============================================================ */
 
-.image-side-button {
-    width: 32px !important;
+.arrow-column {
+    display: flex !important;
 
-    min-width: 32px !important;
+    align-items: center !important;
 
-    max-width: 32px !important;
+    justify-content: center !important;
+}
 
-    height: 32px !important;
+.arrow-column button {
+    width: 30px !important;
 
-    min-height: 32px !important;
+    min-width: 30px !important;
+
+    max-width: 30px !important;
+
+    height: 30px !important;
+
+    min-height: 30px !important;
+
+    max-height: 30px !important;
 
     padding: 0 !important;
 
@@ -323,13 +306,9 @@ div[data-testid="stMainBlockContainer"],
 
     border-radius: 50% !important;
 
-    display: flex !important;
+    font-size: 13px !important;
 
-    align-items: center !important;
-
-    justify-content: center !important;
-
-    font-size: 15px !important;
+    line-height: 1 !important;
 }
 
 
@@ -340,29 +319,26 @@ div[data-testid="stMainBlockContainer"],
 .product-name {
     text-align: center;
 
-    font-size: 15px;
+    font-size: 14px;
 
     font-weight: 700;
 
-    margin-top: 3px;
-
-    margin-bottom: 2px;
+    margin: 2px 0 1px 0;
 }
 
 
 /* ============================================================
    PRICE
-   STOCK REMOVED
    ============================================================ */
 
 .product-price {
     text-align: center;
 
-    font-size: 12px;
+    font-size: 11px;
 
     font-weight: 700;
 
-    margin-bottom: 2px;
+    margin: 0 0 1px 0;
 }
 
 
@@ -373,99 +349,87 @@ div[data-testid="stMainBlockContainer"],
 .product-description {
     text-align: center;
 
-    font-size: 11px;
+    font-size: 10px;
 
-    margin-bottom: 2px;
+    font-weight: 400;
+
+    margin: 0 0 2px 0;
 }
 
 
 /* ============================================================
-   QUANTITY LABEL
-   ============================================================ */
-
-div[data-testid="stNumberInput"] label {
-    font-size: 11px !important;
-
-    margin-bottom: 1px !important;
-}
-
-
-/* ============================================================
-   SMALL QUANTITY BOX
+   QUANTITY
    ============================================================ */
 
 div[data-testid="stNumberInput"] {
-    width: 150px !important;
+    width: 130px !important;
 
-    max-width: 150px !important;
+    max-width: 130px !important;
 
-    margin: 0 auto 4px auto !important;
+    margin: 0 auto 3px auto !important;
+}
+
+div[data-testid="stNumberInput"] label {
+    font-size: 10px !important;
+
+    margin-bottom: 0 !important;
 }
 
 div[data-testid="stNumberInput"] > div {
-    min-height: 31px !important;
+    height: 28px !important;
 
-    height: 31px !important;
+    min-height: 28px !important;
 
-    border-radius: 6px !important;
+    border-radius: 5px !important;
 }
 
 div[data-testid="stNumberInput"] input {
-    height: 29px !important;
+    height: 26px !important;
 
-    min-height: 29px !important;
+    min-height: 26px !important;
 
-    padding: 2px 4px !important;
+    padding: 0 !important;
 
-    font-size: 11px !important;
+    font-size: 10px !important;
 
     text-align: center !important;
 }
 
-
-/* ============================================================
-   SMALL MINUS / PLUS BUTTONS
-   ============================================================ */
-
 div[data-testid="stNumberInput"] button {
-    width: 25px !important;
+    width: 23px !important;
 
-    min-width: 25px !important;
+    min-width: 23px !important;
 
-    max-width: 25px !important;
+    max-width: 23px !important;
 
-    height: 29px !important;
+    height: 26px !important;
 
-    min-height: 29px !important;
+    min-height: 26px !important;
 
     padding: 0 !important;
 
     margin: 0 !important;
-
-    font-size: 12px !important;
-
-    line-height: 1 !important;
 }
 
 div[data-testid="stNumberInput"] button svg {
-    width: 11px !important;
+    width: 10px !important;
 
-    height: 11px !important;
+    height: 10px !important;
 }
 
 
 /* ============================================================
-   ADD TO CART BUTTON
+   ADD CART
    ============================================================ */
 
-div.stButton > button {
-    font-size: 11px !important;
+.product-card div.stButton > button {
+    height: 29px !important;
 
-    min-height: 30px !important;
+    min-height: 29px !important;
 
-    height: 30px !important;
+    padding: 2px 5px !important;
 
-    padding: 2px 8px !important;
+    font-size: 10px !important;
 
     border-radius: 5px !important;
 }
@@ -486,46 +450,7 @@ div.stButton > button {
     }
 
 
-    /* --------------------------------
-       HEADER
-       -------------------------------- */
-
-    .brand-banner {
-        padding: 3px 4px !important;
-
-        margin-bottom: 2px !important;
-    }
-
-    .brand-title {
-        font-size: 11px !important;
-    }
-
-
-    /* --------------------------------
-       NAV
-       -------------------------------- */
-
-    .hm-nav-box {
-        width: 180px !important;
-
-        max-width: 180px !important;
-    }
-
-
-    /* --------------------------------
-       PRODUCT CARD
-       -------------------------------- */
-
-    .product-card {
-        padding: 3px !important;
-
-        margin-bottom: 7px !important;
-    }
-
-
-    /* --------------------------------
-       FORCE IMAGE ROW HORIZONTAL
-       -------------------------------- */
+    /* Force image row horizontal */
 
     div[data-testid="stHorizontalBlock"] {
         flex-wrap: nowrap !important;
@@ -544,9 +469,7 @@ div.stButton > button {
     }
 
 
-    /* --------------------------------
-       LEFT ARROW COLUMN
-       -------------------------------- */
+    /* LEFT */
 
     div[data-testid="stHorizontalBlock"]
     > div[data-testid="column"]:first-child {
@@ -560,23 +483,19 @@ div.stButton > button {
     }
 
 
-    /* --------------------------------
-       MIDDLE IMAGE COLUMN
-       -------------------------------- */
+    /* IMAGE */
 
     div[data-testid="stHorizontalBlock"]
     > div[data-testid="column"]:nth-child(2) {
+        width: auto !important;
+
         min-width: 0 !important;
 
         flex: 1 1 auto !important;
-
-        width: auto !important;
     }
 
 
-    /* --------------------------------
-       RIGHT ARROW COLUMN
-       -------------------------------- */
+    /* RIGHT */
 
     div[data-testid="stHorizontalBlock"]
     > div[data-testid="column"]:last-child {
@@ -590,39 +509,33 @@ div.stButton > button {
     }
 
 
-    /* --------------------------------
-       SMALL IMAGE
-       -------------------------------- */
+    /* SMALL IMAGE */
 
     div[data-testid="stHorizontalBlock"]
-    > div[data-testid="column"]:nth-child(2)
-    img {
+    > div[data-testid="column"]:nth-child(2) img {
         width: 100% !important;
 
-        height: 175px !important;
+        height: 165px !important;
 
-        max-height: 175px !important;
+        max-height: 165px !important;
 
         object-fit: contain !important;
     }
 
 
-    /* --------------------------------
-       ARROW BUTTONS
-       -------------------------------- */
+    /* SMALL ARROWS */
 
     div[data-testid="stHorizontalBlock"]
-    > div[data-testid="column"]
-    button {
-        width: 30px !important;
+    > div[data-testid="column"] button {
+        width: 28px !important;
 
-        min-width: 30px !important;
+        min-width: 28px !important;
 
-        max-width: 30px !important;
+        max-width: 28px !important;
 
-        height: 30px !important;
+        height: 28px !important;
 
-        min-height: 30px !important;
+        min-height: 28px !important;
 
         padding: 0 !important;
 
@@ -630,65 +543,43 @@ div.stButton > button {
 
         border-radius: 50% !important;
 
-        font-size: 14px !important;
+        font-size: 12px !important;
     }
 
 
-    /* --------------------------------
-       PRODUCT TEXT
-       -------------------------------- */
+    /* PRODUCT TEXT */
 
     .product-name {
-        font-size: 14px !important;
-
-        margin-top: 2px !important;
+        font-size: 13px !important;
     }
 
     .product-price {
-        font-size: 11px !important;
+        font-size: 10px !important;
     }
 
     .product-description {
-        font-size: 10px !important;
+        font-size: 9px !important;
     }
 
 
-    /* --------------------------------
-       SMALL QUANTITY
-       -------------------------------- */
+    /* QUANTITY */
 
     div[data-testid="stNumberInput"] {
-        width: 135px !important;
+        width: 120px !important;
 
-        max-width: 135px !important;
-    }
-
-    div[data-testid="stNumberInput"] > div {
-        height: 29px !important;
-
-        min-height: 29px !important;
+        max-width: 120px !important;
     }
 
     div[data-testid="stNumberInput"] input {
-        height: 27px !important;
-
-        min-height: 27px !important;
-
-        font-size: 10px !important;
+        font-size: 9px !important;
     }
 
     div[data-testid="stNumberInput"] button {
-        width: 23px !important;
+        width: 21px !important;
 
-        min-width: 23px !important;
+        min-width: 21px !important;
 
-        max-width: 23px !important;
-
-        height: 27px !important;
-
-        min-height: 27px !important;
-
-        font-size: 11px !important;
+        max-width: 21px !important;
     }
 
 }
@@ -698,7 +589,7 @@ div.stButton > button {
 
 
 # ============================================================
-# SESSION STATES
+# SESSION STATE
 # ============================================================
 
 if "logged_in_user" not in st.session_state:
@@ -729,20 +620,90 @@ def log_login_to_sheet(name, phone):
 
     try:
 
-        payload = {
-            "Type": "Login",
-            "Customer_Name": name,
-            "Primary_Phone": phone
-        }
-
         requests.post(
             GOOGLE_SCRIPT_URL,
-            json=payload,
+
+            json={
+                "Type": "Login",
+                "Customer_Name": name,
+                "Primary_Phone": phone
+            },
+
             timeout=3
         )
 
     except Exception:
         pass
+
+
+# ============================================================
+# IMAGE URL CONVERTER
+# ============================================================
+
+def convert_image_url(image_value):
+
+    if not image_value:
+        return None
+
+
+    image_url = str(image_value).strip()
+
+
+    if image_url.lower() in [
+        "nan",
+        "none",
+        "null",
+        ""
+    ]:
+        return None
+
+
+    # --------------------------------------------------------
+    # Google Drive file ID
+    # --------------------------------------------------------
+
+    drive_match = re.search(
+        r"(?:/d/|id=)([a-zA-Z0-9_-]{20,})",
+        image_url
+    )
+
+
+    if drive_match:
+
+        file_id = drive_match.group(1)
+
+        return (
+            f"https://drive.google.com/uc?"
+            f"export=view&id={file_id}"
+        )
+
+
+    # --------------------------------------------------------
+    # Google Drive open URL
+    # --------------------------------------------------------
+
+    if "drive.google.com" in image_url:
+
+        file_id_match = re.search(
+            r"[-\w]{20,}",
+            image_url
+        )
+
+        if file_id_match:
+
+            file_id = file_id_match.group(0)
+
+            return (
+                f"https://drive.google.com/uc?"
+                f"export=view&id={file_id}"
+            )
+
+
+    # --------------------------------------------------------
+    # Google Photos / normal URL
+    # --------------------------------------------------------
+
+    return image_url
 
 
 # ============================================================
@@ -753,7 +714,9 @@ if not st.session_state.logged_in_user:
 
     st.markdown("""
         <div class="brand-banner">
-            <div class="brand-title">HM MOBILES</div>
+            <div class="brand-title">
+                HM MOBILES
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -812,6 +775,7 @@ if not st.session_state.logged_in_user:
 
                     st.rerun()
 
+
                 else:
 
                     st.warning(
@@ -834,7 +798,9 @@ st.markdown(
 
 st.markdown("""
     <div class="brand-banner">
-        <div class="brand-title">HM MOBILES</div>
+        <div class="brand-title">
+            HM MOBILES
+        </div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -890,6 +856,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 st.markdown(
     "</div>",
     unsafe_allow_html=True
@@ -897,7 +864,7 @@ st.markdown(
 
 
 # ============================================================
-# LOAD INVENTORY
+# LOAD GOOGLE SHEET
 # ============================================================
 
 @st.cache_data(ttl=0)
@@ -908,6 +875,7 @@ def load_inventory_from_sheet():
         "1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/"
         "export?format=csv"
     )
+
 
     try:
 
@@ -926,7 +894,7 @@ product_records = []
 
 
 # ============================================================
-# READ GOOGLE SHEET
+# READ PRODUCT DATA
 # ============================================================
 
 if not inv_df.empty:
@@ -973,7 +941,7 @@ if not inv_df.empty:
                     and pd.notna(row.iloc[5])
                     else "",
 
-                # IMAGE COLUMN — UNCHANGED
+                # IMAGE COLUMN
                 "image":
                     str(row.iloc[6]).strip()
                     if len(row) > 6
@@ -984,8 +952,8 @@ if not inv_df.empty:
 
     except Exception as e:
 
-        print(
-            f"Parsing error: {e}"
+        st.error(
+            f"Product data error: {e}"
         )
 
 
@@ -1034,10 +1002,8 @@ if st.session_state.current_view == "Home":
     categories = sorted(
         list(
             set(
-                [
-                    p["category"]
-                    for p in product_records
-                ]
+                p["category"]
+                for p in product_records
             )
         )
     )
@@ -1052,6 +1018,7 @@ if st.session_state.current_view == "Home":
     selected_cat = st.selectbox(
         "Select Product Category:",
         categories,
+
         key="category_selector"
     )
 
@@ -1063,7 +1030,7 @@ if st.session_state.current_view == "Home":
 
 
     # --------------------------------------------------------
-    # FILTER PRODUCTS
+    # FILTER
     # --------------------------------------------------------
 
     filtered_items = [
@@ -1079,8 +1046,7 @@ if st.session_state.current_view == "Home":
 
 
     # --------------------------------------------------------
-    # ALL PRODUCTS
-    # ONE IMAGE PER PRODUCT
+    # PRODUCTS
     # --------------------------------------------------------
 
     if filtered_items:
@@ -1096,11 +1062,11 @@ if st.session_state.current_view == "Home":
 
 
             # =================================================
-            # IMAGE + LEFT / RIGHT BUTTONS
+            # IMAGE ROW
             # =================================================
 
             left_col, image_col, right_col = st.columns(
-                [0.55, 5, 0.55],
+                [0.45, 5, 0.45],
                 vertical_alignment="center"
             )
 
@@ -1113,11 +1079,13 @@ if st.session_state.current_view == "Home":
 
                 if st.button(
                     "◀",
-                    key=f"previous_{selected_cat}_{idx}",
+
+                    key=f"prev_{selected_cat}_{idx}",
+
                     use_container_width=True
                 ):
 
-                    current_index = st.session_state.get(
+                    current = st.session_state.get(
                         f"image_index_{idx}",
                         0
                     )
@@ -1126,37 +1094,43 @@ if st.session_state.current_view == "Home":
                         f"image_index_{idx}"
                     ] = max(
                         0,
-                        current_index - 1
+                        current - 1
                     )
 
                     st.rerun()
 
 
             # -------------------------------------------------
-            # PRODUCT IMAGE
+            # IMAGE
             # -------------------------------------------------
 
             with image_col:
 
-                if prod["image"]:
+                image_url = convert_image_url(
+                    prod["image"]
+                )
+
+
+                if image_url:
 
                     try:
 
                         st.image(
-                            prod["image"],
-                            use_container_width=True
+                            image_url,
+
+                            width=180
                         )
 
                     except Exception:
 
-                        st.info(
-                            "Product image could not be loaded."
+                        st.warning(
+                            "Image could not be loaded."
                         )
 
                 else:
 
                     st.info(
-                        "No product image available."
+                        "No image"
                     )
 
 
@@ -1168,18 +1142,20 @@ if st.session_state.current_view == "Home":
 
                 if st.button(
                     "▶",
+
                     key=f"next_{selected_cat}_{idx}",
+
                     use_container_width=True
                 ):
 
-                    current_index = st.session_state.get(
+                    current = st.session_state.get(
                         f"image_index_{idx}",
                         0
                     )
 
                     st.session_state[
                         f"image_index_{idx}"
-                    ] = current_index + 1
+                    ] = current + 1
 
                     st.rerun()
 
@@ -1200,7 +1176,6 @@ if st.session_state.current_view == "Home":
 
             # =================================================
             # PRICE ONLY
-            # STOCK REMOVED
             # =================================================
 
             st.markdown(
@@ -1231,7 +1206,6 @@ if st.session_state.current_view == "Home":
 
             # =================================================
             # QUANTITY
-            # SMALL BOX WITH - AND +
             # =================================================
 
             q_val = st.number_input(
@@ -1259,23 +1233,17 @@ if st.session_state.current_view == "Home":
                 use_container_width=True
             ):
 
-                # IMPORTANT:
-                # CATEGORY IS NOT STORED.
-                # ONLY PRODUCT NAME + QUANTITY.
+                # ONLY PRODUCT NAME + QUANTITY
+                # CATEGORY IS NOT SAVED.
 
-                cart_item = {
+                st.session_state.cart.append({
 
                     "product":
                         prod["name"],
 
                     "quantity":
                         f"{int(q_val)} Units"
-                }
-
-
-                st.session_state.cart.append(
-                    cart_item
-                )
+                })
 
 
                 st.success(
@@ -1295,8 +1263,7 @@ if st.session_state.current_view == "Home":
     else:
 
         st.info(
-            f"No items found under category "
-            f"'{selected_cat}'."
+            f"No products found under {selected_cat}"
         )
 
 
@@ -1313,23 +1280,16 @@ else:
 
     if st.session_state.cart:
 
-        # ----------------------------------------------------
-        # CART ITEMS
-        # ----------------------------------------------------
-
         for i, item in enumerate(
             st.session_state.cart
         ):
 
-            col_item_name, col_item_remove = st.columns(
+            col_item, col_remove = st.columns(
                 [3, 1]
             )
 
 
-            with col_item_name:
-
-                # ONLY PRODUCT NAME + QUANTITY
-                # CATEGORY IS NOT DISPLAYED
+            with col_item:
 
                 st.write(
                     f"• {item['product']} "
@@ -1337,11 +1297,11 @@ else:
                 )
 
 
-            with col_item_remove:
+            with col_remove:
 
                 if st.button(
                     "Remove",
-                    key=f"remove_cart_{i}"
+                    key=f"remove_{i}"
                 ):
 
                     st.session_state.cart.pop(
@@ -1354,9 +1314,9 @@ else:
         st.markdown("---")
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # CHECKOUT
-        # ----------------------------------------------------
+        # ====================================================
 
         with st.form("checkout_form"):
 
@@ -1373,6 +1333,7 @@ else:
 
             pay_method = st.selectbox(
                 "Payment Gateway",
+
                 [
                     "UPI / GPay",
                     "Cash on Delivery"
@@ -1380,13 +1341,14 @@ else:
             )
 
 
-            checkout_button = st.form_submit_button(
+            checkout = st.form_submit_button(
                 "Confirm & Dispatch Order",
+
                 use_container_width=True
             )
 
 
-            if checkout_button:
+            if checkout:
 
                 if (
                     address.strip()
@@ -1430,7 +1392,9 @@ else:
 
                         requests.post(
                             GOOGLE_SCRIPT_URL,
+
                             json=order_payload,
+
                             timeout=5
                         )
 
@@ -1441,8 +1405,7 @@ else:
 
 
                     st.success(
-                        "🎉 Order successfully placed "
-                        "and synced with Google Sheets!"
+                        "🎉 Order successfully placed!"
                     )
 
 
@@ -1456,8 +1419,8 @@ else:
                 else:
 
                     st.error(
-                        "Please provide a delivery address "
-                        "and valid 10-digit alternative phone."
+                        "Please enter a delivery address "
+                        "and valid 10-digit phone number."
                     )
 
 
