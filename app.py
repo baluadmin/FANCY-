@@ -48,13 +48,13 @@ st.markdown("""
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
-            padding: 6px 10px 4px 10px;
+            padding: 4px 8px 2px 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             border-bottom: 1px solid #cbd5e1;
         }
 
         .block-container {
-            padding-top: 5.5rem !important;
+            padding-top: 4.8rem !important;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
             max-width: 100% !important;
@@ -63,32 +63,33 @@ st.markdown("""
         /* Professional Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .brand-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
         }
 
-        /* Compact Buttons sized strictly to text content without expanding full-width */
+        /* Compact Buttons sized strictly to text content without gaps */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 12px !important;
-            border-radius: 6px !important;
+            font-size: 11px !important;
+            border-radius: 4px !important;
             width: auto !important;
             display: inline-block !important;
-            padding: 0.25rem 0.6rem !important;
+            padding: 0.2rem 0.4rem !important;
+            margin: 0px !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
@@ -96,19 +97,19 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Force horizontal layout for top header elements */
-        @media (max-width: 900px) {
-            .sticky-header-container div[data-testid="stHorizontalBlock"] {
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                align-items: center !important;
-            }
-            .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-                width: auto !important;
-                flex: 1 1 auto !important;
-                min-width: 0px !important;
-                padding: 0px 2px !important;
-            }
+        /* Force tight single row layout without wrapping or column spacing */
+        .sticky-header-container div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 2px !important;
+        }
+        .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            width: auto !important;
+            flex: 0 0 auto !important;
+            min-width: 0px !important;
+            padding: 0px 1px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -158,7 +159,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- STICKY TOP BANNER & HORIZONTAL NAVIGATION ROW ---
+# --- STICKY TOP BANNER & TIGHT SINGLE-ROW NAVIGATION ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -167,10 +168,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Row-wise compact layout for user welcome message and text-fit navigation buttons
-nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([1.6, 0.7, 0.8, 0.6], gap="small")
+# Tight horizontal row layout with zero gap distribution
+nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([1.5, 0.6, 0.7, 0.5], gap="small")
 with nav_col1:
-    st.markdown(f"<p style='font-size: 11px; margin: 4px 0; white-space: nowrap;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 11px; margin: 2px 0; white-space: nowrap;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with nav_col2:
     if st.button("Store", use_container_width=False):
         st.session_state.current_view = "Home"
