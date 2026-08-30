@@ -40,10 +40,10 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Completely lock header to absolute top zero padding/margin with zero dead space */
+        /* Completely lock header to absolute top zero padding/margin with zero dead space and pull up into browser chrome */
         .sticky-header-container {
             position: fixed;
-            top: 0;
+            top: -25px;
             left: 0;
             width: 100%;
             background-color: var(--background-color, #ffffff);
@@ -53,16 +53,16 @@ st.markdown("""
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Remove default Streamlit block spacing completely */
+        /* Remove default Streamlit block spacing and pull up container */
         .block-container {
-            padding-top: 2.5rem !important;
+            padding-top: 1.5rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
         }
         
         div.block-container {
-            padding-top: 2.5rem !important;
+            padding-top: 1.5rem !important;
         }
 
         /* Tightly fitted single line header banner */
@@ -152,7 +152,7 @@ def log_login_to_sheet(name, phone):
 # Customer Login Gateway
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div class='brand-banner' style='margin-top: 5px;'>
+        <div class='brand-banner' style='margin-top: 0px;'>
             <h1 class='brand-title'>HM MOBILES</h1>
         </div>
     """, unsafe_allow_html=True)
@@ -175,7 +175,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER REMOVING THIRUVERKADU & ALL SPACES ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER REMOVING ALL TOP SPACES ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
