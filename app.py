@@ -40,10 +40,10 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Pull the sticky header up into Streamlit's native header space to eliminate top gap */
+        /* Pull sticky header completely flush to the absolute screen top edge */
         .sticky-header-container {
             position: fixed;
-            top: -55px;
+            top: 0px;
             left: 0;
             width: 100%;
             background-color: var(--background-color, #ffffff);
@@ -53,7 +53,7 @@ st.markdown("""
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Adjust main container spacing */
+        /* Target Streamlit structural container to completely strip out native top padding */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
             padding-top: 2.2rem !important;
             padding-left: 0.5rem;
@@ -61,32 +61,32 @@ st.markdown("""
             max-width: 100% !important;
         }
 
-        /* Tightly fitted single line header banner */
+        /* Header banner matching exact text sizing of navigation buttons */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 1px 2px;
+            padding: 2px 4px;
             border-radius: 3px;
             color: #ffffff !important;
             text-align: center;
             margin: 0px !important;
         }
         .brand-title {
-            font-size: 9px;
-            font-weight: 800;
+            font-size: 11px;
+            font-weight: 700;
             letter-spacing: 0.3px;
             color: #ffffff !important;
             margin: 0;
-            line-height: 1.1;
+            line-height: 1.2;
             white-space: nowrap;
         }
 
-        /* Ultra-small compact buttons */
+        /* Compact buttons styled identically to match header text sizing */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 9px !important;
+            font-size: 11px !important;
             border-radius: 3px !important;
             width: 100% !important;
             display: block !important;
@@ -180,7 +180,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"<p style='font-size: 9px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='font-size: 10px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
 # Row layout: Store, Cart, Exit side-by-side with zero wasted vertical gap
 nav_col1, nav_col2, nav_col3 = st.columns([1, 1, 1], gap="small")
