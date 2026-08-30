@@ -24,15 +24,27 @@ st.markdown("""
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
-        div[data-testid="stToolbar"] {visibility: hidden; display: none;}
-        section[data-testid="stStatusWidget"] {visibility: hidden; display: none;}
-        
-        label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
+        div[data-testid="stToolbar"] {
+            visibility: hidden;
+            display: none;
+        }
+        section[data-testid="stStatusWidget"] {
+            visibility: hidden;
+            display: none;
+        }
+
+        label,
+        .stTextInput label,
+        p,
+        span,
+        div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
             font-weight: 600 !important;
         }
-        
-        input, textarea, div[data-baseweb="select"] > div {
+
+        input,
+        textarea,
+        div[data-baseweb="select"] > div {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
@@ -40,7 +52,7 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Pull sticky header completely flush to the absolute screen top edge */
+        /* Sticky Header */
         .sticky-header-container {
             position: fixed;
             top: 0 !important;
@@ -54,8 +66,10 @@ st.markdown("""
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
-        /* Target Streamlit structural container to completely strip out native top padding */
-        .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
+        /* Main Streamlit Container */
+        .stMainBlockContainer,
+        div[data-testid="stMainBlockContainer"],
+        .block-container {
             padding-top: 0rem !important;
             margin-top: 0rem !important;
             padding-left: 0.5rem;
@@ -63,9 +77,13 @@ st.markdown("""
             max-width: 100% !important;
         }
 
-        /* Compact top header styling */
+        /* HM MOBILES Header */
         .brand-banner {
-            background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 0%);
+            background: linear-gradient(
+                135deg,
+                #2563eb 100%,
+                #1d4ed8 0%
+            );
             padding: 3px 6px;
             border-radius: 4px;
             color: #ffffff !important;
@@ -84,15 +102,15 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* STORE + CART - fixed horizontal two-box navigation */
+        /* STORE + CART */
         .hm-nav-box {
             width: 190px !important;
             max-width: 190px !important;
             margin: 2px auto 0 auto !important;
             padding: 5px !important;
-            border: 1.5px solid #2563eb !important;
+            border: none !important;
             border-radius: 5px !important;
-            background: #ffffff !important;
+            background: transparent !important;
             box-sizing: border-box !important;
         }
 
@@ -159,8 +177,9 @@ st.markdown("""
             border-color: #1d4ed8 !important;
         }
 
-        /* Mobile: NEVER stack Store and Cart */
+        /* Mobile */
         @media (max-width: 640px) {
+
             .hm-nav-box {
                 width: 190px !important;
                 max-width: 190px !important;
@@ -181,14 +200,24 @@ st.markdown("""
             }
         }
 
-        /* Eliminate vertical margins on markdown paragraphs inside sticky header */
+        /* Remove markdown spacing inside header */
         .sticky-header-container p {
             margin: 0px !important;
             padding: 0px !important;
             line-height: 1.1 !important;
         }
+
+        /* Product Images */
+        div[data-testid="stImage"] img {
+            width: 100% !important;
+            max-height: 260px !important;
+            object-fit: contain !important;
+            border-radius: 6px !important;
+        }
+
     </style>
 """, unsafe_allow_html=True)
+
 
 # Initialize Session States
 if "logged_in_user" not in st.session_state:
@@ -214,13 +243,20 @@ def log_login_to_sheet(name, phone):
             "Customer_Name": name,
             "Primary_Phone": phone
         }
-        requests.post(GOOGLE_SCRIPT_URL, json=payload, timeout=3)
+
+        requests.post(
+            GOOGLE_SCRIPT_URL,
+            json=payload,
+            timeout=3
+        )
+
     except Exception:
         pass
 
 
 # Customer Login Gateway
 if not st.session_state.logged_in_user:
+
     st.markdown("""
         <div class='brand-banner'>
             <h1 class='brand-title'>HM MOBILES</h1>
@@ -230,7 +266,9 @@ if not st.session_state.logged_in_user:
     _, mid_col, _ = st.columns([1, 2, 1])
 
     with mid_col:
+
         with st.form("login_form"):
+
             st.markdown("### Customer Portal Login")
 
             cust_name = st.text_input("Your Name:")
@@ -246,7 +284,13 @@ if not st.session_state.logged_in_user:
             )
 
             if login_btn:
-                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+
+                if (
+                    cust_name.strip()
+                    and len(cust_phone) == 10
+                    and cust_phone.isdigit()
+                ):
+
                     st.session_state.logged_in_user = cust_name.strip()
                     st.session_state.user_phone = cust_phone.strip()
 
@@ -256,7 +300,9 @@ if not st.session_state.logged_in_user:
                     )
 
                     st.rerun()
+
                 else:
+
                     st.warning(
                         "⚠️ Enter a valid name and 10-digit mobile number."
                     )
@@ -264,7 +310,7 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SMALL BOX FOR STORE & CART ---
+# Sticky Header
 st.markdown(
     '<div class="sticky-header-container">',
     unsafe_allow_html=True
@@ -277,7 +323,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# Store + Cart: fixed LEFT + RIGHT layout
+# Store + Cart
 st.markdown(
     '<div class="hm-nav-box">',
     unsafe_allow_html=True
@@ -308,29 +354,40 @@ st.markdown(
 st.markdown(
     '</div>',
     unsafe_allow_html=True
-)  # Close sticky-header-container
+)
 
 
-# LIVE Sync Inventory from Google Sheet with TTL=0
+# LIVE Sync Inventory from Google Sheet
 @st.cache_data(ttl=0)
 def load_inventory_from_sheet():
-    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
+
+    sheet_csv_url = (
+        "https://docs.google.com/spreadsheets/d/"
+        "1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/"
+        "export?format=csv"
+    )
 
     try:
         df = pd.read_csv(sheet_csv_url)
         return df
+
     except Exception:
         return pd.DataFrame()
 
 
 inv_df = load_inventory_from_sheet()
+
 product_records = []
 
 
 if not inv_df.empty:
+
     try:
+
         for _, row in inv_df.iterrows():
+
             product_records.append({
+
                 "id": str(row.iloc[0])
                 if len(row) > 0 and pd.notna(row.iloc[0])
                 else "N/A",
@@ -364,7 +421,9 @@ if not inv_df.empty:
         print(f"Parsing error: {e}")
 
 
+# Default Product
 if not product_records:
+
     product_records = [
         {
             "id": "ITM001",
@@ -382,7 +441,7 @@ if not product_records:
 if st.session_state.current_view == "Home":
 
     categories = sorted(
-        list(set([p['category'] for p in product_records]))
+        list(set([p["category"] for p in product_records]))
     )
 
     selected_cat = st.selectbox(
@@ -394,10 +453,12 @@ if st.session_state.current_view == "Home":
         f"### {selected_cat} Catalog"
     )
 
+
     filtered_items = [
         p for p in product_records
-        if p['category'].lower() == selected_cat.lower()
+        if p["category"].lower() == selected_cat.lower()
     ]
+
 
     if filtered_items:
 
@@ -405,19 +466,59 @@ if st.session_state.current_view == "Home":
 
             with st.container(border=True):
 
+                # ============================
+                # PRODUCT IMAGE
+                # ============================
+
+                if prod["image"]:
+
+                    try:
+
+                        st.image(
+                            prod["image"],
+                            use_container_width=True
+                        )
+
+                    except Exception:
+
+                        st.caption(
+                            "Product image could not be loaded."
+                        )
+
+
+                # ============================
+                # PRODUCT NAME
+                # ============================
+
                 st.markdown(
                     f"**{prod['name']}**"
                 )
+
+
+                # ============================
+                # PRICE + STOCK
+                # ============================
 
                 st.markdown(
                     f"Price: **₹{prod['price']}** | "
                     f"Stock: {prod['stock']} units"
                 )
 
-                if prod['description']:
+
+                # ============================
+                # DESCRIPTION
+                # ============================
+
+                if prod["description"]:
+
                     st.caption(
-                        prod['description']
+                        prod["description"]
                     )
+
+
+                # ============================
+                # QUANTITY
+                # ============================
 
                 q_val = st.number_input(
                     "Quantity",
@@ -427,13 +528,18 @@ if st.session_state.current_view == "Home":
                     key=f"qty_{selected_cat}_{idx}"
                 )
 
+
+                # ============================
+                # ADD TO CART
+                # ============================
+
                 if st.button(
                     f"Add to Cart - {prod['name']}",
                     key=f"add_{selected_cat}_{idx}"
                 ):
 
                     st.session_state.cart.append({
-                        "product": prod['name'],
+                        "product": prod["name"],
                         "quantity": f"{int(q_val)} Units"
                     })
 
@@ -443,17 +549,24 @@ if st.session_state.current_view == "Home":
 
                     st.rerun()
 
+
     else:
+
         st.info(
             f"No items found under category '{selected_cat}'."
         )
 
+
+# ============================
+# CART VIEW
+# ============================
 
 else:
 
     st.subheader(
         "🛒 Shopping Cart & Checkout"
     )
+
 
     if st.session_state.cart:
 
@@ -462,6 +575,7 @@ else:
             col_item_name, col_item_rem = st.columns([3, 1])
 
             with col_item_name:
+
                 st.write(
                     f"• {item['product']} ({item['quantity']})"
                 )
@@ -472,11 +586,14 @@ else:
                     "Remove",
                     key=f"rem_{i}"
                 ):
+
                     st.session_state.cart.pop(i)
+
                     st.rerun()
 
 
         st.markdown("---")
+
 
         with st.form("checkout_form"):
 
@@ -484,15 +601,21 @@ else:
                 "Delivery Address:"
             )
 
+
             sec_phone = st.text_input(
                 "Alternative Phone Number:",
                 max_chars=10
             )
 
+
             pay_method = st.selectbox(
                 "Payment Gateway",
-                ["UPI / GPay", "Cash on Delivery"]
+                [
+                    "UPI / GPay",
+                    "Cash on Delivery"
+                ]
             )
+
 
             if st.form_submit_button(
                 "Confirm & Dispatch Order",
@@ -504,16 +627,29 @@ else:
                     try:
 
                         order_payload = {
+
                             "Type": "Order",
+
                             "Timestamp": datetime.now().strftime(
                                 "%Y-%m-%d %H:%M:%S"
                             ),
-                            "Customer_Name": st.session_state.logged_in_user,
-                            "Primary_Phone": st.session_state.user_phone,
-                            "Items": str(st.session_state.cart),
-                            "Address": address,
-                            "Secondary_Phone": sec_phone
+
+                            "Customer_Name":
+                                st.session_state.logged_in_user,
+
+                            "Primary_Phone":
+                                st.session_state.user_phone,
+
+                            "Items":
+                                str(st.session_state.cart),
+
+                            "Address":
+                                address,
+
+                            "Secondary_Phone":
+                                sec_phone
                         }
+
 
                         requests.post(
                             GOOGLE_SCRIPT_URL,
@@ -521,24 +657,33 @@ else:
                             timeout=5
                         )
 
+
                     except Exception:
+
                         pass
+
 
                     st.success(
                         "🎉 Order successfully placed and synced with Google Sheets!"
                     )
 
+
                     st.session_state.cart = []
+
                     st.session_state.current_view = "Home"
 
                     st.rerun()
 
+
                 else:
+
                     st.error(
                         "Please provide a delivery address and valid 10-digit alternative phone."
                     )
 
+
     else:
+
         st.info(
             "Your cart is empty."
         )
