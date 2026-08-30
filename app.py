@@ -50,7 +50,7 @@ section[data-testid="stStatusWidget"] {
 
 
 /* ============================================================
-   GENERAL LAYOUT (2-COLUMN GRID TO SHOW TWO PRODUCTS PER VIEW)
+   GENERAL LAYOUT (2-COLUMN GRID)
    ============================================================ */
 
 .stMainBlockContainer,
@@ -58,8 +58,8 @@ div[data-testid="stMainBlockContainer"],
 .block-container {
     padding-top: 0rem !important;
     margin-top: 0rem !important;
-    padding-left: 0.4rem !important;
-    padding-right: 0.4rem !important;
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
     max-width: 100% !important;
 }
 
@@ -169,34 +169,34 @@ p {
 }
 
 .category-area div[data-baseweb="select"] > div {
-    min-height: 26px !important;
+    min-height: 24px !important;
     padding-top: 0px !important;
     padding-bottom: 0px !important;
 }
 
 
 /* ============================================================
-   PRODUCT CARD (ULTRA COMPACT FOR 2-COLUMN VIEW)
+   PRODUCT CARD (MINIMAL HEIGHT & TIGHT PADDING)
    ============================================================ */
 
 .product-card {
     width: 100%;
     border: 1px solid #cbd5e1;
-    border-radius: 5px;
-    padding: 3px;
-    margin-bottom: 4px;
+    border-radius: 4px;
+    padding: 2px 3px;
+    margin-bottom: 3px;
     box-sizing: border-box;
     background: white;
 }
 
 
 /* ============================================================
-   IMAGE SIZING (SMALL & OPTIMIZED)
+   IMAGE SIZING (REDUCED HEIGHT)
    ============================================================ */
 
 .product-image-wrapper img {
     width: 100%;
-    height: 85px;
+    height: 55px;
     object-fit: contain;
     display: block;
     border-radius: 3px;
@@ -208,9 +208,9 @@ p {
    ============================================================ */
 
 .image-button {
-    width: 22px;
-    min-width: 22px;
-    height: 22px;
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
     border: 1px solid #2563eb;
     border-radius: 50%;
     background: white;
@@ -218,21 +218,21 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 700;
 }
 
 
 /* ============================================================
-   PRODUCT INFORMATION
+   PRODUCT INFORMATION (ULTRA COMPACT)
    ============================================================ */
 
 .product-name {
     text-align: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     margin-top: 1px;
-    margin-bottom: 1px;
+    margin-bottom: 0px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -240,36 +240,29 @@ p {
 
 .product-price {
     text-align: center;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     margin-bottom: 1px;
 }
 
-.product-description {
-    text-align: center;
-    font-size: 9px;
-    margin-bottom: 2px;
-    line-height: 1.0;
-}
-
 
 /* ============================================================
-   FORM CONTROLS COMPACT OVERRIDES
+   FORM CONTROLS COMPACT OVERRIDES (MINIMAL VERTICAL SPACE)
    ============================================================ */
 
 div[data-baseweb="input"] input {
-    height: 24px !important;
-    min-height: 24px !important;
+    height: 20px !important;
+    min-height: 20px !important;
     padding-top: 0px !important;
     padding-bottom: 0px !important;
-    font-size: 11px !important;
+    font-size: 10px !important;
 }
 
 div.stButton > button {
-    padding-top: 0.05rem !important;
-    padding-bottom: 0.05rem !important;
-    min-height: 24px !important;
-    font-size: 10px !important;
+    padding-top: 0.02rem !important;
+    padding-bottom: 0.02rem !important;
+    min-height: 20px !important;
+    font-size: 9px !important;
 }
 
 </style>
@@ -595,7 +588,7 @@ if st.session_state.current_view == "Home":
                         )
 
                         left_col, image_col, right_col = st.columns(
-                            [0.4, 5, 0.4],
+                            [0.3, 5, 0.3],
                             vertical_alignment="center"
                         )
 
