@@ -78,9 +78,9 @@ st.markdown("""
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
-            font-size: 13px !important;
+            font-size: 12px !important;
             border-radius: 6px !important;
-            padding: 0.25rem 0.4rem !important;
+            padding: 0.2rem 0.2rem !important;
             width: 100% !important;
             display: block !important;
         }
@@ -172,24 +172,24 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: ULTRA-SMALL SINGLE LINE BRAND TITLE & NAVIGATION ROW ---
+# --- AFTER LOGIN: ULTRA-SMALL SINGLE LINE BRAND TITLE & SINGLE-ROW NAVIGATION ---
 st.markdown("""
     <div class="brand-top-bar">
         <p class="brand-top-title">HM MOBILES - THIRUVERKADU</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Single horizontal line layout for Welcome message, Home, Cart, and Logout buttons
-top_c1, top_c2, top_c3, top_c4 = st.columns([1.6, 0.8, 0.9, 0.8], gap="small")
+# Single horizontal row layout for Welcome, Home, Cart, and Logout
+top_c1, top_c2, top_c3, top_c4 = st.columns([1.8, 0.7, 0.8, 0.7], gap="small")
 with top_c1:
-    st.markdown(f"<p style='font-size: 13px; margin: 4px 0;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 12px; margin: 4px 0; white-space: nowrap;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with top_c2:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
 with top_c3:
     cart_count = len(st.session_state.cart)
-    if st.button(f"Cart ({cart_count})", use_container_width=True):
+    if st.button(f"Cart({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
 with top_c4:
