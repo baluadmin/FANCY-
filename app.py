@@ -1,5 +1,7 @@
 from datetime import datetime
+from io import BytesIO
 import pandas as pd
+from PIL import Image
 import requests
 import streamlit as st
 
@@ -34,6 +36,11 @@ footer {visibility: hidden;}
 div[data-testid="stToolbar"] {display: none !important;}
 section[data-testid="stStatusWidget"] {display: none !important;}
 
+
+/* ============================================================
+   CONTAINER & GAP ELIMINATION
+   ============================================================ */
+
 .stMainBlockContainer,
 div[data-testid="stMainBlockContainer"],
 .block-container {
@@ -48,6 +55,11 @@ div[data-testid="stMainBlockContainer"],
 label, .stTextInput label, p {
     font-weight: 600 !important;
 }
+
+
+/* ============================================================
+   VIBRANT COLORFUL HEADER BANNER
+   ============================================================ */
 
 .brand-banner {
     background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
@@ -68,6 +80,11 @@ label, .stTextInput label, p {
     line-height: 1.1 !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
+
+
+/* ============================================================
+   STORE + CART (SIDE BY SIDE COMPACT COLORFUL BOX)
+   ============================================================ */
 
 .hm-nav-box {
     width: 170px !important;
@@ -134,6 +151,11 @@ label, .stTextInput label, p {
     color: white !important;
 }
 
+
+/* ============================================================
+   CATEGORY SELECTOR
+   ============================================================ */
+
 .category-area {
     margin-top: 0 !important;
     margin-bottom: 2px !important;
@@ -146,6 +168,11 @@ label, .stTextInput label, p {
     border-color: #cbd5e1 !important;
     background-color: #f8fafc !important;
 }
+
+
+/* ============================================================
+   PRODUCT CARD
+   ============================================================ */
 
 .product-card {
     width: 100%;
@@ -160,7 +187,7 @@ label, .stTextInput label, p {
 
 [data-testid="stImage"] img {
     width: 100% !important;
-    height: 60px !important;
+    max-height: 55px !important;
     object-fit: contain !important;
     border-radius: 3px;
     display: block;
@@ -361,11 +388,12 @@ product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA (REPLACE USERNAME & REPO NAME HERE)
+# READ PRODUCT DATA (GITHUB PATH & IMAGE COMPRESSION HELPER)
 # ============================================================
 
 if not inv_df.empty:
     try:
+        # REPLACE THESE WITH YOUR EXACT GITHUB USERNAME & REPO NAME
         GITHUB_USER = "your_github_username"
         REPO_NAME = "your_repository_name"
 
@@ -408,6 +436,25 @@ if not product_records:
         "images": [],
         "description": "High performance audio"
     }]
+
+
+@st.cache_data
+def get_compressed_image(url):
+    """Downloads, compresses, and resizes mismatched images in-memory."""
+    try:
+        response = requests.get(url, timeout=4)
+        if response.status_code == 200:
+            img = Image.open(BytesIO(response.content))
+            if img.mode in ("RGBA", "P"):
+                img = img.convert("RGB")
+            img.thumbnail((300, 300))
+            buffer = BytesIO()
+            img.save(buffer, format="JPEG", quality=85)
+            buffer.seek(0)
+            return buffer
+    except Exception:
+        pass
+    return None
 
 
 # ============================================================
@@ -456,9 +503,10 @@ if st.session_state.current_view == "Home":
                         with image_col:
                             if total_imgs > 0:
                                 current_idx = st.session_state[img_key] % total_imgs
-                                try:
-                                    st.image(prod["images"][current_idx], use_container_width=True)
-                                except Exception:
+                                compressed_img = get_compressed_image(prod["images"][current_idx])
+                                if compressed_img:
+                                    st.image(compressed_img, use_container_width=True)
+                                else:
                                     st.markdown("<p style='font-size:9px; text-align:center; color:#ef4444;'>Failed</p>", unsafe_allow_html=True)
                             else:
                                 st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
