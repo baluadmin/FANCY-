@@ -55,7 +55,7 @@ st.markdown("""
 
         /* Target Streamlit structural container to completely strip out native top padding */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
-            padding-top: 3.2rem !important;
+            padding-top: 3.0rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
@@ -81,35 +81,36 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* Single outer container box wrapping both Store and Cart buttons inside a single unified frame */
+        /* Single unified outer container box wrapping Store and Cart inside a single boxed frame */
         .unified-nav-box {
-            background-color: #f8fafc;
-            border: 1.5px solid #cbd5e1;
+            background-color: #ffffff;
+            border: 1.5px solid #2563eb;
             border-radius: 6px;
-            padding: 4px 6px;
+            padding: 6px 8px;
             margin: 0px !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
         }
 
-        /* Compact buttons styled cleanly inside the single unified box */
+        /* Seamless text-link style buttons matching the exact reference layout */
         div.stButton > button {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #cbd5e1 !important;
+            background-color: transparent !important;
+            color: #2563eb !important;
+            border: none !important;
             font-weight: 700 !important;
-            font-size: 11px !important;
-            border-radius: 4px !important;
+            font-size: 14px !important;
+            border-radius: 0px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.2rem 0.2rem !important;
+            padding: 0.1rem 0.1rem !important;
             line-height: 1.2 !important;
             white-space: nowrap !important;
             margin: 0px !important;
+            box-shadow: none !important;
         }
         div.stButton > button:hover {
-            background-color: #f1f5f9 !important;
-            color: #2563eb !important;
-            border: 1px solid #2563eb !important;
+            background-color: #eff6ff !important;
+            color: #1d4ed8 !important;
+            border: none !important;
         }
 
         /* Force single row layout for navigation side-by-side with zero vertical gap */
@@ -183,7 +184,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SINGLE UNIFIED BOX FOR STORE & CART ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SINGLE BOX ENCLOSING STORE & CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -192,17 +193,15 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Opening single outer container box wrapping greeting, store button, and cart button together
+# Opening single outer container box wrapping Store and Cart inside one box frame
 st.markdown('<div class="unified-nav-box">', unsafe_allow_html=True)
 
-header_col1, header_col2, header_col3 = st.columns([1.2, 1, 1], gap="small")
+header_col1, header_col2 = st.columns([1, 1], gap="small")
 with header_col1:
-    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 4px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
-with header_col2:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
-with header_col3:
+with header_col2:
     if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
