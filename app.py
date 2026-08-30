@@ -54,31 +54,31 @@ st.markdown("""
         }
 
         .block-container {
-            padding-top: 6.2rem !important;
+            padding-top: 5.8rem !important;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
             max-width: 100% !important;
         }
 
-        /* Professional Header Banner */
+        /* Professional Header Banner matching exact design layout */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 6px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
         .brand-title {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
         }
 
-        /* Compact Buttons sized strictly to fit side-by-side without wrapping */
+        /* Compact Buttons sized strictly to fit side-by-side cleanly */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
@@ -159,7 +159,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- STICKY TOP BANNER & EXACT SINGLE-ROW LAYOUT MATCHING SKETCH ---
+# --- STICKY TOP HEADER MATCHING YOUR DRAWN SKETCH EXACTLY ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -170,7 +170,7 @@ st.markdown("""
 
 st.markdown(f"<p style='font-size: 11px; margin: 2px 0;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
-# Row layout: Store, Cart(0), Exit side-by-side in exact proportions
+# Row layout: Store, Cart(0), Exit side-by-side matching the sketch layout precisely
 nav_col1, nav_col2, nav_col3 = st.columns([1, 1, 1], gap="small")
 with nav_col1:
     if st.button("Store", use_container_width=True):
