@@ -58,32 +58,27 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact buttons styled tightly to match text width size */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 700 !important;
             border-radius: 6px !important;
-            padding: 0.3rem 0.6rem !important;
-            font-size: 13px !important;
-            width: auto !important;
-            display: inline-block !important;
+            width: 100% !important;
+            padding: 0.3rem 0.1rem !important;
+            font-size: 12px !important;
         }
 
-        /* Group the navigation buttons closely together without stretching 100% */
+        /* Force 3 Navigation Buttons to stay tightly in one single line on mobile */
         div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-            justify-content: center !important;
-            gap: 8px !important;
         }
         div[data-testid="column"] {
-            flex: 0 1 auto !important;
-            width: auto !important;
+            flex: 1 1 0% !important;
             min-width: 0px !important;
-            padding: 0px !important;
+            padding: 0px 2px !important;
         }
 
         .block-container {
@@ -140,24 +135,24 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- TOP BANNER & TIGHT TEXT-SIZED NAVIGATION BUTTONS ---
+# --- TOP BANNER & 3 BUTTONS IN EXACTLY ONE SINGLE LINE ---
 st.markdown("""
     <div class='brand-banner'>
         <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-nav_col1, nav_col2, nav_col3 = st.columns(3)
+nav_col1, nav_col2, nav_col3 = st.columns(3, gap="small")
 with nav_col1:
-    if st.button("Store"):
+    if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
 with nav_col2:
-    if st.button(f"Cart ({len(st.session_state.cart)})"):
+    if st.button(f"Cart ({len(st.session_state.cart)})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
 with nav_col3:
-    if st.button("Exit"):
+    if st.button("Exit", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
