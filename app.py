@@ -53,7 +53,7 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Sticky Header Panel Container */
+        /* Sticky Header Panel Container (Fixed across all screens including mobile) */
         .sticky-header-container {
             position: fixed;
             top: 0;
@@ -61,14 +61,14 @@ st.markdown("""
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
-            padding: 8px 16px 4px 16px;
+            padding: 6px 10px 4px 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             border-bottom: 1px solid #cbd5e1;
         }
 
         /* Push main content down so it doesn't hide behind the fixed sticky header */
         .block-container {
-            padding-top: 5.5rem !important;
+            padding-top: 5.2rem !important;
             padding-bottom: 0rem;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
@@ -78,15 +78,15 @@ st.markdown("""
         /* Ultra-Compact Top Bar for Brand Name */
         .brand-top-bar {
             background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
-            padding: 3px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
             color: #0f172a !important;
             text-align: center;
             border: 1px solid #7dd3fc;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .brand-top-title {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #0f172a !important;
@@ -94,22 +94,37 @@ st.markdown("""
             line-height: 1.1;
         }
 
-        /* Compact Buttons */
+        /* Compact Buttons forced single row layout on mobile */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
-            font-size: 12px !important;
-            border-radius: 6px !important;
-            padding: 0.2rem 0.2rem !important;
+            font-size: 11px !important;
+            border-radius: 4px !important;
+            padding: 0.15rem 0.1rem !important;
             width: 100% !important;
             display: block !important;
+            white-space: nowrap !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
             border: 1px solid #94a3b8 !important;
+        }
+
+        /* Override Streamlit's mobile stacking behavior for the top navigation row */
+        @media (max-width: 900px) {
+            .sticky-header-container div[data-testid="stHorizontalBlock"] {
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+                width: auto !important;
+                flex: 1 1 auto !important;
+                min-width: 0px !important;
+                padding: 0px 1px !important;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -195,10 +210,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Single horizontal row layout for Welcome, Home, Cart, and Logout inside sticky block
-top_c1, top_c2, top_c3, top_c4 = st.columns([1.8, 0.7, 0.8, 0.7], gap="small")
+# Single horizontal row layout for Welcome, Home, Cart, and Logout across all screen sizes
+top_c1, top_c2, top_c3, top_c4 = st.columns([1.6, 0.7, 0.8, 0.7], gap="small")
 with top_c1:
-    st.markdown(f"<p style='font-size: 12px; margin: 4px 0; white-space: nowrap;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 11px; margin: 2px 0; white-space: nowrap;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with top_c2:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
