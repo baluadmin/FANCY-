@@ -403,7 +403,6 @@ product_records = []
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
-            # Parse images if multiple are provided separated by commas or newlines
             raw_img = str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             img_list = [img.strip() for img in raw_img.replace(",", "\n").split("\n") if img.strip()]
 
@@ -467,15 +466,14 @@ if st.session_state.current_view == "Home":
 
                         left_col, image_col, right_col = st.columns([0.3, 5, 0.3], vertical_alignment="center")
 
-                        # Manage image list index state
-                        img_key = f"image_index_{selected_cat}_{item_index}"
+                        img_key = f"img_idx_{selected_cat}_{item_index}"
                         if img_key not in st.session_state:
                             st.session_state[img_key] = 0
 
                         total_imgs = len(prod["images"])
 
                         with left_col:
-                            if st.button("◀", key=f"prev_{selected_cat}_{item_index}", use_container_width=True):
+                            if st.button("◀", key=f"prev_{selected_cat}_{item_index}"):
                                 if total_imgs > 0:
                                     st.session_state[img_key] = (st.session_state[img_key] - 1) % total_imgs
                                     st.rerun()
@@ -491,7 +489,7 @@ if st.session_state.current_view == "Home":
                                 st.info("No image")
 
                         with right_col:
-                            if st.button("▶", key=f"next_{selected_cat}_{item_index}", use_container_width=True):
+                            if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
                                 if total_imgs > 0:
                                     st.session_state[img_key] = (st.session_state[img_key] + 1) % total_imgs
                                     st.rerun()
