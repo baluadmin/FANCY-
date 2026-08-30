@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Responsive Mobile Styling CSS
+# 1. Streamlit Page Configuration & Clean Mobile Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -21,7 +21,6 @@ st.markdown("""
             font-family: 'Inter', sans-serif !important;
         }
 
-        /* Hide Streamlit default headers/badges */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -83,8 +82,6 @@ if "cart" not in st.session_state:
     st.session_state.cart = []
 if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
-if "selected_menu" not in st.session_state:
-    st.session_state.selected_menu = "Headset"
 
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
@@ -144,47 +141,50 @@ with c_out:
 
 st.markdown("---")
 
-# Sync Inventory Database from Google Sheet
-@st.cache_data(ttl=2)
+# LIVE Sync Inventory from Google Sheet with TTL=0 (No Caching Delay)
+@st.cache_data(ttl=0)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
         df = pd.read_csv(sheet_csv_url)
         return df
     except Exception:
-        if os.path.exists("inventory.csv"):
-            return pd.read_csv("inventory.csv")
         return pd.DataFrame()
 
 inv_df = load_inventory_from_sheet()
 product_records = []
+
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
+            # Strict column mapping check based on standard inventory sheets:
+            # Col 0: ID, Col 1: Name, Col 2: Category, Col 3: Stock, Col 4: Price, Col 5: Desc, Col 6: Image
             product_records.append({
                 "id": str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A",
                 "name": str(row.iloc[1]) if len(row) > 1 and pd.notna(row.iloc[1]) else "Unknown",
-                "category": str(row.iloc[2]) if len(row) > 2 and pd.notna(row.iloc[2]) else "General",
+                "category": str(row.iloc[2]).strip() if len(row) > 2 and pd.notna(row.iloc[2]) else "General",
                 "stock": str(row.iloc[3]) if len(row) > 3 and pd.notna(row.iloc[3]) else "0",
                 "price": str(row.iloc[4]) if len(row) > 4 and pd.notna(row.iloc[4]) else "0",
                 "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
                 "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Parsing error: {e}")
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High bass wireless audio"}
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High performance audio"}
     ]
 
 # Main Application Views
 if st.session_state.current_view == "Home":
-    categories = list(set([p['category'] for p in product_records]))
+    categories = sorted(list(set([p['category'] for p in product_records])))
     selected_cat = st.selectbox("Select Product Category:", categories)
     
     st.markdown(f"### {selected_cat} Catalog")
-    filtered_items = [p for p in product_records if p['category'] == selected_cat]
+    
+    # Filter products strictly matching the selected category from the sheet
+    filtered_items = [p for p in product_records if p['category'].lower() == selected_cat.lower()]
     
     if filtered_items:
         for idx, prod in enumerate(filtered_items):
@@ -200,7 +200,7 @@ if st.session_state.current_view == "Home":
                     st.success("Added to cart!")
                     st.rerun()
     else:
-        st.info("No items found in this category.")
+        st.info(f"No items found under category '{selected_cat}'. Check your Google Sheet column entries.")
 else:
     st.subheader("🛒 Shopping Cart & Checkout")
     if st.session_state.cart:
@@ -216,7 +216,7 @@ else:
         st.markdown("---")
         with st.form("checkout_form"):
             address = st.text_area("Delivery Address in Thiruverkadu/Chennai:")
-            sec_phone = st.text_input("Alternative Phone Number:", max_chars=10, type="default")
+            sec_phone = st.text_input("Alternative Phone Number:", max_chars=10)
             pay_method = st.selectbox("Payment Gateway", ["UPI / GPay", "Cash on Delivery"])
             
             if st.form_submit_button("Confirm & Dispatch Order", use_container_width=True):
