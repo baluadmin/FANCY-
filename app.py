@@ -84,98 +84,100 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* STORE + CART: one real outer box, two inner boxes */
-        .st-key-hm-nav {
-            width: fit-content !important;
+        /* STORE + CART - fixed horizontal two-box navigation */
+        .hm-nav-box {
+            width: 190px !important;
             max-width: 190px !important;
             margin: 2px auto 0 auto !important;
             padding: 5px !important;
             border: 1.5px solid #2563eb !important;
             border-radius: 5px !important;
+            background: #ffffff !important;
             box-sizing: border-box !important;
         }
 
-        .st-key-hm-nav > div {
-            padding: 0 !important;
+        .hm-nav-box [data-testid="stRadio"] {
+            width: 100% !important;
             margin: 0 !important;
+            padding: 0 !important;
         }
 
-        .st-key-hm-nav div[data-testid="stHorizontalBlock"] {
+        .hm-nav-box [data-testid="stRadio"] > div {
+            width: 100% !important;
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-            width: 100% !important;
+            justify-content: center !important;
+            align-items: center !important;
             gap: 6px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label {
+            display: flex !important;
+            flex: 1 1 0 !important;
+            width: 50% !important;
+            min-width: 0 !important;
+            max-width: 50% !important;
+            height: 30px !important;
+            margin: 0 !important;
+            padding: 0 5px !important;
             align-items: center !important;
             justify-content: center !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .st-key-hm-nav div[data-testid="column"] {
-            width: 50% !important;
-            max-width: 50% !important;
-            min-width: 0 !important;
-            flex: 0 0 50% !important;
-            padding: 0 !important;
-            margin: 0 !important;
             box-sizing: border-box !important;
-        }
-
-        .st-key-hm-nav div[data-testid="column"] > div {
-            width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        .st-key-hm-nav div.stButton,
-        .st-key-hm-nav div.stButton > button {
-            width: 100% !important;
-            min-width: 0 !important;
-            margin: 0 !important;
-            box-sizing: border-box !important;
-        }
-
-        /* Individual Store / Cart inner boxes */
-        .st-key-hm-nav div.stButton > button {
-            height: 30px !important;
-            padding: 2px 5px !important;
-            background: #ffffff !important;
-            color: #2563eb !important;
             border: 1.5px solid #2563eb !important;
             border-radius: 4px !important;
+            background: #ffffff !important;
+            color: #2563eb !important;
+            cursor: pointer !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label > div:first-child {
+            display: none !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label > div:last-child {
+            width: 100% !important;
+            text-align: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label p {
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #2563eb !important;
             font-size: 12px !important;
             font-weight: 700 !important;
             line-height: 1 !important;
             white-space: nowrap !important;
-            box-shadow: none !important;
         }
 
-        .st-key-hm-nav div.stButton > button:hover {
+        .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) {
             background: #eff6ff !important;
-            color: #1d4ed8 !important;
             border-color: #1d4ed8 !important;
         }
 
-        /* Never allow Streamlit to stack these two navigation columns */
+        /* Mobile: NEVER stack Store and Cart */
         @media (max-width: 640px) {
-            .st-key-hm-nav {
+            .hm-nav-box {
                 width: 190px !important;
                 max-width: 190px !important;
             }
 
-            .st-key-hm-nav div[data-testid="stHorizontalBlock"] {
+            .hm-nav-box [data-testid="stRadio"] > div {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
             }
 
-            .st-key-hm-nav div[data-testid="column"] {
-                display: block !important;
+            .hm-nav-box [data-testid="stRadio"] > div > label {
+                display: flex !important;
+                flex: 1 1 0 !important;
                 width: 50% !important;
                 max-width: 50% !important;
                 min-width: 0 !important;
-                flex: 0 0 50% !important;
             }
         }
 
@@ -242,19 +244,24 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Store + Cart in ONE real outer box, side-by-side
-with st.container(border=True, key="hm_nav"):
-    header_col1, header_col2 = st.columns(2, gap="small")
+# Store + Cart: fixed LEFT + RIGHT layout
+st.markdown('<div class="hm-nav-box">', unsafe_allow_html=True)
 
-    with header_col1:
-        if st.button("Store", use_container_width=True, key="hm_store"):
-            st.session_state.current_view = "Home"
-            st.rerun()
+nav_choice = st.radio(
+    "Navigation",
+    ["Store", f"Cart({len(st.session_state.cart)})"],
+    index=0 if st.session_state.current_view == "Home" else 1,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="hm_navigation"
+)
 
-    with header_col2:
-        if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True, key="hm_cart"):
-            st.session_state.current_view = "Cart"
-            st.rerun()
+new_view = "Home" if nav_choice == "Store" else "Cart"
+if st.session_state.current_view != new_view:
+    st.session_state.current_view = new_view
+    st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True) # Close sticky-header-container
 
