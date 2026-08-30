@@ -40,10 +40,10 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Completely flush sticky header to the absolute browser top with zero top spacing */
+        /* Pull the sticky header up into Streamlit's native header space to eliminate top gap */
         .sticky-header-container {
             position: fixed;
-            top: 0px;
+            top: -55px;
             left: 0;
             width: 100%;
             background-color: var(--background-color, #ffffff);
@@ -53,9 +53,9 @@ st.markdown("""
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Target Streamlit's structural container to completely strip out native top padding */
+        /* Adjust main container spacing */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
-            padding-top: 2.8rem !important;
+            padding-top: 2.2rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
