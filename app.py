@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
+
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
@@ -12,6 +13,7 @@ st.set_page_config(
     page_icon="📱",
     layout="wide",
 )
+
 
 # ============================================================
 # CSS
@@ -48,6 +50,11 @@ section[data-testid="stStatusWidget"] {
     display: none;
 }
 
+
+/* ============================================================
+   GENERAL
+   ============================================================ */
+
 label,
 .stTextInput label,
 p,
@@ -67,6 +74,7 @@ div[data-baseweb="select"] > div {
     border-radius: 4px !important;
 }
 
+
 /* ============================================================
    STICKY HEADER
    ============================================================ */
@@ -84,6 +92,7 @@ div[data-baseweb="select"] > div {
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
+
 /* ============================================================
    MAIN CONTAINER
    ============================================================ */
@@ -98,8 +107,9 @@ div[data-testid="stMainBlockContainer"],
     max-width: 100% !important;
 }
 
+
 /* ============================================================
-   HM MOBILES HEADER
+   HM MOBILES
    ============================================================ */
 
 .brand-banner {
@@ -138,9 +148,10 @@ div[data-testid="stMainBlockContainer"],
     text-transform: uppercase;
 }
 
+
 /* ============================================================
    STORE + CART
-   NO OUTER BORDER
+   OUTER LINE REMOVED
    ============================================================ */
 
 .hm-nav-box {
@@ -261,197 +272,51 @@ div[data-testid="stMainBlockContainer"],
     border-color: #1d4ed8 !important;
 }
 
+
 /* ============================================================
-   MOBILE NAVIGATION
+   MOBILE STORE + CART
    ============================================================ */
 
 @media (max-width: 640px) {
 
     .hm-nav-box {
         width: 190px !important;
-
         max-width: 190px !important;
     }
 
     .hm-nav-box [data-testid="stRadio"] > div {
         display: flex !important;
-
         flex-direction: row !important;
-
         flex-wrap: nowrap !important;
     }
 
     .hm-nav-box [data-testid="stRadio"] > div > label {
         display: flex !important;
-
         flex: 1 1 0 !important;
-
         width: 50% !important;
-
         max-width: 50% !important;
-
         min-width: 0 !important;
     }
 }
 
+
 /* ============================================================
-   REMOVE HEADER MARKDOWN SPACING
+   REMOVE HEADER SPACING
    ============================================================ */
 
 .sticky-header-container p {
     margin: 0px !important;
-
     padding: 0px !important;
-
     line-height: 1.1 !important;
 }
 
-/* ============================================================
-   CATEGORY SELECT
-   ============================================================ */
-
-.category-section {
-    margin-top: 4px !important;
-    margin-bottom: 4px !important;
-}
 
 /* ============================================================
-   PRODUCT IMAGE AREA
+   CATEGORY
    ============================================================ */
 
-.product-slider {
-    width: 100% !important;
-
-    display: flex !important;
-
-    flex-direction: row !important;
-
-    align-items: center !important;
-
-    justify-content: center !important;
-
-    gap: 4px !important;
-
-    margin-top: 4px !important;
-
-    margin-bottom: 6px !important;
-}
-
-.product-image-area {
-    flex: 1 !important;
-
-    min-width: 0 !important;
-
-    max-width: 520px !important;
-
-    display: flex !important;
-
-    justify-content: center !important;
-
-    align-items: center !important;
-}
-
-/* Previous / Next button columns */
-
-.slider-button {
-    width: 42px !important;
-
-    min-width: 42px !important;
-
-    height: 42px !important;
-
-    border: 1.5px solid #2563eb !important;
-
-    border-radius: 50% !important;
-
-    background: #ffffff !important;
-
-    color: #2563eb !important;
-
-    font-size: 20px !important;
-
-    font-weight: 700 !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    justify-content: center !important;
-}
-
-/* Product image */
-
-div[data-testid="stImage"] {
-    width: 100% !important;
-
-    display: flex !important;
-
-    justify-content: center !important;
-
-    align-items: center !important;
-
-    margin: 0 !important;
-}
-
-div[data-testid="stImage"] img {
-    width: 100% !important;
-
-    max-width: 500px !important;
-
-    height: 280px !important;
-
-    object-fit: contain !important;
-
-    border-radius: 6px !important;
-}
-
-/* ============================================================
-   MOBILE IMAGE
-   ============================================================ */
-
-@media (max-width: 640px) {
-
-    .product-slider {
-        gap: 2px !important;
-
-        width: 100% !important;
-    }
-
-    .product-image-area {
-        max-width: calc(100% - 88px) !important;
-
-        flex: 1 !important;
-    }
-
-    .slider-button {
-        width: 38px !important;
-
-        min-width: 38px !important;
-
-        height: 38px !important;
-
-        font-size: 18px !important;
-    }
-
-    div[data-testid="stImage"] img {
-        width: 100% !important;
-
-        max-width: 100% !important;
-
-        height: 230px !important;
-
-        object-fit: contain !important;
-    }
-}
-
-/* ============================================================
-   PRODUCT DETAILS
-   ============================================================ */
-
-.product-name {
-    text-align: center !important;
-
-    font-size: 18px !important;
+.category-title {
+    font-size: 15px !important;
 
     font-weight: 700 !important;
 
@@ -460,22 +325,201 @@ div[data-testid="stImage"] img {
     margin-bottom: 2px !important;
 }
 
+
+/* ============================================================
+   PRODUCT CARD
+   ============================================================ */
+
+.product-card {
+    width: 100% !important;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    padding: 8px;
+
+    margin-bottom: 10px;
+
+    box-sizing: border-box;
+
+    background: var(--background-color, #ffffff);
+}
+
+
+/* ============================================================
+   PRODUCT IMAGE ROW
+   ============================================================ */
+
+.product-image-row {
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 100%;
+
+    gap: 5px;
+
+    margin: 0;
+
+    padding: 0;
+}
+
+
+/* ============================================================
+   IMAGE AREA
+   ============================================================ */
+
+.product-image-column {
+    flex: 1;
+
+    min-width: 0;
+
+    max-width: 520px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+/* ============================================================
+   IMAGE
+   ============================================================ */
+
+.product-image-column img {
+    width: 100%;
+
+    max-width: 500px;
+
+    height: 250px;
+
+    object-fit: contain;
+
+    display: block;
+
+    border-radius: 6px;
+}
+
+
+/* ============================================================
+   LEFT / RIGHT BUTTON
+   ============================================================ */
+
+.slider-side-button {
+    width: 40px;
+
+    min-width: 40px;
+
+    height: 40px;
+
+    border: 1.5px solid #2563eb;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   PRODUCT DETAILS
+   ============================================================ */
+
+.product-name {
+    text-align: center;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    margin-top: 5px;
+
+    margin-bottom: 2px;
+}
+
 .product-price {
-    text-align: center !important;
+    text-align: center;
 
-    font-size: 15px !important;
+    font-size: 14px;
 
-    font-weight: 700 !important;
+    font-weight: 700;
 
-    margin-bottom: 2px !important;
+    margin-bottom: 2px;
 }
 
 .product-description {
-    text-align: center !important;
+    text-align: center;
 
-    font-size: 13px !important;
+    font-size: 12px;
 
-    margin-bottom: 4px !important;
+    margin-bottom: 4px;
+}
+
+
+/* ============================================================
+   MOBILE PRODUCT IMAGE
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+    .product-card {
+        padding: 5px;
+
+        margin-bottom: 8px;
+    }
+
+    .product-image-row {
+        gap: 2px;
+    }
+
+    .product-image-column {
+        max-width: calc(100% - 84px);
+    }
+
+    .product-image-column img {
+        width: 100%;
+
+        height: 210px;
+
+        object-fit: contain;
+    }
+
+    .slider-side-button {
+        width: 36px;
+
+        min-width: 36px;
+
+        height: 36px;
+
+        font-size: 17px;
+    }
+
+    .product-name {
+        font-size: 15px;
+    }
+
+    .product-price {
+        font-size: 13px;
+    }
+
 }
 
 </style>
@@ -497,9 +541,6 @@ if "cart" not in st.session_state:
 
 if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
-
-if "product_index" not in st.session_state:
-    st.session_state.product_index = 0
 
 
 # ============================================================
@@ -534,7 +575,7 @@ def log_login_to_sheet(name, phone):
 
 
 # ============================================================
-# LOGIN PAGE
+# LOGIN
 # ============================================================
 
 if not st.session_state.logged_in_user:
@@ -545,27 +586,35 @@ if not st.session_state.logged_in_user:
         </div>
     """, unsafe_allow_html=True)
 
+
     _, mid_col, _ = st.columns([1, 2, 1])
+
 
     with mid_col:
 
         with st.form("login_form"):
 
-            st.markdown("### Customer Portal Login")
+            st.markdown(
+                "### Customer Portal Login"
+            )
+
 
             cust_name = st.text_input(
                 "Your Name:"
             )
+
 
             cust_phone = st.text_input(
                 "Mobile Number (10 digits):",
                 max_chars=10
             )
 
+
             login_btn = st.form_submit_button(
                 "Secure Login",
                 use_container_width=True
             )
+
 
             if login_btn:
 
@@ -583,10 +632,12 @@ if not st.session_state.logged_in_user:
                         cust_phone.strip()
                     )
 
+
                     log_login_to_sheet(
                         cust_name.strip(),
                         cust_phone.strip()
                     )
+
 
                     st.rerun()
 
@@ -596,11 +647,12 @@ if not st.session_state.logged_in_user:
                         "⚠️ Enter a valid name and 10-digit mobile number."
                     )
 
+
     st.stop()
 
 
 # ============================================================
-# STICKY HEADER
+# HEADER
 # ============================================================
 
 st.markdown(
@@ -628,17 +680,22 @@ st.markdown(
 
 nav_choice = st.radio(
     "Navigation",
+
     [
         "Store",
         f"Cart({len(st.session_state.cart)})"
     ],
+
     index=(
         0
         if st.session_state.current_view == "Home"
         else 1
     ),
+
     horizontal=True,
+
     label_visibility="collapsed",
+
     key="hm_navigation"
 )
 
@@ -662,6 +719,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 st.markdown(
     '</div>',
     unsafe_allow_html=True
@@ -669,7 +727,7 @@ st.markdown(
 
 
 # ============================================================
-# LOAD GOOGLE SHEET INVENTORY
+# LOAD INVENTORY
 # ============================================================
 
 @st.cache_data(ttl=0)
@@ -683,7 +741,9 @@ def load_inventory_from_sheet():
 
     try:
 
-        df = pd.read_csv(sheet_csv_url)
+        df = pd.read_csv(
+            sheet_csv_url
+        )
 
         return df
 
@@ -698,7 +758,7 @@ product_records = []
 
 
 # ============================================================
-# CONVERT SHEET DATA
+# READ GOOGLE SHEET
 # ============================================================
 
 if not inv_df.empty:
@@ -745,12 +805,14 @@ if not inv_df.empty:
                     and pd.notna(row.iloc[5])
                     else "",
 
+                # IMAGE COLUMN
                 "image":
                     str(row.iloc[6]).strip()
                     if len(row) > 6
                     and pd.notna(row.iloc[6])
                     else ""
             })
+
 
     except Exception as e:
 
@@ -793,7 +855,7 @@ if not product_records:
 
 
 # ============================================================
-# HOME / STORE
+# STORE
 # ============================================================
 
 if st.session_state.current_view == "Home":
@@ -837,226 +899,204 @@ if st.session_state.current_view == "Home":
 
 
     # --------------------------------------------------------
-    # RESET INDEX IF CATEGORY CHANGES
+    # ALL PRODUCTS
+    # ONE IMAGE FOR EACH PRODUCT
     # --------------------------------------------------------
 
     if filtered_items:
 
-        if (
-            st.session_state.product_index
-            >= len(filtered_items)
+        for idx, prod in enumerate(
+            filtered_items
         ):
 
-            st.session_state.product_index = 0
+            # =================================================
+            # PRODUCT CARD
+            # =================================================
+
+            st.markdown(
+                '<div class="product-card">',
+                unsafe_allow_html=True
+            )
 
 
-        current_product = filtered_items[
-            st.session_state.product_index
-        ]
+            # =================================================
+            # IMAGE + LEFT / RIGHT BUTTONS
+            # =================================================
+
+            left_col, image_col, right_col = st.columns(
+                [0.65, 5, 0.65],
+                vertical_alignment="center"
+            )
 
 
-        # ----------------------------------------------------
-        # PRODUCT IMAGE + LEFT / RIGHT BUTTONS
-        # ----------------------------------------------------
+            # -------------------------------------------------
+            # LEFT BUTTON
+            # -------------------------------------------------
 
-        left_col, image_col, right_col = st.columns(
-            [1, 8, 1],
-            vertical_alignment="center"
-        )
+            with left_col:
 
-
-        # ----------------------------------------------------
-        # PREVIOUS BUTTON
-        # ----------------------------------------------------
-
-        with left_col:
-
-            if st.button(
-                "◀",
-                key="previous_product",
-                use_container_width=True
-            ):
-
-                if st.session_state.product_index > 0:
-
-                    st.session_state.product_index -= 1
-
-                else:
-
-                    st.session_state.product_index = (
-                        len(filtered_items) - 1
-                    )
-
-                st.rerun()
-
-
-        # ----------------------------------------------------
-        # IMAGE
-        # ----------------------------------------------------
-
-        with image_col:
-
-            if current_product["image"]:
-
-                try:
-
-                    st.image(
-                        current_product["image"],
-                        use_container_width=True
-                    )
-
-                except Exception:
-
-                    st.info(
-                        "Product image could not be loaded."
-                    )
-
-            else:
-
-                st.info(
-                    "No product image available."
-                )
-
-
-        # ----------------------------------------------------
-        # NEXT BUTTON
-        # ----------------------------------------------------
-
-        with right_col:
-
-            if st.button(
-                "▶",
-                key="next_product",
-                use_container_width=True
-            ):
-
-                if (
-                    st.session_state.product_index
-                    < len(filtered_items) - 1
+                if st.button(
+                    "◀",
+                    key=f"left_{selected_cat}_{idx}",
+                    use_container_width=True
                 ):
 
-                    st.session_state.product_index += 1
+                    # This button is positioned at the
+                    # vertical center beside the image.
+                    #
+                    # If you later add multiple images for
+                    # this product, this is where the previous
+                    # image can be selected.
+
+                    st.rerun()
+
+
+            # -------------------------------------------------
+            # IMAGE
+            # -------------------------------------------------
+
+            with image_col:
+
+                if prod["image"]:
+
+                    try:
+
+                        st.image(
+                            prod["image"],
+                            use_container_width=True
+                        )
+
+                    except Exception:
+
+                        st.info(
+                            "Product image could not be loaded."
+                        )
 
                 else:
 
-                    st.session_state.product_index = 0
-
-                st.rerun()
-
-
-        # ----------------------------------------------------
-        # PRODUCT COUNTER
-        # ----------------------------------------------------
-
-        st.markdown(
-            f"""
-            <div style="
-                text-align:center;
-                font-size:11px;
-                font-weight:600;
-                margin-top:-4px;
-                margin-bottom:3px;
-            ">
-                {st.session_state.product_index + 1}
-                / {len(filtered_items)}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                    st.info(
+                        "No product image available."
+                    )
 
 
-        # ----------------------------------------------------
-        # PRODUCT NAME
-        # ----------------------------------------------------
+            # -------------------------------------------------
+            # RIGHT BUTTON
+            # -------------------------------------------------
 
-        st.markdown(
-            f"""
-            <div class="product-name">
-                {current_product["name"]}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+            with right_col:
 
+                if st.button(
+                    "▶",
+                    key=f"right_{selected_cat}_{idx}",
+                    use_container_width=True
+                ):
 
-        # ----------------------------------------------------
-        # PRICE + STOCK
-        # ----------------------------------------------------
+                    # This button is positioned at the
+                    # vertical center beside the image.
+                    #
+                    # If you later add multiple images for
+                    # this product, this is where the next
+                    # image can be selected.
 
-        st.markdown(
-            f"""
-            <div class="product-price">
-                Price: ₹{current_product["price"]}
-                &nbsp; | &nbsp;
-                Stock: {current_product["stock"]} units
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                    st.rerun()
 
 
-        # ----------------------------------------------------
-        # DESCRIPTION
-        # ----------------------------------------------------
-
-        if current_product["description"]:
+            # =================================================
+            # PRODUCT NAME
+            # =================================================
 
             st.markdown(
                 f"""
-                <div class="product-description">
-                    {current_product["description"]}
+                <div class="product-name">
+                    {prod["name"]}
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
 
-        # ----------------------------------------------------
-        # QUANTITY
-        # ----------------------------------------------------
+            # =================================================
+            # PRICE + STOCK
+            # =================================================
 
-        q_val = st.number_input(
-            "Quantity",
-            min_value=1.0,
-            value=1.0,
-            step=1.0,
-            key=(
-                f"qty_"
-                f"{selected_cat}_"
-                f"{st.session_state.product_index}"
-            )
-        )
-
-
-        # ----------------------------------------------------
-        # ADD TO CART
-        # ----------------------------------------------------
-
-        if st.button(
-            f"Add to Cart - {current_product['name']}",
-            key=(
-                f"add_"
-                f"{selected_cat}_"
-                f"{st.session_state.product_index}"
-            ),
-            use_container_width=True
-        ):
-
-            st.session_state.cart.append({
-
-                "product":
-                    current_product["name"],
-
-                "quantity":
-                    f"{int(q_val)} Units"
-
-            })
-
-            st.success(
-                "Added to cart!"
+            st.markdown(
+                f"""
+                <div class="product-price">
+                    Price: ₹{prod["price"]}
+                    &nbsp; | &nbsp;
+                    Stock: {prod["stock"]} units
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
-            st.rerun()
+
+            # =================================================
+            # DESCRIPTION
+            # =================================================
+
+            if prod["description"]:
+
+                st.markdown(
+                    f"""
+                    <div class="product-description">
+                        {prod["description"]}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+            # =================================================
+            # QUANTITY
+            # =================================================
+
+            q_val = st.number_input(
+                "Quantity",
+                min_value=1.0,
+                value=1.0,
+                step=1.0,
+                key=f"qty_{selected_cat}_{idx}"
+            )
+
+
+            # =================================================
+            # ADD TO CART
+            # =================================================
+
+            if st.button(
+                f"Add to Cart - {prod['name']}",
+                key=f"add_{selected_cat}_{idx}",
+                use_container_width=True
+            ):
+
+                st.session_state.cart.append({
+
+                    "product":
+                        prod["name"],
+
+                    "quantity":
+                        f"{int(q_val)} Units"
+
+                })
+
+
+                st.success(
+                    "Added to cart!"
+                )
+
+
+                st.rerun()
+
+
+            # =================================================
+            # CLOSE PRODUCT CARD
+            # =================================================
+
+            st.markdown(
+                '</div>',
+                unsafe_allow_html=True
+            )
 
 
     else:
@@ -1112,9 +1152,9 @@ else:
         st.markdown("---")
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # CHECKOUT
-        # ----------------------------------------------------
+        # ====================================================
 
         with st.form("checkout_form"):
 
@@ -1146,6 +1186,7 @@ else:
                 if (
                     address
                     and len(sec_phone) == 10
+                    and sec_phone.isdigit()
                 ):
 
                     try:
@@ -1203,8 +1244,6 @@ else:
                     st.session_state.cart = []
 
                     st.session_state.current_view = "Home"
-
-                    st.session_state.product_index = 0
 
                     st.rerun()
 
