@@ -43,35 +43,53 @@ st.markdown("""
         /* Professional Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-radius: 8px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .brand-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
         }
 
+        /* Compact buttons styled tightly to match text width size */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 700 !important;
             border-radius: 6px !important;
-            width: 100% !important;
-            padding: 0.4rem 0.5rem !important;
+            padding: 0.3rem 0.6rem !important;
+            font-size: 13px !important;
+            width: auto !important;
+            display: inline-block !important;
+        }
+
+        /* Group the navigation buttons closely together without stretching 100% */
+        div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            justify-content: center !important;
+            gap: 8px !important;
+        }
+        div[data-testid="column"] {
+            flex: 0 1 auto !important;
+            width: auto !important;
+            min-width: 0px !important;
+            padding: 0px !important;
         }
 
         .block-container {
-            padding-top: 0.8rem;
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
+            padding-top: 0.6rem;
+            padding-left: 0.6rem;
+            padding-right: 0.6rem;
             max-width: 100% !important;
         }
     </style>
@@ -104,7 +122,7 @@ if not st.session_state.logged_in_user:
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([1, 2, 1])
+    _, mid_col, _ = st.columns([0.5, 3, 0.5])
     with mid_col:
         with st.form("login_form"):
             st.markdown("### Customer Portal Login")
@@ -122,39 +140,41 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- TOP BANNER & HORIZONTAL NAVIGATION ROW ---
+# --- TOP BANNER & TIGHT TEXT-SIZED NAVIGATION BUTTONS ---
 st.markdown("""
     <div class='brand-banner'>
         <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-# Row-wise layout for user welcome message and navigation buttons side-by-side
-nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([2, 1, 1, 1], gap="small")
+nav_col1, nav_col2, nav_col3 = st.columns(3)
 with nav_col1:
-    st.markdown(f"👋 **{st.session_state.logged_in_user}**")
-with nav_col2:
-    if st.button("Store", use_container_width=True):
+    if st.button("Store"):
         st.session_state.current_view = "Home"
         st.rerun()
-with nav_col3:
-    if st.button(f"Cart ({len(st.session_state.cart)})", use_container_width=True):
+with nav_col2:
+    if st.button(f"Cart ({len(st.session_state.cart)})"):
         st.session_state.current_view = "Cart"
         st.rerun()
-with nav_col4:
-    if st.button("Exit", use_container_width=True):
+with nav_col3:
+    if st.button("Exit"):
         st.session_state.clear()
         st.rerun()
 
+st.markdown(f"<p style='text-align: center; margin-top: 4px; margin-bottom: 4px; font-size: 12px;'>Welcome, <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 st.markdown("---")
 
-# LIVE Sync Inventory from Google Sheet with TTL=0
+# LIVE Sync Inventory from Google Sheet with Cache Busting Headers & TTL=0
 @st.cache_data(ttl=0)
 def load_inventory_from_sheet():
-    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv&cache_buster=" + str(random.randint(1, 100000))
     try:
-        df = pd.read_csv(sheet_csv_url)
-        return df
+        response = requests.get(sheet_csv_url, timeout=5)
+        if response.status_code == 200:
+            from io import StringIO
+            df = pd.read_csv(StringIO(response.text))
+            return df
+        return pd.DataFrame()
     except Exception:
         return pd.DataFrame()
 
