@@ -55,42 +55,42 @@ st.markdown("""
 
         /* Target Streamlit structural container to completely strip out native top padding */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
-            padding-top: 2.2rem !important;
+            padding-top: 2.5rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
         }
 
-        /* Header banner with small font matching button text size */
+        /* Header banner matching exact same larger font size as Store and Cart buttons */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 1px 3px;
+            padding: 2px 4px;
             border-radius: 3px;
             color: #ffffff !important;
             text-align: center;
             margin: 0px !important;
         }
         .brand-title {
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 700;
             letter-spacing: 0.3px;
             color: #ffffff !important;
             margin: 0;
-            line-height: 1.1;
+            line-height: 1.2;
             white-space: nowrap;
         }
 
-        /* Compact buttons styled identically to match header text sizing */
+        /* Compact buttons with standard font size to match HM Mobiles banner */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 11px !important;
+            font-size: 14px !important;
             border-radius: 3px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.02rem 0.02rem !important;
+            padding: 0.05rem 0.05rem !important;
             white-space: nowrap !important;
             margin: 0px !important;
         }
@@ -100,7 +100,7 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Force single row layout for navigation side-by-side (left/right) with zero vertical gap */
+        /* Force single row layout for navigation side-by-side with zero vertical gap */
         .sticky-header-container div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
@@ -171,7 +171,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH COMPACT HEADER & SIDE-BY-SIDE STORE/CART ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH MATCHING FONT SIZES ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -180,7 +180,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"<p style='font-size: 10px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='font-size: 11px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
 # Side-by-side horizontal row layout for Store and Cart
 nav_col1, nav_col2 = st.columns([1, 1], gap="small")
