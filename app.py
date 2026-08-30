@@ -81,9 +81,22 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* Perfectly sized compact buttons for Store and Cart */
+        /* Single unified container box styling wrapping both Store and Cart buttons */
+        .nav-wrapper-box {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin: 0px !important;
+        }
+
+        /* Compact buttons styled cleanly inside the unified wrapper */
         div.stButton > button {
-            background-color: #f8fafc !important;
+            background-color: #ffffff !important;
             color: #0f172a !important;
             border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
@@ -91,7 +104,7 @@ st.markdown("""
             border-radius: 4px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.25rem 0.2rem !important;
+            padding: 0.2rem 0.2rem !important;
             line-height: 1.2 !important;
             white-space: nowrap !important;
             margin: 0px !important;
@@ -102,7 +115,7 @@ st.markdown("""
             border: 1px solid #2563eb !important;
         }
 
-        /* Force single row layout for navigation side-by-side with zero vertical gap */
+        /* Force single row layout for navigation columns inside the box */
         .sticky-header-container div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
@@ -173,7 +186,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH MATCHING LINE SIZING ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH UNIFIED CONTAINER BOX ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -182,10 +195,12 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Side-by-side horizontal row layout for Welcome message, Store button, and Cart button
+# Opening single unified box container for greeting and independent navigation links
+st.markdown('<div class="nav-wrapper-box">', unsafe_allow_html=True)
+
 header_col1, header_col2, header_col3 = st.columns([1.2, 1, 1], gap="small")
 with header_col1:
-    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 6px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 2px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with header_col2:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
@@ -195,7 +210,8 @@ with header_col3:
         st.session_state.current_view = "Cart"
         st.rerun()
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True) # Close nav-wrapper-box
+st.markdown('</div>', unsafe_allow_html=True) # Close sticky-header-container
 
 # LIVE Sync Inventory from Google Sheet with TTL=0
 @st.cache_data(ttl=0)
