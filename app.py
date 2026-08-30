@@ -53,34 +53,34 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Professional Light Blue Header Banner */
+        /* Professional Compact Light Blue Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
-            padding: 14px 18px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             color: #0f172a !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 12px;
-            border: 1.5px solid #7dd3fc;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 8px;
+            border: 1px solid #7dd3fc;
         }
         .brand-title {
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             color: #0f172a !important;
             margin: 0;
         }
 
-        /* Compact, Full-Width Buttons tightly fitted inside columns */
+        /* Compact Buttons */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 600 !important;
-            font-size: 15px !important;
+            font-size: 13px !important;
             border-radius: 6px !important;
-            padding: 0.4rem 0.5rem !important;
+            padding: 0.25rem 0.4rem !important;
             width: 100% !important;
             display: block !important;
         }
@@ -90,29 +90,11 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Responsive Mobile Handling: Force vertical stacking on small screens to eliminate horizontal scrolling */
-        @media (max-width: 768px) {
-            div[data-testid="stHorizontalBlock"] {
-                flex-direction: column !important;
-                flex-wrap: wrap !important;
-            }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-                width: 100% !important;
-                flex: 1 1 100% !important;
-                min-width: 100% !important;
-                padding: 4px 0px !important;
-            }
-            .stImage img {
-                max-width: 100% !important;
-                height: auto !important;
-            }
-        }
-
         .block-container {
-            padding-top: 0.8rem;
+            padding-top: 0.6rem;
             padding-bottom: 0rem;
-            padding-left: 1.2rem;
-            padding-right: 1.2rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
             max-width: 100% !important;
         }
     </style>
@@ -153,8 +135,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 22px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
+            <p style='font-size: 12px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -163,8 +145,8 @@ if not st.session_state.logged_in_user:
     with mid_col:
         with st.container():
             st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
+                <div style='padding: 15px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
+                    <h3 style='margin-top: 0; margin-bottom: 10px; font-size: 15px; font-weight: 600;'>Customer Portal Login</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -190,28 +172,27 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: COMPACT PROFESSIONAL HEADER & NAVIGATION ---
+# --- AFTER LOGIN: COMPACT TOP BANNER & HORIZONTAL NAVIGATION ROW ---
 st.markdown("""
     <div class="brand-banner">
-        <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
+        <h1 class="brand-title">HM MOBILES - THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
-with top_comm:
-    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
-with top_space:
-    st.empty()
+# Single horizontal line layout for Welcome message, Home, Cart, and Logout buttons
+top_c1, top_c2, top_c3, top_c4 = st.columns([1.6, 0.8, 0.9, 0.8], gap="small")
 with top_c1:
+    st.markdown(f"<p style='font-size: 13px; margin: 6px 0;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+with top_c2:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
-with top_c2:
+with top_c3:
     cart_count = len(st.session_state.cart)
     if st.button(f"Cart ({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
-with top_c3:
+with top_c4:
     if st.button("Logout", use_container_width=True):
         st.session_state.clear()
         st.rerun()
@@ -311,7 +292,6 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str) 
 if st.session_state.current_view == "Home":
     categories = list(set([p['category'] for p in product_records]))
     
-    # Adaptive Category Selection (Dropdown on mobile/compact view, stackable)
     selected_cat = st.selectbox(
         "Select Product Category:",
         categories,
@@ -355,9 +335,9 @@ if st.session_state.current_view == "Home":
                                         st.session_state[slide_key] = (current_idx + 1) % total_imgs
                                         st.rerun()
                         else:
-                            st.caption("No Image Available")
+                            st.caption("No Image")
                     else:
-                        st.caption("No Image Available")
+                        st.caption("No Image")
 
                 with p_details_col:
                     st.markdown(f"**{prod['name']}**")
@@ -368,7 +348,7 @@ if st.session_state.current_view == "Home":
                     if st.button("Add to Cart", key=f"add_btn_{selected_cat}_{idx}", use_container_width=True):
                         full_q_str = f"{int(q_val)} Units"
                         st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                        st.success(f"Added {prod['name']} to cart!")
+                        st.success(f"Added!")
                         st.rerun()
     else:
         st.info("No items found in this category.")
@@ -381,7 +361,7 @@ else:
             with cc1:
                 st.markdown(f"- **{item['product']}** ({item['quantity']})")
             with cc2:
-                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}", use_container_width=True):
+                if st.button("Remove", key=f"rem_cart_view_{c_idx}", use_container_width=True):
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
