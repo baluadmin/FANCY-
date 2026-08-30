@@ -40,10 +40,10 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Completely lock header to absolute top zero padding/margin with zero dead space and pull up into browser chrome */
+        /* Completely lock header to absolute top zero padding/margin and shift negative to clip browser padding */
         .sticky-header-container {
             position: fixed;
-            top: -25px;
+            top: -50px;
             left: 0;
             width: 100%;
             background-color: var(--background-color, #ffffff);
@@ -53,16 +53,16 @@ st.markdown("""
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Remove default Streamlit block spacing and pull up container */
+        /* Pull main container up aggressively to eliminate any top gap */
         .block-container {
-            padding-top: 1.5rem !important;
+            padding-top: 0.8rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
         }
         
         div.block-container {
-            padding-top: 1.5rem !important;
+            padding-top: 0.8rem !important;
         }
 
         /* Tightly fitted single line header banner */
