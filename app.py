@@ -186,19 +186,6 @@ label, .stTextInput label, p {
 
 
 /* ============================================================
-   IMAGE SIZING
-   ============================================================ */
-
-.product-image-wrapper img {
-    width: 100%;
-    height: 55px;
-    object-fit: contain;
-    display: block;
-    border-radius: 3px;
-}
-
-
-/* ============================================================
    PRODUCT INFORMATION
    ============================================================ */
 
@@ -404,7 +391,7 @@ if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
             raw_img = str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
-            img_list = [img.strip() for img in raw_img.replace(",", "\n").split("\n") if img.strip()]
+            img_list = [img.strip() for img in raw_img.replace(",", "\n").split("\n") if img.strip() and img.strip().lower() != "nan"]
 
             product_records.append({
                 "id": str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A",
@@ -484,9 +471,9 @@ if st.session_state.current_view == "Home":
                                 try:
                                     st.image(prod["images"][current_idx], use_container_width=True)
                                 except Exception:
-                                    st.info("Image error")
+                                    pass  # Silently bypass broken link rendering errors
                             else:
-                                st.info("No image")
+                                pass  # Skip rendering if no valid image is provided
 
                         with right_col:
                             if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
