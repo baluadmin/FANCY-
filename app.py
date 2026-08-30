@@ -186,12 +186,12 @@ label, .stTextInput label, p {
 
 
 /* ============================================================
-   IMAGE SIZING FIX (FIXED CONTAINER VISIBILITY)
+   AUTO-ADJUSTING THUMBNAIL SIZING
    ============================================================ */
 
 [data-testid="stImage"] img {
     width: 100% !important;
-    max-height: 50px !important;
+    height: 48px !important;
     object-fit: contain !important;
     border-radius: 3px;
     display: block;
@@ -398,14 +398,26 @@ product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA
+# READ PRODUCT DATA (WITH GITHUB AUTO-PATH CONVERSION)
 # ============================================================
 
 if not inv_df.empty:
     try:
+        # REPLACE THESE WITH YOUR EXACT GITHUB USERNAME & REPO NAME
+        GITHUB_USER = "your_github_username"
+        REPO_NAME = "your_repository_name"
+
         for _, row in inv_df.iterrows():
             raw_img = str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
-            img_list = [img.strip() for img in raw_img.replace(",", "\n").split("\n") if img.strip() and img.strip().lower() != "nan"]
+            img_list = []
+            
+            for img in raw_img.replace(",", "\n").split("\n"):
+                img_name = img.strip()
+                if img_name and img_name.lower() != "nan":
+                    if img_name.startswith("http"):
+                        img_list.append(img_name)
+                    else:
+                        img_list.append(f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/main/images/{img_name}")
 
             product_records.append({
                 "id": str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A",
@@ -485,7 +497,7 @@ if st.session_state.current_view == "Home":
                                 try:
                                     st.image(prod["images"][current_idx], use_container_width=True)
                                 except Exception:
-                                    st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='font-size:9px; text-align:center; color:#ef4444;'>No image</p>", unsafe_allow_html=True)
                             else:
                                 st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
 
