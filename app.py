@@ -171,7 +171,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER FLUSHED TO SCREEN TOP ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH COLUMN-WISE STORE & CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -182,8 +182,8 @@ st.markdown("""
 
 st.markdown(f"<p style='font-size: 10px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
-# Row layout: Store, Cart, Exit side-by-side with zero wasted vertical gap
-nav_col1, nav_col2, nav_col3 = st.columns([1, 1, 1], gap="small")
+# Column-wise layout for Store and Cart (2 columns, no exit)
+nav_col1, nav_col2 = st.columns([1, 1], gap="small")
 with nav_col1:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
@@ -191,10 +191,6 @@ with nav_col1:
 with nav_col2:
     if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True):
         st.session_state.current_view = "Cart"
-        st.rerun()
-with nav_col3:
-    if st.button("Exit", use_container_width=True):
-        st.session_state.clear()
         st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
