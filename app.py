@@ -8,7 +8,7 @@ import streamlit as st
 
 # 1. Streamlit Page Configuration & Professional Mobile-Optimized CSS
 st.set_page_config(
-    page_title="HM Mobiles Thiruverkadu",
+    page_title="HM Mobiles",
     page_icon="📱",
     layout="wide",
 )
@@ -153,7 +153,7 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div class='brand-banner' style='margin-top: 5px;'>
-            <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
+            <h1 class='brand-title'>HM MOBILES</h1>
         </div>
     """, unsafe_allow_html=True)
     
@@ -175,12 +175,12 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER REMOVING ALL YELLOW SHADED SPACES ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER REMOVING THIRUVERKADU & ALL SPACES ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
     <div class='brand-banner'>
-        <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
+        <h1 class='brand-title'>HM MOBILES</h1>
     </div>
 """, unsafe_allow_html=True)
 
@@ -274,7 +274,7 @@ else:
         
         st.markdown("---")
         with st.form("checkout_form"):
-            address = st.text_area("Delivery Address in Thiruverkadu/Chennai:")
+            address = st.text_area("Delivery Address:")
             sec_phone = st.text_input("Alternative Phone Number:", max_chars=10)
             pay_method = st.selectbox("Payment Gateway", ["UPI / GPay", "Cash on Delivery"])
             
