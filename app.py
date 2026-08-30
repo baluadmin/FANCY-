@@ -85,68 +85,77 @@ st.markdown("""
         }
 
         /* Small, compact boxed layout for Store and Cart side-by-side */
-        /* One outer box containing two separate Store + Cart boxes */
+        /* One outer box: Store LEFT, Cart RIGHT */
         .unified-nav-box {
-            background-color: #ffffff;
+            background: #ffffff;
             border: 1.5px solid #2563eb;
             border-radius: 5px;
-            padding: 5px 7px !important;
-            margin: 2px auto 0px auto !important;
-            width: fit-content !important;
-            max-width: 230px !important;
-            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.12);
+            padding: 5px !important;
+            margin: 2px auto 0 auto !important;
+            width: 180px !important;
+            max-width: 180px !important;
             box-sizing: border-box;
+            overflow: visible !important;
         }
 
-        .unified-nav-box > div {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
+        .unified-nav-box > div,
         .unified-nav-box div[data-testid="stHorizontalBlock"] {
+            width: 100% !important;
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 8px !important;
+            gap: 6px !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        .unified-nav-box div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            width: auto !important;
-            flex: 0 0 auto !important;
+        /* FORCE two columns to remain LEFT + RIGHT */
+        .unified-nav-box div[data-testid="column"] {
+            width: 50% !important;
             min-width: 0 !important;
+            max-width: 50% !important;
+            flex: 0 0 50% !important;
             padding: 0 !important;
             margin: 0 !important;
+            box-sizing: border-box !important;
         }
 
-        /* Individual Store / Cart inner boxes */
+        .unified-nav-box div[data-testid="column"] > div {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         .unified-nav-box div.stButton {
+            width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
+        /* Individual Store / Cart boxes */
         .unified-nav-box div.stButton > button {
-            background-color: #ffffff !important;
+            display: block !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            height: 30px !important;
+            padding: 2px 4px !important;
+            margin: 0 !important;
+            background: #ffffff !important;
             color: #2563eb !important;
             border: 1.5px solid #2563eb !important;
             border-radius: 4px !important;
-            width: 78px !important;
-            min-width: 78px !important;
-            height: 30px !important;
-            padding: 2px 7px !important;
-            margin: 0 !important;
             font-size: 12px !important;
             font-weight: 700 !important;
             line-height: 1 !important;
-            box-shadow: none !important;
             white-space: nowrap !important;
+            box-shadow: none !important;
         }
 
         .unified-nav-box div.stButton > button:hover {
-            background-color: #eff6ff !important;
+            background: #eff6ff !important;
             color: #1d4ed8 !important;
             border-color: #1d4ed8 !important;
         }
@@ -223,6 +232,26 @@ st.markdown("""
             line-height: 1 !important;
         }
         
+        /* Keep Store and Cart side-by-side on narrow portrait screens */
+        @media (max-width: 640px) {
+            .unified-nav-box {
+                width: 180px !important;
+                max-width: 180px !important;
+            }
+
+            .unified-nav-box div[data-testid="stHorizontalBlock"] {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .unified-nav-box div[data-testid="column"] {
+                width: 50% !important;
+                max-width: 50% !important;
+                flex: 0 0 50% !important;
+            }
+        }
+
         /* Eliminate vertical margins on markdown paragraphs inside sticky header */
         .sticky-header-container p {
             margin: 0px !important;
