@@ -185,15 +185,6 @@ label, .stTextInput label, p {
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
-[data-testid="stImage"] img {
-    width: 100% !important;
-    max-height: 55px !important;
-    object-fit: contain !important;
-    border-radius: 3px;
-    display: block;
-    margin: auto;
-}
-
 [data-testid="stImageCaption"] {
     display: none !important;
 }
@@ -388,14 +379,13 @@ product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA (GITHUB PATH & IMAGE COMPRESSION HELPER)
+# READ PRODUCT DATA (REPLACE USERNAME & REPO NAME HERE)
 # ============================================================
 
 if not inv_df.empty:
     try:
-        # REPLACE THESE WITH YOUR EXACT GITHUB USERNAME & REPO NAME
-        GITHUB_USER = "your_github_username"
-        REPO_NAME = "your_repository_name"
+        GITHUB_USER = "Balumahendran"  # Replace with your GitHub username if different
+        REPO_NAME = "python-project1"  # Replace with your repository name
 
         for _, row in inv_df.iterrows():
             raw_img = str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
@@ -440,14 +430,15 @@ if not product_records:
 
 @st.cache_data
 def get_compressed_image(url):
-    """Downloads, compresses, and resizes mismatched images in-memory."""
+    """Downloads, compresses, and resizes mismatched images in-memory to a small clean thumbnail."""
     try:
         response = requests.get(url, timeout=4)
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
             if img.mode in ("RGBA", "P"):
                 img = img.convert("RGB")
-            img.thumbnail((300, 300))
+            # Resize cleanly to a compact display resolution
+            img.thumbnail((150, 150))
             buffer = BytesIO()
             img.save(buffer, format="JPEG", quality=85)
             buffer.seek(0)
