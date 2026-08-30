@@ -84,65 +84,62 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* Small, compact boxed layout for Store and Cart side-by-side */
-        /* One outer box: Store LEFT, Cart RIGHT */
-        .unified-nav-box {
-            background: #ffffff;
-            border: 1.5px solid #2563eb;
-            border-radius: 5px;
-            padding: 5px !important;
+        /* STORE + CART: one real outer box, two inner boxes */
+        .st-key-hm-nav {
+            width: fit-content !important;
+            max-width: 190px !important;
             margin: 2px auto 0 auto !important;
-            width: 180px !important;
-            max-width: 180px !important;
-            box-sizing: border-box;
-            overflow: visible !important;
+            padding: 5px !important;
+            border: 1.5px solid #2563eb !important;
+            border-radius: 5px !important;
+            box-sizing: border-box !important;
         }
 
-        .unified-nav-box > div,
-        .unified-nav-box div[data-testid="stHorizontalBlock"] {
-            width: 100% !important;
+        .st-key-hm-nav > div {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .st-key-hm-nav div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
+            width: 100% !important;
+            gap: 6px !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 6px !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        /* FORCE two columns to remain LEFT + RIGHT */
-        .unified-nav-box div[data-testid="column"] {
+        .st-key-hm-nav div[data-testid="column"] {
             width: 50% !important;
-            min-width: 0 !important;
             max-width: 50% !important;
+            min-width: 0 !important;
             flex: 0 0 50% !important;
             padding: 0 !important;
             margin: 0 !important;
             box-sizing: border-box !important;
         }
 
-        .unified-nav-box div[data-testid="column"] > div {
+        .st-key-hm-nav div[data-testid="column"] > div {
             width: 100% !important;
-            margin: 0 !important;
             padding: 0 !important;
+            margin: 0 !important;
         }
 
-        .unified-nav-box div.stButton {
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* Individual Store / Cart boxes */
-        .unified-nav-box div.stButton > button {
-            display: block !important;
+        .st-key-hm-nav div.stButton,
+        .st-key-hm-nav div.stButton > button {
             width: 100% !important;
             min-width: 0 !important;
-            max-width: 100% !important;
-            height: 30px !important;
-            padding: 2px 4px !important;
             margin: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Individual Store / Cart inner boxes */
+        .st-key-hm-nav div.stButton > button {
+            height: 30px !important;
+            padding: 2px 5px !important;
             background: #ffffff !important;
             color: #2563eb !important;
             border: 1.5px solid #2563eb !important;
@@ -154,100 +151,30 @@ st.markdown("""
             box-shadow: none !important;
         }
 
-        .unified-nav-box div.stButton > button:hover {
+        .st-key-hm-nav div.stButton > button:hover {
             background: #eff6ff !important;
             color: #1d4ed8 !important;
             border-color: #1d4ed8 !important;
         }
 
-        /* Seamless text-link style buttons matching the exact small reference layout */
-        div.stButton > button {
-            background-color: transparent !important;
-            color: #2563eb !important;
-            border: none !important;
-            font-weight: 700 !important;
-            font-size: 13px !important;
-            border-radius: 0px !important;
-            width: 100% !important;
-            display: block !important;
-            padding: 0.05rem 0.05rem !important;
-            line-height: 1.1 !important;
-            white-space: nowrap !important;
-            margin: 0px !important;
-            box-shadow: none !important;
-        }
-        div.stButton > button:hover {
-            background-color: #eff6ff !important;
-            color: #1d4ed8 !important;
-            border: none !important;
-        }
-
-        /* Keep Store and Cart as visible individual boxes */
-        .unified-nav-box div.stButton > button {
-            border: 1.5px solid #2563eb !important;
-            border-radius: 4px !important;
-            width: 78px !important;
-            min-width: 78px !important;
-            height: 30px !important;
-            padding: 2px 7px !important;
-        }
-
-        /* Force single row layout for navigation side-by-side with zero vertical gap */
-        .sticky-header-container div[data-testid="stHorizontalBlock"] {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            align-items: center !important;
-            justify-content: center !important;
-            gap: 4px !important;
-            margin: 0px !important;
-            padding: 0px !important;
-        }
-        .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            width: auto !important;
-            flex: 0 0 auto !important;
-            min-width: 0px !important;
-            padding: 0px 3px !important;
-            margin: 0 !important;
-        }
-
-        .unified-nav-box div[data-testid="stHorizontalBlock"] {
-            gap: 2px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            justify-content: center !important;
-        }
-
-        .unified-nav-box div.stButton {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .unified-nav-box div.stButton > button {
-            width: auto !important;
-            min-width: 62px !important;
-            padding: 1px 7px !important;
-            margin: 0 !important;
-            font-size: 12px !important;
-            line-height: 1 !important;
-        }
-        
-        /* Keep Store and Cart side-by-side on narrow portrait screens */
+        /* Never allow Streamlit to stack these two navigation columns */
         @media (max-width: 640px) {
-            .unified-nav-box {
-                width: 180px !important;
-                max-width: 180px !important;
+            .st-key-hm-nav {
+                width: 190px !important;
+                max-width: 190px !important;
             }
 
-            .unified-nav-box div[data-testid="stHorizontalBlock"] {
+            .st-key-hm-nav div[data-testid="stHorizontalBlock"] {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
             }
 
-            .unified-nav-box div[data-testid="column"] {
+            .st-key-hm-nav div[data-testid="column"] {
+                display: block !important;
                 width: 50% !important;
                 max-width: 50% !important;
+                min-width: 0 !important;
                 flex: 0 0 50% !important;
             }
         }
@@ -315,20 +242,20 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Opening small unified box container wrapping Store and Cart inside one small frame
-st.markdown('<div class="unified-nav-box">', unsafe_allow_html=True)
+# Store + Cart in ONE real outer box, side-by-side
+with st.container(border=True, key="hm_nav"):
+    header_col1, header_col2 = st.columns(2, gap="small")
 
-header_col1, header_col2 = st.columns(2, gap="small")
-with header_col1:
-    if st.button("Store", use_container_width=True):
-        st.session_state.current_view = "Home"
-        st.rerun()
-with header_col2:
-    if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True):
-        st.session_state.current_view = "Cart"
-        st.rerun()
+    with header_col1:
+        if st.button("Store", use_container_width=True, key="hm_store"):
+            st.session_state.current_view = "Home"
+            st.rerun()
 
-st.markdown('</div>', unsafe_allow_html=True) # Close unified-nav-box
+    with header_col2:
+        if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True, key="hm_cart"):
+            st.session_state.current_view = "Cart"
+            st.rerun()
+
 st.markdown('</div>', unsafe_allow_html=True) # Close sticky-header-container
 
 # LIVE Sync Inventory from Google Sheet with TTL=0
