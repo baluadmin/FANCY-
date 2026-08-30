@@ -100,13 +100,13 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Force single row layout for navigation with zero vertical element gaps */
+        /* Force single row layout for navigation side-by-side (left/right) with zero vertical gap */
         .sticky-header-container div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            gap: 1px !important;
+            gap: 2px !important;
             margin: 0px !important;
             padding: 0px !important;
         }
@@ -171,7 +171,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH COLUMN-WISE STORE & CART ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SIDE-BY-SIDE STORE & CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -182,7 +182,7 @@ st.markdown("""
 
 st.markdown(f"<p style='font-size: 10px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
-# Column-wise layout for Store and Cart (2 columns, no exit)
+# Side-by-side horizontal row layout for Store and Cart
 nav_col1, nav_col2 = st.columns([1, 1], gap="small")
 with nav_col1:
     if st.button("Store", use_container_width=True):
