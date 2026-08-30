@@ -16,41 +16,27 @@ st.set_page_config(
 
 
 # ============================================================
-# CSS
+# CSS (VIBRANT, PROFESSIONAL, ZERO-GAP STYLING)
 # ============================================================
 
 st.markdown("""
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif !important;
 }
 
-#MainMenu {
-    visibility: hidden;
-}
-
-header {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-div[data-testid="stToolbar"] {
-    display: none !important;
-}
-
-section[data-testid="stStatusWidget"] {
-    display: none !important;
-}
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+div[data-testid="stToolbar"] {display: none !important;}
+section[data-testid="stStatusWidget"] {display: none !important;}
 
 
 /* ============================================================
-   GENERAL LAYOUT (2-COLUMN GRID)
+   CONTAINER & GAP ELIMINATION
    ============================================================ */
 
 .stMainBlockContainer,
@@ -60,48 +46,48 @@ div[data-testid="stMainBlockContainer"],
     margin-top: 0rem !important;
     padding-left: 0.3rem !important;
     padding-right: 0.3rem !important;
+    padding-bottom: 1rem !important;
     max-width: 100% !important;
 }
 
-label,
-.stTextInput label,
-p {
+label, .stTextInput label, p {
     font-weight: 600 !important;
 }
 
 
 /* ============================================================
-   HM MOBILES HEADER
+   VIBRANT COLORFUL HEADER BANNER
    ============================================================ */
 
 .brand-banner {
-    background: #2563eb;
-    padding: 2px 4px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    padding: 3px 6px;
+    border-radius: 6px;
     text-align: center;
-    margin: 0 0 1px 0 !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    margin: 0 0 2px 0 !important;
+    box-shadow: 0 2px 4px rgba(168, 85, 247, 0.25);
 }
 
 .brand-title {
     color: white !important;
-    font-size: 11px !important;
+    font-size: 12px !important;
     font-weight: 800 !important;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.1 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
 
 /* ============================================================
-   STORE + CART (SIDE BY SIDE COMPACT BOX)
+   STORE + CART (SIDE BY SIDE COMPACT COLORFUL BOX)
    ============================================================ */
 
 .hm-nav-box {
-    width: 160px !important;
-    max-width: 160px !important;
-    margin: 1px auto 2px auto !important;
+    width: 170px !important;
+    max-width: 170px !important;
+    margin: 1px auto 3px auto !important;
     padding: 0 !important;
     border: none !important;
     background: transparent !important;
@@ -128,16 +114,17 @@ p {
     width: 50% !important;
     max-width: 50% !important;
     min-width: 0 !important;
-    height: 22px !important;
+    height: 24px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     padding: 0 2px !important;
     margin: 0 !important;
-    border: 1px solid #2563eb !important;
-    border-radius: 4px !important;
-    background: white !important;
+    border: 1.5px solid #a855f7 !important;
+    border-radius: 5px !important;
+    background: #fdf4ff !important;
     box-sizing: border-box !important;
+    transition: all 0.2s ease;
 }
 
 .hm-nav-box [data-testid="stRadio"] > div > label > div:first-child {
@@ -145,7 +132,7 @@ p {
 }
 
 .hm-nav-box [data-testid="stRadio"] > div > label p {
-    color: #2563eb !important;
+    color: #9333ea !important;
     font-size: 10px !important;
     font-weight: 700 !important;
     margin: 0 !important;
@@ -154,13 +141,18 @@ p {
 }
 
 .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) {
-    background: #eff6ff !important;
-    border-color: #1d4ed8 !important;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%) !important;
+    border-color: #7c3aed !important;
+    box-shadow: 0 1px 3px rgba(236, 72, 153, 0.3);
+}
+
+.hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) p {
+    color: white !important;
 }
 
 
 /* ============================================================
-   CATEGORY
+   CATEGORY SELECTOR
    ============================================================ */
 
 .category-area {
@@ -172,26 +164,34 @@ p {
     min-height: 24px !important;
     padding-top: 0px !important;
     padding-bottom: 0px !important;
+    border-color: #cbd5e1 !important;
+    background-color: #f8fafc !important;
 }
 
 
 /* ============================================================
-   PRODUCT CARD (MINIMAL HEIGHT & TIGHT PADDING)
+   PRODUCT CARD (PROFESSIONAL & COLORFUL ACCENTS)
    ============================================================ */
 
 .product-card {
     width: 100%;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 2px 3px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 3px 4px;
     margin-bottom: 3px;
     box-sizing: border-box;
     background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    transition: border-color 0.2s;
+}
+
+.product-card:hover {
+    border-color: #c084fc;
 }
 
 
 /* ============================================================
-   IMAGE SIZING (REDUCED HEIGHT)
+   IMAGE SIZING (COMPACT)
    ============================================================ */
 
 .product-image-wrapper img {
@@ -211,10 +211,10 @@ p {
     width: 18px;
     min-width: 18px;
     height: 18px;
-    border: 1px solid #2563eb;
+    border: 1px solid #a855f7;
     border-radius: 50%;
-    background: white;
-    color: #2563eb;
+    background: #fdf4ff;
+    color: #9333ea;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,13 +224,14 @@ p {
 
 
 /* ============================================================
-   PRODUCT INFORMATION (ULTRA COMPACT)
+   PRODUCT INFORMATION
    ============================================================ */
 
 .product-name {
     text-align: center;
     font-size: 10px;
     font-weight: 700;
+    color: #1e293b;
     margin-top: 1px;
     margin-bottom: 0px;
     white-space: nowrap;
@@ -242,12 +243,13 @@ p {
     text-align: center;
     font-size: 9px;
     font-weight: 700;
+    color: #059669;
     margin-bottom: 1px;
 }
 
 
 /* ============================================================
-   FORM CONTROLS COMPACT OVERRIDES (MINIMAL VERTICAL SPACE)
+   FORM CONTROLS & BUTTONS STYLING
    ============================================================ */
 
 div[data-baseweb="input"] input {
@@ -259,10 +261,22 @@ div[data-baseweb="input"] input {
 }
 
 div.stButton > button {
+    background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 700 !important;
     padding-top: 0.02rem !important;
     padding-bottom: 0.02rem !important;
-    min-height: 20px !important;
+    min-height: 21px !important;
     font-size: 9px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 1px 2px rgba(99, 102, 241, 0.2);
+}
+
+div.stButton > button:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #db2777 100%) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(219, 39, 119, 0.3);
 }
 
 </style>
@@ -572,7 +586,6 @@ if st.session_state.current_view == "Home":
     ]
 
     if filtered_items:
-        # Loop through products in pairs of 2 to display side-by-side
         for i in range(0, len(filtered_items), 2):
             cols = st.columns(2)
 
