@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Forced Desktop Scaling CSS for Mobile
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -17,7 +17,11 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally */
+        /* Force Mobile Chrome to treat viewport like a Desktop Screen (Minimum width 1200px) */
+        @viewport {
+            width: 1200px;
+        }
+        
         html, body, [class*="css"] {
             font-family: 'Inter', sans-serif !important;
         }
@@ -33,13 +37,11 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
-        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
             font-weight: 600 !important;
         }
         
-        /* Input boxes styling supporting both modes */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: var(--secondary-background-color) !important;
             color: var(--text-color) !important;
@@ -49,7 +51,6 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Professional Neutral Dark/Slate Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
             padding: 14px 18px;
@@ -67,7 +68,6 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
@@ -85,29 +85,14 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
-        @media (max-width: 900px) {
-            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-            }
-            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
-                width: auto !important;
-                flex: 1 1 auto !important;
-                min-width: 0px !important;
-                padding: 0px 2px !important;
-            }
-
-            div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
-                flex-direction: column !important;
-                flex-wrap: wrap !important;
-            }
-            div[data-testid="stHorizontalBlock"]:not(:first-of-type) > div[data-testid="column"] {
-                width: 100% !important;
-                flex: 1 1 100% !important;
-                min-width: 100% !important;
-                padding: 4px 0px !important;
-            }
+        /* Prevent columns from breaking down into vertical stack on mobile devices */
+        div[data-testid="stHorizontalBlock"] {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+        }
+        div[data-testid="column"] {
+            flex: 1 1 auto !important;
+            min-width: unset !important;
         }
 
         .block-container {
@@ -115,7 +100,7 @@ st.markdown("""
             padding-bottom: 0rem;
             padding-left: 1.2rem;
             padding-right: 1.2rem;
-            max-width: 100% !important;
+            min-width: 1150px !important; /* Forces desktop-like horizontal canvas width */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -134,23 +119,15 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
-# Google Apps Script Web App Endpoint URL
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
-
 
 def log_login_to_sheet(name, phone):
     try:
-        payload = {
-            "Type": "Login",
-            "Customer_Name": name,
-            "Primary_Phone": phone
-        }
+        payload = {"Type": "Login", "Customer_Name": name, "Primary_Phone": phone}
         requests.post(GOOGLE_SCRIPT_URL, json=payload, timeout=3)
     except Exception as e:
         print(f"Login sheet error: {e}")
 
-
-# 2. Centered Professional Compact Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
@@ -180,18 +157,13 @@ if not st.session_state.logged_in_user:
                         st.session_state.user_phone = cust_phone.strip()
                         st.session_state.user_role = "Customer"
                         st.session_state.selected_menu = "Headset"
-                        
                         log_login_to_sheet(cust_name.strip(), cust_phone.strip())
-
                         st.success("✅ Login Successful!")
                         st.rerun()
                     else:
                         st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-    
     st.stop()
 
-
-# --- AFTER LOGIN: COMPACT PROFESSIONAL HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
@@ -219,8 +191,6 @@ with top_c3:
 
 st.markdown("---")
 
-
-# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
 @st.cache_data(ttl=2)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
@@ -228,45 +198,32 @@ def load_inventory_from_sheet():
         df = pd.read_csv(sheet_csv_url)
         df.to_csv("inventory.csv", index=False)
         return df
-    except Exception as e:
+    except Exception:
         if os.path.exists("inventory.csv"):
             return pd.read_csv("inventory.csv")
         return pd.DataFrame()
 
-
 inv_df = load_inventory_from_sheet()
-
-
-# Load Product Records safely mapping full spreadsheet indices
 product_records = []
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
-            item_id = str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A"
-            item_name = str(row.iloc[1]) if len(row) > 1 and pd.notna(row.iloc[1]) else "Unknown"
-            item_cat = str(row.iloc[2]) if len(row) > 2 and pd.notna(row.iloc[2]) else "General"
-            item_stock = str(row.iloc[3]) if len(row) > 3 and pd.notna(row.iloc[3]) else "0"
-            item_price = str(row.iloc[4]) if len(row) > 4 and pd.notna(row.iloc[4]) else "0"
-            item_desc = str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else ""
-            item_img = str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
-
             product_records.append({
-                "id": item_id,
-                "name": item_name,
-                "category": item_cat,
-                "stock": item_stock,
-                "price": item_price,
-                "description": item_desc,
-                "image": item_img
+                "id": str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A",
+                "name": str(row.iloc[1]) if len(row) > 1 and pd.notna(row.iloc[1]) else "Unknown",
+                "category": str(row.iloc[2]) if len(row) > 2 and pd.notna(row.iloc[2]) else "General",
+                "stock": str(row.iloc[3]) if len(row) > 3 and pd.notna(row.iloc[3]) else "0",
+                "price": str(row.iloc[4]) if len(row) > 4 and pd.notna(row.iloc[4]) else "0",
+                "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
-    except Exception as e:
-        print(f"Mapping error: {e}")
+    except Exception:
+        pass
 
 if not product_records:
     product_records = [
         {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High performance audio headset"},
     ]
-
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
     if not st.session_state.cart:
@@ -276,24 +233,17 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     primary_phone = st.session_state.user_phone
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
-
     cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
 
     try:
         order_data = {
-            "Type": "Order",
-            "Timestamp": timestamp,
-            "Customer_Name": customer_name,
-            "Primary_Phone": primary_phone,
-            "Items": cart_summary,
-            "Address": address,
-            "Secondary_Phone": secondary_phone,
-            "Description": description,
-            "Live_Location": location_link
+            "Type": "Order", "Timestamp": timestamp, "Customer_Name": customer_name,
+            "Primary_Phone": primary_phone, "Items": cart_summary, "Address": address,
+            "Secondary_Phone": secondary_phone, "Description": description, "Live_Location": location_link
         }
         requests.post(GOOGLE_SCRIPT_URL, json=order_data, timeout=5)
-    except Exception as e:
-        print(f"Order sheet error: {e}")
+    except Exception:
+        pass
 
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
@@ -303,10 +253,8 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
         writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
 
     st.session_state.cart = []
-    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
+    return f"Checkout complete! Order placed for: {cart_summary} (TXN ID: {txn_id})."
 
-
-# View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
     col_menu, col_items = st.columns([1, 2.5], gap="small")
 
@@ -341,41 +289,20 @@ if st.session_state.current_view == "Home":
                             if valid_paths:
                                 total_imgs = len(valid_paths)
                                 current_idx = st.session_state[slide_key]
-                                
                                 l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
                                 with l_btn:
                                     st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] > 0:
-                                            st.session_state[slide_key] -= 1
-                                        else:
-                                            st.session_state[slide_key] = total_imgs - 1
+                                        st.session_state[slide_key] = (st.session_state[slide_key] - 1) % total_imgs
                                         st.rerun()
-                                        
                                 with img_display:
-                                    if total_imgs >= 2:
-                                        sub_col1, sub_col2 = st.columns(2, gap="small")
-                                        with sub_col1:
-                                            _, center_sub1, _ = st.columns([1, 4, 1])
-                                            with center_sub1:
-                                                st.image(valid_paths[current_idx], width=95)
-                                        with sub_col2:
-                                            _, center_sub2, _ = st.columns([1, 4, 1])
-                                            with center_sub2:
-                                                next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=95)
-                                    else:
-                                        _, center_img_col, _ = st.columns([1, 4, 1])
-                                        with center_img_col:
-                                            st.image(valid_paths[0], width=95)
-                                        
+                                    _, center_img_col, _ = st.columns([1, 4, 1])
+                                    with center_img_col:
+                                        st.image(valid_paths[current_idx], width=95)
                                 with r_btn:
                                     st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] + 1 < total_imgs:
-                                            st.session_state[slide_key] += 1
-                                        else:
-                                            st.session_state[slide_key] = 0
+                                        st.session_state[slide_key] = (st.session_state[slide_key] + 1) % total_imgs
                                         st.rerun()
                             else:
                                 st.caption("No Image")
@@ -403,15 +330,13 @@ if st.session_state.current_view == "Home":
                             q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
                         with b_col:
                             if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                                full_q_str = f"{int(q_val)} Units"
-                                st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                st.session_state.cart.append({"product": prod['name'], "quantity": f"{int(q_val)} Units"})
                                 st.success("Added!")
                                 st.rerun()
                                     
                     st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
-
 else:
     st.subheader("🛒 Your Shopping Cart & Checkout")
     if st.session_state.cart:
@@ -433,12 +358,9 @@ else:
             payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
             live_location = st.text_input("Live Location Link (Google Maps Share URL):")
             
-            submit_checkout = st.form_submit_button("Complete Order & Pay")
-            if submit_checkout:
+            if st.form_submit_button("Complete Order & Pay"):
                 if checkout_address and secondary_phone:
-                    result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, payment_method, live_location
-                    )
+                    result_msg = process_cart_checkout(checkout_address, secondary_phone, product_desc, payment_method, live_location)
                     st.success(result_msg)
                     st.session_state.current_view = "Home"
                     st.rerun()
