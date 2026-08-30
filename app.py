@@ -43,15 +43,15 @@ st.markdown("""
         /* Professional Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-radius: 8px;
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .brand-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
@@ -65,11 +65,11 @@ st.markdown("""
             font-weight: 700 !important;
             border-radius: 6px !important;
             width: 100% !important;
-            padding: 0.3rem 0.1rem !important;
-            font-size: 12px !important;
+            padding: 0.4rem 0.2rem !important;
+            font-size: 13px !important;
         }
 
-        /* Force 3 Navigation Buttons to stay tightly in one single line on mobile */
+        /* Force Streamlit horizontal columns to stay side-by-side on all screens without wrapping */
         div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
@@ -82,9 +82,9 @@ st.markdown("""
         }
 
         .block-container {
-            padding-top: 0.6rem;
-            padding-left: 0.6rem;
-            padding-right: 0.6rem;
+            padding-top: 0.8rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
             max-width: 100% !important;
         }
     </style>
@@ -117,7 +117,7 @@ if not st.session_state.logged_in_user:
         </div>
     """, unsafe_allow_html=True)
     
-    _, mid_col, _ = st.columns([0.5, 3, 0.5])
+    _, mid_col, _ = st.columns([1, 2, 1])
     with mid_col:
         with st.form("login_form"):
             st.markdown("### Customer Portal Login")
@@ -135,13 +135,14 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- TOP BANNER & 3 BUTTONS IN EXACTLY ONE SINGLE LINE ---
+# --- TOP BANNER & 3 BUTTONS IN EXACTLY ONE SINGLE HORIZONTAL LINE ---
 st.markdown("""
     <div class='brand-banner'>
         <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
+# 3 Columns placed side-by-side for Store, Cart, and Exit
 nav_col1, nav_col2, nav_col3 = st.columns(3, gap="small")
 with nav_col1:
     if st.button("Store", use_container_width=True):
@@ -156,20 +157,16 @@ with nav_col3:
         st.session_state.clear()
         st.rerun()
 
-st.markdown(f"<p style='text-align: center; margin-top: 4px; margin-bottom: 4px; font-size: 12px;'>Welcome, <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; margin-top: 5px; font-size: 13px;'>Welcome, <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 st.markdown("---")
 
-# LIVE Sync Inventory from Google Sheet with Cache Busting Headers & TTL=0
+# LIVE Sync Inventory from Google Sheet with TTL=0
 @st.cache_data(ttl=0)
 def load_inventory_from_sheet():
-    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv&cache_buster=" + str(random.randint(1, 100000))
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
-        response = requests.get(sheet_csv_url, timeout=5)
-        if response.status_code == 200:
-            from io import StringIO
-            df = pd.read_csv(StringIO(response.text))
-            return df
-        return pd.DataFrame()
+        df = pd.read_csv(sheet_csv_url)
+        return df
     except Exception:
         return pd.DataFrame()
 
