@@ -84,111 +84,100 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* STORE + CART + LOGOUT - same compact button style */
+        /* STORE + CART - fixed horizontal two-box navigation */
         .hm-nav-box {
-            width: 100% !important;
-            max-width: 300px !important;
+            width: 190px !important;
+            max-width: 190px !important;
             margin: 2px auto 0 auto !important;
-            padding: 0 !important;
-            border: none !important;
-            background: transparent !important;
+            padding: 5px !important;
+            border: 1.5px solid #2563eb !important;
+            border-radius: 5px !important;
+            background: #ffffff !important;
             box-sizing: border-box !important;
         }
 
-        .hm-nav-box > div {
+        .hm-nav-box [data-testid="stRadio"] {
+            width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        .hm-nav-box div[data-testid="stHorizontalBlock"] {
+        .hm-nav-box [data-testid="stRadio"] > div {
+            width: 100% !important;
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-            align-items: center !important;
             justify-content: center !important;
-            gap: 5px !important;
-            width: 100% !important;
+            align-items: center !important;
+            gap: 6px !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        .hm-nav-box div[data-testid="column"] {
-            display: block !important;
-            width: 33.333% !important;
+        .hm-nav-box [data-testid="stRadio"] > div > label {
+            display: flex !important;
+            flex: 1 1 0 !important;
+            width: 50% !important;
             min-width: 0 !important;
-            max-width: 33.333% !important;
-            flex: 0 0 33.333% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        .hm-nav-box div.stButton {
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .hm-nav-box div.stButton > button {
-            width: 100% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
+            max-width: 50% !important;
             height: 30px !important;
             margin: 0 !important;
-            padding: 2px 4px !important;
+            padding: 0 5px !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
             border: 1.5px solid #2563eb !important;
             border-radius: 4px !important;
             background: #ffffff !important;
+            color: #2563eb !important;
+            cursor: pointer !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label > div:first-child {
+            display: none !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label > div:last-child {
+            width: 100% !important;
+            text-align: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .hm-nav-box [data-testid="stRadio"] > div > label p {
+            margin: 0 !important;
+            padding: 0 !important;
             color: #2563eb !important;
             font-size: 12px !important;
             font-weight: 700 !important;
             line-height: 1 !important;
             white-space: nowrap !important;
-            box-shadow: none !important;
         }
 
-        .hm-nav-box div.stButton > button:hover {
+        .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) {
             background: #eff6ff !important;
-            color: #1d4ed8 !important;
             border-color: #1d4ed8 !important;
         }
 
-        /* Logout uses exactly the same box/button size */
-        .hm-nav-box div[data-testid="column"]:last-child div.stButton > button {
-            color: #dc2626 !important;
-            border-color: #dc2626 !important;
-        }
-
-        .hm-nav-box div[data-testid="column"]:last-child div.stButton > button:hover {
-            background: #fef2f2 !important;
-            color: #b91c1c !important;
-            border-color: #b91c1c !important;
-        }
-
+        /* Mobile: NEVER stack Store and Cart */
         @media (max-width: 640px) {
             .hm-nav-box {
-                width: 100% !important;
-                max-width: 300px !important;
+                width: 190px !important;
+                max-width: 190px !important;
             }
 
-            .hm-nav-box div[data-testid="stHorizontalBlock"] {
+            .hm-nav-box [data-testid="stRadio"] > div {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
-                gap: 4px !important;
             }
 
-            .hm-nav-box div[data-testid="column"] {
-                display: block !important;
-                width: 33.333% !important;
-                max-width: 33.333% !important;
+            .hm-nav-box [data-testid="stRadio"] > div > label {
+                display: flex !important;
+                flex: 1 1 0 !important;
+                width: 50% !important;
+                max-width: 50% !important;
                 min-width: 0 !important;
-                flex: 0 0 33.333% !important;
-            }
-
-            .hm-nav-box div.stButton > button {
-                height: 29px !important;
-                font-size: 11px !important;
-                padding: 2px 3px !important;
             }
         }
 
@@ -255,28 +244,22 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Store + Cart + Logout navigation
+# Store + Cart: fixed LEFT + RIGHT layout
 st.markdown('<div class="hm-nav-box">', unsafe_allow_html=True)
 
-nav_col1, nav_col2, nav_col3 = st.columns(3, gap="small")
+nav_choice = st.radio(
+    "Navigation",
+    ["Store", f"Cart({len(st.session_state.cart)})"],
+    index=0 if st.session_state.current_view == "Home" else 1,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="hm_navigation"
+)
 
-with nav_col1:
-    if st.button("Store", use_container_width=True, key="hm_store"):
-        st.session_state.current_view = "Home"
-        st.rerun()
-
-with nav_col2:
-    if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True, key="hm_cart"):
-        st.session_state.current_view = "Cart"
-        st.rerun()
-
-with nav_col3:
-    if st.button("Logout", use_container_width=True, key="hm_logout"):
-        st.session_state.logged_in_user = None
-        st.session_state.user_phone = None
-        st.session_state.cart = []
-        st.session_state.current_view = "Home"
-        st.rerun()
+new_view = "Home" if nav_choice == "Store" else "Cart"
+if st.session_state.current_view != new_view:
+    st.session_state.current_view = new_view
+    st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
 
