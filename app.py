@@ -16,7 +16,7 @@ st.set_page_config(
 
 
 # ============================================================
-# CSS (VIBRANT, PROFESSIONAL, ZERO-GAP STYLING)
+# CSS (VIBRANT, PROFESSIONAL, AUTO-ADJUSTING TINY IMAGES)
 # ============================================================
 
 st.markdown("""
@@ -182,6 +182,20 @@ label, .stTextInput label, p {
     box-sizing: border-box;
     background: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+
+/* ============================================================
+   AUTO-ADJUSTING THUMBNAIL SIZING
+   ============================================================ */
+
+[data-testid="stImage"] img {
+    width: 100% !important;
+    height: 48px !important;
+    object-fit: contain !important;
+    border-radius: 3px;
+    display: block;
+    margin: auto;
 }
 
 
@@ -471,9 +485,9 @@ if st.session_state.current_view == "Home":
                                 try:
                                     st.image(prod["images"][current_idx], use_container_width=True)
                                 except Exception:
-                                    pass  # Silently bypass broken link rendering errors
+                                    pass
                             else:
-                                pass  # Skip rendering if no valid image is provided
+                                pass
 
                         with right_col:
                             if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
