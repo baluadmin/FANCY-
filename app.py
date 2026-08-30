@@ -186,7 +186,7 @@ label, .stTextInput label, p {
 
 
 /* ============================================================
-   AUTO-ADJUSTING THUMBNAIL SIZING
+   AUTO-ADJUSTING THUMBNAIL SIZING & HIDING STREAMLIT DEFAULTS
    ============================================================ */
 
 [data-testid="stImage"] img {
@@ -196,6 +196,11 @@ label, .stTextInput label, p {
     border-radius: 3px;
     display: block;
     margin: auto;
+}
+
+/* Hide image caption element entirely to avoid stray counters */
+[data-testid="stImageCaption"] {
+    display: none !important;
 }
 
 
@@ -398,12 +403,11 @@ product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA (WITH GITHUB AUTO-PATH CONVERSION)
+# READ PRODUCT DATA
 # ============================================================
 
 if not inv_df.empty:
     try:
-        # REPLACE THESE WITH YOUR EXACT GITHUB USERNAME & REPO NAME
         GITHUB_USER = "your_github_username"
         REPO_NAME = "your_repository_name"
 
@@ -495,11 +499,11 @@ if st.session_state.current_view == "Home":
                             if total_imgs > 0:
                                 current_idx = st.session_state[img_key] % total_imgs
                                 try:
-                                    st.image(prod["images"][current_idx], use_container_width=True)
+                                    st.image(prod["images"][current_idx], use_container_width=True, caption=None)
                                 except Exception:
-                                    st.markdown("<p style='font-size:9px; text-align:center; color:#ef4444;'>No image</p>", unsafe_allow_html=True)
+                                    pass
                             else:
-                                st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
+                                pass
 
                         with right_col:
                             if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
