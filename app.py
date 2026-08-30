@@ -1,4 +1,3 @@
-Conversation with Gemini
 from datetime import datetime
 
 import csv
