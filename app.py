@@ -379,13 +379,13 @@ product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA (REPLACE USERNAME & REPO NAME HERE)
+# READ PRODUCT DATA (UPDATE USERNAME & REPO NAME HERE)
 # ============================================================
 
 if not inv_df.empty:
     try:
-        GITHUB_USER = "Balumahendran"  # Replace with your GitHub username if different
-        REPO_NAME = "python-project1"  # Replace with your repository name
+        GITHUB_USER = "Balumahendran"  # Your GitHub username
+        REPO_NAME = "python-project1"  # Your repository name
 
         for _, row in inv_df.iterrows():
             raw_img = str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
@@ -430,19 +430,16 @@ if not product_records:
 
 @st.cache_data
 def get_compressed_image(url):
-    """Downloads, compresses, and resizes mismatched images in-memory to a small clean thumbnail."""
+    """Downloads, compresses, and forces small thumbnail dimensions in-memory."""
     try:
         response = requests.get(url, timeout=4)
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
             if img.mode in ("RGBA", "P"):
                 img = img.convert("RGB")
-            # Resize cleanly to a compact display resolution
-            img.thumbnail((150, 150))
-            buffer = BytesIO()
-            img.save(buffer, format="JPEG", quality=85)
-            buffer.seek(0)
-            return buffer
+            # Force small thumbnail size so it's guaranteed to render inside compressed layout
+            img.thumbnail((90, 90))
+            return img
     except Exception:
         pass
     return None
@@ -496,11 +493,12 @@ if st.session_state.current_view == "Home":
                                 current_idx = st.session_state[img_key] % total_imgs
                                 compressed_img = get_compressed_image(prod["images"][current_idx])
                                 if compressed_img:
-                                    st.image(compressed_img, use_container_width=True)
+                                    # Passing explicit small width/height parameters to ensure reliable rendering
+                                    st.image(compressed_img, width=80)
                                 else:
-                                    st.markdown("<p style='font-size:9px; text-align:center; color:#ef4444;'>Failed</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='font-size:9px; text-align:center; color:#ef4444; margin:0;'>Failed</p>", unsafe_allow_html=True)
                             else:
-                                st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
+                                st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8; margin:0;'>No image</p>", unsafe_allow_html=True)
 
                         with right_col:
                             if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
