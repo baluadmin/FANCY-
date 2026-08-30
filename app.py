@@ -16,7 +16,7 @@ st.set_page_config(
 
 
 # ============================================================
-# CSS (VIBRANT, PROFESSIONAL, AUTO-ADJUSTING TINY IMAGES)
+# CSS (VIBRANT, PROFESSIONAL, ZERO-GAP STYLING)
 # ============================================================
 
 st.markdown("""
@@ -186,12 +186,12 @@ label, .stTextInput label, p {
 
 
 /* ============================================================
-   AUTO-ADJUSTING THUMBNAIL SIZING
+   IMAGE SIZING FIX (FIXED CONTAINER VISIBILITY)
    ============================================================ */
 
 [data-testid="stImage"] img {
     width: 100% !important;
-    height: 48px !important;
+    max-height: 50px !important;
     object-fit: contain !important;
     border-radius: 3px;
     display: block;
@@ -485,9 +485,9 @@ if st.session_state.current_view == "Home":
                                 try:
                                     st.image(prod["images"][current_idx], use_container_width=True)
                                 except Exception:
-                                    pass
+                                    st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
                             else:
-                                pass
+                                st.markdown("<p style='font-size:9px; text-align:center; color:#94a3b8;'>No image</p>", unsafe_allow_html=True)
 
                         with right_col:
                             if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
