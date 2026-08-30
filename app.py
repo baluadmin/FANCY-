@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Clean Mobile Styling CSS
+# 1. Streamlit Page Configuration & Professional Mobile-Optimized CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -40,17 +40,20 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
+        /* Professional Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 12px;
+            padding: 14px 18px;
             border-radius: 8px;
             color: #ffffff !important;
             text-align: center;
-            margin-bottom: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 12px;
         }
         .brand-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
+            letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
         }
@@ -62,10 +65,11 @@ st.markdown("""
             font-weight: 700 !important;
             border-radius: 6px !important;
             width: 100% !important;
+            padding: 0.4rem 0.5rem !important;
         }
 
         .block-container {
-            padding-top: 0.5rem;
+            padding-top: 0.8rem;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
             max-width: 100% !important;
@@ -95,53 +99,56 @@ def log_login_to_sheet(name, phone):
 # Customer Login Gateway
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px;'>
-            <h1 style='font-size: 24px; font-weight: 800;'>HM MOBILES</h1>
-            <p style='font-size: 13px;'>Thiruverkadu - Accessories & Service Portal</p>
+        <div class='brand-banner'>
+            <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
         </div>
     """, unsafe_allow_html=True)
     
-    with st.form("login_form"):
-        cust_name = st.text_input("Your Name:")
-        cust_phone = st.text_input("Mobile Number (10 digits):", max_chars=10)
-        login_btn = st.form_submit_button("Launch App Session", use_container_width=True)
+    _, mid_col, _ = st.columns([1, 2, 1])
+    with mid_col:
+        with st.form("login_form"):
+            st.markdown("### Customer Portal Login")
+            cust_name = st.text_input("Your Name:")
+            cust_phone = st.text_input("Mobile Number (10 digits):", max_chars=10)
+            login_btn = st.form_submit_button("Secure Login", use_container_width=True)
 
-        if login_btn:
-            if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                st.session_state.logged_in_user = cust_name.strip()
-                st.session_state.user_phone = cust_phone.strip()
-                log_login_to_sheet(cust_name.strip(), cust_phone.strip())
-                st.rerun()
-            else:
-                st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
+            if login_btn:
+                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                    st.session_state.logged_in_user = cust_name.strip()
+                    st.session_state.user_phone = cust_phone.strip()
+                    log_login_to_sheet(cust_name.strip(), cust_phone.strip())
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# Header Toolbar
+# --- TOP BANNER & HORIZONTAL NAVIGATION ROW ---
 st.markdown("""
-    <div class="brand-banner">
-        <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
+    <div class='brand-banner'>
+        <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-col_w, c_home, c_cart, c_out = st.columns([1.5, 1, 1, 1])
-with col_w:
-    st.markdown(f"👤 **{st.session_state.logged_in_user}**")
-with c_home:
-    if st.button("Store"):
+# Row-wise layout for user welcome message and navigation buttons side-by-side
+nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([2, 1, 1, 1], gap="small")
+with nav_col1:
+    st.markdown(f"👋 **{st.session_state.logged_in_user}**")
+with nav_col2:
+    if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
-with c_cart:
-    if st.button(f"Cart ({len(st.session_state.cart)})"):
+with nav_col3:
+    if st.button(f"Cart ({len(st.session_state.cart)})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
-with c_out:
-    if st.button("Exit"):
+with nav_col4:
+    if st.button("Exit", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
 st.markdown("---")
 
-# LIVE Sync Inventory from Google Sheet with TTL=0 (No Caching Delay)
+# LIVE Sync Inventory from Google Sheet with TTL=0
 @st.cache_data(ttl=0)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
@@ -157,8 +164,6 @@ product_records = []
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
-            # Strict column mapping check based on standard inventory sheets:
-            # Col 0: ID, Col 1: Name, Col 2: Category, Col 3: Stock, Col 4: Price, Col 5: Desc, Col 6: Image
             product_records.append({
                 "id": str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A",
                 "name": str(row.iloc[1]) if len(row) > 1 and pd.notna(row.iloc[1]) else "Unknown",
@@ -183,7 +188,6 @@ if st.session_state.current_view == "Home":
     
     st.markdown(f"### {selected_cat} Catalog")
     
-    # Filter products strictly matching the selected category from the sheet
     filtered_items = [p for p in product_records if p['category'].lower() == selected_cat.lower()]
     
     if filtered_items:
@@ -200,7 +204,7 @@ if st.session_state.current_view == "Home":
                     st.success("Added to cart!")
                     st.rerun()
     else:
-        st.info(f"No items found under category '{selected_cat}'. Check your Google Sheet column entries.")
+        st.info(f"No items found under category '{selected_cat}'.")
 else:
     st.subheader("🛒 Shopping Cart & Checkout")
     if st.session_state.cart:
