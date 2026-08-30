@@ -24,20 +24,27 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-html, body, [class*="css"] {
+
+/* ============================================================
+   GENERAL
+   ============================================================ */
+
+html,
+body,
+[class*="css"] {
     font-family: 'Inter', sans-serif !important;
 }
 
 #MainMenu {
-    visibility: hidden;
+    visibility: hidden !important;
 }
 
 header {
-    visibility: hidden;
+    visibility: hidden !important;
 }
 
 footer {
-    visibility: hidden;
+    visibility: hidden !important;
 }
 
 div[data-testid="stToolbar"] {
@@ -50,7 +57,7 @@ section[data-testid="stStatusWidget"] {
 
 
 /* ============================================================
-   GENERAL
+   MAIN CONTAINER
    ============================================================ */
 
 .stMainBlockContainer,
@@ -58,15 +65,9 @@ div[data-testid="stMainBlockContainer"],
 .block-container {
     padding-top: 0rem !important;
     margin-top: 0rem !important;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
     max-width: 100% !important;
-}
-
-label,
-.stTextInput label,
-p {
-    font-weight: 600 !important;
 }
 
 
@@ -77,7 +78,7 @@ p {
 .brand-banner {
     background: #2563eb;
 
-    padding: 4px 6px;
+    padding: 3px 5px;
 
     border-radius: 4px;
 
@@ -91,7 +92,7 @@ p {
 .brand-title {
     color: white !important;
 
-    font-size: 13px !important;
+    font-size: 12px !important;
 
     font-weight: 800 !important;
 
@@ -106,7 +107,7 @@ p {
 
 
 /* ============================================================
-   STORE + CART
+   STORE / CART NAVIGATION
    ============================================================ */
 
 .hm-nav-box {
@@ -126,11 +127,11 @@ p {
 }
 
 .hm-nav-box [data-testid="stRadio"] {
+    width: 100% !important;
+
     margin: 0 !important;
 
     padding: 0 !important;
-
-    width: 100% !important;
 }
 
 .hm-nav-box [data-testid="stRadio"] > div {
@@ -156,7 +157,7 @@ p {
 
     min-width: 0 !important;
 
-    height: 30px !important;
+    height: 28px !important;
 
     display: flex !important;
 
@@ -168,7 +169,7 @@ p {
 
     margin: 0 !important;
 
-    border: 1.5px solid #2563eb !important;
+    border: 1px solid #2563eb !important;
 
     border-radius: 4px !important;
 
@@ -184,7 +185,7 @@ p {
 .hm-nav-box [data-testid="stRadio"] > div > label p {
     color: #2563eb !important;
 
-    font-size: 12px !important;
+    font-size: 11px !important;
 
     font-weight: 700 !important;
 
@@ -209,7 +210,13 @@ p {
 .category-area {
     margin-top: 0 !important;
 
-    margin-bottom: 5px !important;
+    margin-bottom: 3px !important;
+}
+
+.category-area label {
+    font-size: 12px !important;
+
+    margin-bottom: 2px !important;
 }
 
 
@@ -218,15 +225,15 @@ p {
    ============================================================ */
 
 .product-card {
-    width: 100%;
+    width: 100% !important;
 
     border: 1px solid #e2e8f0;
 
-    border-radius: 8px;
+    border-radius: 7px;
 
-    padding: 6px;
+    padding: 5px;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 
     box-sizing: border-box;
 
@@ -235,121 +242,232 @@ p {
 
 
 /* ============================================================
-   PRODUCT IMAGE ROW
-   BUTTONS ARE CENTERED WITH IMAGE
+   IMAGE ROW
+   IMPORTANT:
+   LEFT BUTTON + IMAGE + RIGHT BUTTON
    ============================================================ */
 
 .product-image-row {
-    display: flex;
+    width: 100% !important;
 
-    flex-direction: row;
+    display: flex !important;
 
-    align-items: center;
+    flex-direction: row !important;
 
-    justify-content: center;
+    flex-wrap: nowrap !important;
 
-    width: 100%;
+    align-items: center !important;
 
-    gap: 3px;
+    justify-content: center !important;
+
+    gap: 2px !important;
 }
 
 
 /* ============================================================
-   IMAGE
+   IMAGE COLUMN
    ============================================================ */
 
 .product-image-wrapper {
-    flex: 1;
+    flex: 1 1 auto !important;
 
-    min-width: 0;
+    min-width: 0 !important;
 
-    max-width: 520px;
+    max-width: 430px !important;
 
-    display: flex;
+    display: flex !important;
 
-    justify-content: center;
+    justify-content: center !important;
 
-    align-items: center;
-}
-
-.product-image-wrapper img {
-    width: 100%;
-
-    max-width: 500px;
-
-    height: 250px;
-
-    object-fit: contain;
-
-    display: block;
-
-    border-radius: 6px;
+    align-items: center !important;
 }
 
 
 /* ============================================================
-   SIDE BUTTONS
+   SMALLER PRODUCT IMAGE
    ============================================================ */
 
-.image-button {
-    width: 38px;
+.product-image-wrapper img {
+    width: 100% !important;
 
-    min-width: 38px;
+    max-width: 390px !important;
 
-    height: 38px;
+    height: 185px !important;
 
-    border: 1.5px solid #2563eb;
+    object-fit: contain !important;
 
-    border-radius: 50%;
+    display: block !important;
 
-    background: white;
-
-    color: #2563eb;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 19px;
-
-    font-weight: 700;
+    border-radius: 5px !important;
 }
 
 
 /* ============================================================
-   PRODUCT INFORMATION
+   LEFT / RIGHT IMAGE BUTTON
+   ============================================================ */
+
+.image-side-button {
+    width: 32px !important;
+
+    min-width: 32px !important;
+
+    max-width: 32px !important;
+
+    height: 32px !important;
+
+    min-height: 32px !important;
+
+    padding: 0 !important;
+
+    margin: 0 !important;
+
+    border-radius: 50% !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 15px !important;
+}
+
+
+/* ============================================================
+   PRODUCT NAME
    ============================================================ */
 
 .product-name {
     text-align: center;
 
-    font-size: 16px;
+    font-size: 15px;
 
     font-weight: 700;
 
-    margin-top: 4px;
+    margin-top: 3px;
 
     margin-bottom: 2px;
 }
+
+
+/* ============================================================
+   PRICE
+   STOCK REMOVED
+   ============================================================ */
 
 .product-price {
     text-align: center;
 
-    font-size: 13px;
+    font-size: 12px;
 
     font-weight: 700;
 
     margin-bottom: 2px;
 }
 
+
+/* ============================================================
+   DESCRIPTION
+   ============================================================ */
+
 .product-description {
     text-align: center;
 
-    font-size: 12px;
+    font-size: 11px;
 
-    margin-bottom: 3px;
+    margin-bottom: 2px;
+}
+
+
+/* ============================================================
+   QUANTITY LABEL
+   ============================================================ */
+
+div[data-testid="stNumberInput"] label {
+    font-size: 11px !important;
+
+    margin-bottom: 1px !important;
+}
+
+
+/* ============================================================
+   SMALL QUANTITY BOX
+   ============================================================ */
+
+div[data-testid="stNumberInput"] {
+    width: 150px !important;
+
+    max-width: 150px !important;
+
+    margin: 0 auto 4px auto !important;
+}
+
+div[data-testid="stNumberInput"] > div {
+    min-height: 31px !important;
+
+    height: 31px !important;
+
+    border-radius: 6px !important;
+}
+
+div[data-testid="stNumberInput"] input {
+    height: 29px !important;
+
+    min-height: 29px !important;
+
+    padding: 2px 4px !important;
+
+    font-size: 11px !important;
+
+    text-align: center !important;
+}
+
+
+/* ============================================================
+   SMALL MINUS / PLUS BUTTONS
+   ============================================================ */
+
+div[data-testid="stNumberInput"] button {
+    width: 25px !important;
+
+    min-width: 25px !important;
+
+    max-width: 25px !important;
+
+    height: 29px !important;
+
+    min-height: 29px !important;
+
+    padding: 0 !important;
+
+    margin: 0 !important;
+
+    font-size: 12px !important;
+
+    line-height: 1 !important;
+}
+
+div[data-testid="stNumberInput"] button svg {
+    width: 11px !important;
+
+    height: 11px !important;
+}
+
+
+/* ============================================================
+   ADD TO CART BUTTON
+   ============================================================ */
+
+div.stButton > button {
+    font-size: 11px !important;
+
+    min-height: 30px !important;
+
+    height: 30px !important;
+
+    padding: 2px 8px !important;
+
+    border-radius: 5px !important;
 }
 
 
@@ -359,45 +477,220 @@ p {
 
 @media (max-width: 640px) {
 
+    .stMainBlockContainer,
+    div[data-testid="stMainBlockContainer"],
+    .block-container {
+        padding-left: 2px !important;
+
+        padding-right: 2px !important;
+    }
+
+
+    /* --------------------------------
+       HEADER
+       -------------------------------- */
+
+    .brand-banner {
+        padding: 3px 4px !important;
+
+        margin-bottom: 2px !important;
+    }
+
+    .brand-title {
+        font-size: 11px !important;
+    }
+
+
+    /* --------------------------------
+       NAV
+       -------------------------------- */
+
+    .hm-nav-box {
+        width: 180px !important;
+
+        max-width: 180px !important;
+    }
+
+
+    /* --------------------------------
+       PRODUCT CARD
+       -------------------------------- */
+
     .product-card {
-        padding: 4px;
+        padding: 3px !important;
 
-        margin-bottom: 8px;
+        margin-bottom: 7px !important;
     }
 
-    .product-image-row {
-        gap: 2px;
+
+    /* --------------------------------
+       FORCE IMAGE ROW HORIZONTAL
+       -------------------------------- */
+
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+
+        align-items: center !important;
+
+        width: 100% !important;
     }
 
-    .product-image-wrapper {
-        max-width: calc(100% - 78px);
+
+    div[data-testid="stHorizontalBlock"]
+    > div[data-testid="column"] {
+        flex-shrink: 0 !important;
+
+        align-self: center !important;
     }
 
-    .product-image-wrapper img {
-        width: 100%;
 
-        height: 210px;
+    /* --------------------------------
+       LEFT ARROW COLUMN
+       -------------------------------- */
 
-        object-fit: contain;
+    div[data-testid="stHorizontalBlock"]
+    > div[data-testid="column"]:first-child {
+        width: 32px !important;
+
+        min-width: 32px !important;
+
+        max-width: 32px !important;
+
+        flex: 0 0 32px !important;
     }
 
-    .image-button {
-        width: 34px;
 
-        min-width: 34px;
+    /* --------------------------------
+       MIDDLE IMAGE COLUMN
+       -------------------------------- */
 
-        height: 34px;
+    div[data-testid="stHorizontalBlock"]
+    > div[data-testid="column"]:nth-child(2) {
+        min-width: 0 !important;
 
-        font-size: 17px;
+        flex: 1 1 auto !important;
+
+        width: auto !important;
     }
+
+
+    /* --------------------------------
+       RIGHT ARROW COLUMN
+       -------------------------------- */
+
+    div[data-testid="stHorizontalBlock"]
+    > div[data-testid="column"]:last-child {
+        width: 32px !important;
+
+        min-width: 32px !important;
+
+        max-width: 32px !important;
+
+        flex: 0 0 32px !important;
+    }
+
+
+    /* --------------------------------
+       SMALL IMAGE
+       -------------------------------- */
+
+    div[data-testid="stHorizontalBlock"]
+    > div[data-testid="column"]:nth-child(2)
+    img {
+        width: 100% !important;
+
+        height: 175px !important;
+
+        max-height: 175px !important;
+
+        object-fit: contain !important;
+    }
+
+
+    /* --------------------------------
+       ARROW BUTTONS
+       -------------------------------- */
+
+    div[data-testid="stHorizontalBlock"]
+    > div[data-testid="column"]
+    button {
+        width: 30px !important;
+
+        min-width: 30px !important;
+
+        max-width: 30px !important;
+
+        height: 30px !important;
+
+        min-height: 30px !important;
+
+        padding: 0 !important;
+
+        margin: 0 !important;
+
+        border-radius: 50% !important;
+
+        font-size: 14px !important;
+    }
+
+
+    /* --------------------------------
+       PRODUCT TEXT
+       -------------------------------- */
 
     .product-name {
-        font-size: 15px;
+        font-size: 14px !important;
+
+        margin-top: 2px !important;
     }
 
     .product-price {
-        font-size: 13px;
+        font-size: 11px !important;
     }
+
+    .product-description {
+        font-size: 10px !important;
+    }
+
+
+    /* --------------------------------
+       SMALL QUANTITY
+       -------------------------------- */
+
+    div[data-testid="stNumberInput"] {
+        width: 135px !important;
+
+        max-width: 135px !important;
+    }
+
+    div[data-testid="stNumberInput"] > div {
+        height: 29px !important;
+
+        min-height: 29px !important;
+    }
+
+    div[data-testid="stNumberInput"] input {
+        height: 27px !important;
+
+        min-height: 27px !important;
+
+        font-size: 10px !important;
+    }
+
+    div[data-testid="stNumberInput"] button {
+        width: 23px !important;
+
+        min-width: 23px !important;
+
+        max-width: 23px !important;
+
+        height: 27px !important;
+
+        min-height: 27px !important;
+
+        font-size: 11px !important;
+    }
+
 }
 
 </style>
@@ -453,7 +746,7 @@ def log_login_to_sheet(name, phone):
 
 
 # ============================================================
-# LOGIN PAGE
+# LOGIN
 # ============================================================
 
 if not st.session_state.logged_in_user:
@@ -472,7 +765,9 @@ if not st.session_state.logged_in_user:
 
         with st.form("login_form"):
 
-            st.markdown("### Customer Portal Login")
+            st.markdown(
+                "### Customer Portal Login"
+            )
 
 
             cust_name = st.text_input(
@@ -602,7 +897,7 @@ st.markdown(
 
 
 # ============================================================
-# LOAD INVENTORY FROM GOOGLE SHEET
+# LOAD INVENTORY
 # ============================================================
 
 @st.cache_data(ttl=0)
@@ -616,11 +911,9 @@ def load_inventory_from_sheet():
 
     try:
 
-        df = pd.read_csv(
+        return pd.read_csv(
             sheet_csv_url
         )
-
-        return df
 
     except Exception:
 
@@ -633,7 +926,7 @@ product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA
+# READ GOOGLE SHEET
 # ============================================================
 
 if not inv_df.empty:
@@ -680,7 +973,7 @@ if not inv_df.empty:
                     and pd.notna(row.iloc[5])
                     else "",
 
-                # IMAGE COLUMN
+                # IMAGE COLUMN — UNCHANGED
                 "image":
                     str(row.iloc[6]).strip()
                     if len(row) > 6
@@ -710,20 +1003,20 @@ if not product_records:
             "name":
                 "Bluetooth Wireless Headset",
 
-            "price":
-                "1200",
+            "category":
+                "Headset",
 
             "stock":
                 "50",
 
-            "category":
-                "Headset",
-
-            "image":
-                "",
+            "price":
+                "1200",
 
             "description":
-                "High performance audio"
+                "High performance audio",
+
+            "image":
+                ""
         }
     ]
 
@@ -735,7 +1028,7 @@ if not product_records:
 if st.session_state.current_view == "Home":
 
     # --------------------------------------------------------
-    # CATEGORY SELECTOR
+    # CATEGORY
     # --------------------------------------------------------
 
     categories = sorted(
@@ -770,8 +1063,7 @@ if st.session_state.current_view == "Home":
 
 
     # --------------------------------------------------------
-    # FILTER ONLY
-    # CATEGORY IS NEVER STORED IN CART
+    # FILTER PRODUCTS
     # --------------------------------------------------------
 
     filtered_items = [
@@ -787,8 +1079,8 @@ if st.session_state.current_view == "Home":
 
 
     # --------------------------------------------------------
-    # SHOW ALL PRODUCTS
-    # ONE IMAGE FOR EACH PRODUCT
+    # ALL PRODUCTS
+    # ONE IMAGE PER PRODUCT
     # --------------------------------------------------------
 
     if filtered_items:
@@ -797,10 +1089,6 @@ if st.session_state.current_view == "Home":
             filtered_items
         ):
 
-            # =================================================
-            # PRODUCT CARD
-            # =================================================
-
             st.markdown(
                 '<div class="product-card">',
                 unsafe_allow_html=True
@@ -808,7 +1096,7 @@ if st.session_state.current_view == "Home":
 
 
             # =================================================
-            # IMAGE + SIDE BUTTONS
+            # IMAGE + LEFT / RIGHT BUTTONS
             # =================================================
 
             left_col, image_col, right_col = st.columns(
@@ -829,24 +1117,23 @@ if st.session_state.current_view == "Home":
                     use_container_width=True
                 ):
 
-                    # Button is vertically centered
-                    # beside the product image.
+                    current_index = st.session_state.get(
+                        f"image_index_{idx}",
+                        0
+                    )
 
                     st.session_state[
                         f"image_index_{idx}"
                     ] = max(
                         0,
-                        st.session_state.get(
-                            f"image_index_{idx}",
-                            0
-                        ) - 1
+                        current_index - 1
                     )
 
                     st.rerun()
 
 
             # -------------------------------------------------
-            # IMAGE
+            # PRODUCT IMAGE
             # -------------------------------------------------
 
             with image_col:
@@ -885,14 +1172,14 @@ if st.session_state.current_view == "Home":
                     use_container_width=True
                 ):
 
+                    current_index = st.session_state.get(
+                        f"image_index_{idx}",
+                        0
+                    )
+
                     st.session_state[
                         f"image_index_{idx}"
-                    ] = (
-                        st.session_state.get(
-                            f"image_index_{idx}",
-                            0
-                        ) + 1
-                    )
+                    ] = current_index + 1
 
                     st.rerun()
 
@@ -912,15 +1199,14 @@ if st.session_state.current_view == "Home":
 
 
             # =================================================
-            # PRICE + STOCK
+            # PRICE ONLY
+            # STOCK REMOVED
             # =================================================
 
             st.markdown(
                 f"""
                 <div class="product-price">
                     Price: ₹{prod["price"]}
-                    &nbsp; | &nbsp;
-                    Stock: {prod["stock"]} units
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -945,13 +1231,18 @@ if st.session_state.current_view == "Home":
 
             # =================================================
             # QUANTITY
+            # SMALL BOX WITH - AND +
             # =================================================
 
             q_val = st.number_input(
                 "Quantity",
+
                 min_value=1.0,
+
                 value=1.0,
+
                 step=1.0,
+
                 key=f"qty_{selected_cat}_{idx}"
             )
 
@@ -962,17 +1253,23 @@ if st.session_state.current_view == "Home":
 
             if st.button(
                 "Add to Cart",
+
                 key=f"add_{selected_cat}_{idx}",
+
                 use_container_width=True
             ):
 
                 # IMPORTANT:
-                # ONLY PRODUCT NAME + QUANTITY
-                # CATEGORY IS NOT ADDED.
+                # CATEGORY IS NOT STORED.
+                # ONLY PRODUCT NAME + QUANTITY.
 
                 cart_item = {
-                    "product": prod["name"],
-                    "quantity": f"{int(q_val)} Units"
+
+                    "product":
+                        prod["name"],
+
+                    "quantity":
+                        f"{int(q_val)} Units"
                 }
 
 
@@ -988,10 +1285,6 @@ if st.session_state.current_view == "Home":
 
                 st.rerun()
 
-
-            # =================================================
-            # CLOSE PRODUCT CARD
-            # =================================================
 
             st.markdown(
                 "</div>",
@@ -1035,7 +1328,9 @@ else:
 
             with col_item_name:
 
-                # ONLY PRODUCT + QUANTITY
+                # ONLY PRODUCT NAME + QUANTITY
+                # CATEGORY IS NOT DISPLAYED
+
                 st.write(
                     f"• {item['product']} "
                     f"({item['quantity']})"
