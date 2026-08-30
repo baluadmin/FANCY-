@@ -90,28 +90,21 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
-        @media (max-width: 900px) {
-            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-            }
-            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
-                width: auto !important;
-                flex: 1 1 auto !important;
-                min-width: 0px !important;
-                padding: 0px 2px !important;
-            }
-
-            div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
+        /* Responsive Mobile Handling: Force vertical stacking on small screens to eliminate horizontal scrolling */
+        @media (max-width: 768px) {
+            div[data-testid="stHorizontalBlock"] {
                 flex-direction: column !important;
                 flex-wrap: wrap !important;
             }
-            div[data-testid="stHorizontalBlock"]:not(:first-of-type) > div[data-testid="column"] {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
                 width: 100% !important;
                 flex: 1 1 100% !important;
                 min-width: 100% !important;
                 padding: 4px 0px !important;
+            }
+            .stImage img {
+                max-width: 100% !important;
+                height: auto !important;
             }
         }
 
@@ -204,7 +197,6 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Commercial banner area on the left and right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -244,7 +236,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
+# Load Product Records from Google Sheet Data dynamically
 product_records = []
 if not inv_df.empty:
     try:
@@ -263,22 +255,21 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High bass wireless headset."},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "RGB gaming headset."},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Quick charge adapter."},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "Dual USB wall charger."},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "Durable braided cable."},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "Fast data sync cable."},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "Condenser microphone."},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "Clip-on mic for phones."},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "High capacity cell battery."},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "9H hardness glass guard."},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "True wireless earbuds."},
     ]
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
-    """Checkout all items currently in the cart with delivery details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -318,113 +309,69 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str) 
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items = st.columns([1, 2.5], gap="small")
+    categories = list(set([p['category'] for p in product_records]))
+    
+    # Adaptive Category Selection (Dropdown on mobile/compact view, stackable)
+    selected_cat = st.selectbox(
+        "Select Product Category:",
+        categories,
+        index=categories.index(st.session_state.get("selected_menu", categories[0])) if st.session_state.get("selected_menu") in categories else 0
+    )
+    st.session_state.selected_menu = selected_cat
 
-    # --- SECTION 1: MENU ---
-    with col_menu:
-        st.markdown("Menu")
-        with st.container(height=480, border=True):
-            categories = list(set([p['category'] for p in product_records]))
-            for cat in categories:
-                if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
-                    st.session_state.selected_menu = cat
-                    st.rerun()
+    st.markdown("---")
+    st.markdown(f"### {selected_cat} Collection")
 
-    # --- SECTION 2: ITEMS ---
-    with col_items:
-        current_cat = st.session_state.get("selected_menu", "Headset")
-        st.markdown(f"{current_cat}")
-        with st.container(height=480, border=True):
-            filtered_items = [p for p in product_records if p['category'] == current_cat]
-            
-            if filtered_items:
-                for idx, prod in enumerate(filtered_items):
-                    slide_key = f"slide_{current_cat}_{idx}"
-                    
-                    if slide_key not in st.session_state:
-                        st.session_state[slide_key] = 0
+    filtered_items = [p for p in product_records if p['category'] == selected_cat]
 
-                    p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
-                    
-                    with p_img_col:
-                        raw_img = prod.get("image", "")
-                        if raw_img:
-                            img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
-                            valid_paths = [p for p in img_paths if os.path.exists(p)]
-                            if valid_paths:
-                                total_imgs = len(valid_paths)
-                                current_idx = st.session_state[slide_key]
-                                
-                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
-                                
-                                with l_btn:
-                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
-                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] > 0:
-                                            st.session_state[slide_key] -= 1
-                                        else:
-                                            st.session_state[slide_key] = total_imgs - 1
-                                        st.rerun()
-                                        
-                                with img_display:
-                                    if total_imgs >= 2:
-                                        sub_col1, sub_col2 = st.columns(2, gap="small")
-                                        with sub_col1:
-                                            _, center_sub1, _ = st.columns([1, 4, 1])
-                                            with center_sub1:
-                                                st.image(valid_paths[current_idx], width=95)
-                                        with sub_col2:
-                                            _, center_sub2, _ = st.columns([1, 4, 1])
-                                            with center_sub2:
-                                                next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=95)
-                                    else:
-                                        _, center_img_col, _ = st.columns([1, 4, 1])
-                                        with center_img_col:
-                                            st.image(valid_paths[0], width=95)
-                                        
-                                with r_btn:
-                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
-                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
-                                        if st.session_state[slide_key] + 1 < total_imgs:
-                                            st.session_state[slide_key] += 1
-                                        else:
-                                            st.session_state[slide_key] = 0
-                                        st.rerun()
-                            else:
-                                st.caption("No Image")
-                        else:
-                            st.caption("No Image")
+    if filtered_items:
+        for idx, prod in enumerate(filtered_items):
+            slide_key = f"slide_{selected_cat}_{idx}"
+            if slide_key not in st.session_state:
+                st.session_state[slide_key] = 0
+
+            with st.container(border=True):
+                p_img_col, p_details_col = st.columns([1, 1], gap="medium")
+                
+                with p_img_col:
+                    raw_img = prod.get("image", "")
+                    if raw_img:
+                        img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                        valid_paths = [p for p in img_paths if os.path.exists(p)]
+                        if valid_paths:
+                            total_imgs = len(valid_paths)
+                            current_idx = st.session_state[slide_key]
                             
-                    with p_div1_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                            st.image(valid_paths[current_idx], use_container_width=True)
+                            
+                            if total_imgs > 1:
+                                l_col, r_col = st.columns(2)
+                                with l_col:
+                                    if st.button("◀ Prev", key=f"prev_{selected_cat}_{idx}", use_container_width=True):
+                                        st.session_state[slide_key] = (current_idx - 1) % total_imgs
+                                        st.rerun()
+                                with r_col:
+                                    if st.button("Next ▶", key=f"next_{selected_cat}_{idx}", use_container_width=True):
+                                        st.session_state[slide_key] = (current_idx + 1) % total_imgs
+                                        st.rerun()
+                        else:
+                            st.caption("No Image Available")
+                    else:
+                        st.caption("No Image Available")
 
-                    with p_desc_col:
-                        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-                        st.markdown("**Description:**")
-                        st.caption(prod.get('description', ''))
-
-                    with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
-
-                    with p_details_col:
-                        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
-                        st.markdown(f"**{prod['name']}**")
-                        st.markdown(f"₹{prod['price']}")
-                        
-                        q_col, b_col = st.columns([1, 1], gap="small")
-                        with q_col:
-                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                        with b_col:
-                            if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                                full_q_str = f"{int(q_val)} Units"
-                                st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                st.success(f"Added!")
-                                st.rerun()
-                                    
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
-            else:
-                st.info("No items found.")
+                with p_details_col:
+                    st.markdown(f"**{prod['name']}**")
+                    st.markdown(f"Price: **₹{prod['price']}**")
+                    st.caption(f"Description: {prod.get('description', 'N/A')}")
+                    
+                    q_val = st.number_input("Quantity", min_value=1.0, value=1.0, step=1.0, key=f"qty_{selected_cat}_{idx}")
+                    if st.button("Add to Cart", key=f"add_btn_{selected_cat}_{idx}", use_container_width=True):
+                        full_q_str = f"{int(q_val)} Units"
+                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                        st.success(f"Added {prod['name']} to cart!")
+                        st.rerun()
+    else:
+        st.info("No items found in this category.")
 
 else:
     st.subheader("🛒 Your Shopping Cart & Checkout")
@@ -434,7 +381,7 @@ else:
             with cc1:
                 st.markdown(f"- **{item['product']}** ({item['quantity']})")
             with cc2:
-                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
+                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}", use_container_width=True):
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
@@ -445,7 +392,7 @@ else:
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
-            submit_checkout = st.form_submit_button("Complete Order")
+            submit_checkout = st.form_submit_button("Complete Order", use_container_width=True)
             if submit_checkout:
                 if checkout_address and secondary_phone:
                     result_msg = process_cart_checkout(
@@ -457,7 +404,6 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
-    # Centering container for the cart empty state message and button alignment
         _, center_msg_col, _ = st.columns([1, 2, 1])
         with center_msg_col:
             st.info("Your cart is empty. Click **Home** above to browse and add products.")
