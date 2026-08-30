@@ -89,10 +89,16 @@ st.markdown("""
             background-color: #ffffff;
             border: 1px solid #2563eb;
             border-radius: 5px;
-            padding: 2px 4px;
-            margin: 0px auto !important;
-            max-width: 260px;
+            padding: 1px 2px !important;
+            margin: 1px auto 0px auto !important;
+            width: fit-content !important;
+            max-width: 180px !important;
             box-shadow: 0 1px 2px rgba(37, 99, 235, 0.12);
+        }
+
+        .unified-nav-box > div {
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* Seamless text-link style buttons matching the exact small reference layout */
@@ -124,15 +130,37 @@ st.markdown("""
             flex-wrap: nowrap !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 12px !important;
+            gap: 4px !important;
             margin: 0px !important;
             padding: 0px !important;
         }
         .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
             width: auto !important;
-            flex: 0 1 auto !important;
+            flex: 0 0 auto !important;
             min-width: 0px !important;
-            padding: 0px !important;
+            padding: 0px 3px !important;
+            margin: 0 !important;
+        }
+
+        .unified-nav-box div[data-testid="stHorizontalBlock"] {
+            gap: 2px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            justify-content: center !important;
+        }
+
+        .unified-nav-box div.stButton {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .unified-nav-box div.stButton > button {
+            width: auto !important;
+            min-width: 62px !important;
+            padding: 1px 7px !important;
+            margin: 0 !important;
+            font-size: 12px !important;
+            line-height: 1 !important;
         }
         
         /* Eliminate vertical margins on markdown paragraphs inside sticky header */
