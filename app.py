@@ -48,14 +48,13 @@ st.markdown("""
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
-            padding: 6px 12px 6px 12px;
+            padding: 6px 10px 4px 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Top padding to prevent page content from overlapping fixed header */
         .block-container {
-            padding-top: 10.5rem !important;
+            padding-top: 6.2rem !important;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
             max-width: 100% !important;
@@ -69,7 +68,7 @@ st.markdown("""
             color: #ffffff !important;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .brand-title {
             font-size: 12px;
@@ -79,23 +78,38 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact Column-Wise Stacked Buttons */
+        /* Compact Buttons sized strictly to fit side-by-side without wrapping */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1.5px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
             border-radius: 4px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.25rem 0.5rem !important;
-            margin-bottom: 2px !important;
+            padding: 0.2rem 0.2rem !important;
+            white-space: nowrap !important;
         }
         div.stButton > button:hover {
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
             border: 1px solid #94a3b8 !important;
+        }
+
+        /* Force single row alignment for navigation columns on all screens */
+        .sticky-header-container div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+        .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            width: auto !important;
+            flex: 1 1 auto !important;
+            min-width: 0px !important;
+            padding: 0px 1px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -145,7 +159,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- STICKY TOP BANNER & COLUMN-WISE (VERTICALLY STACKED) NAVIGATION ---
+# --- STICKY TOP BANNER & EXACT SINGLE-ROW LAYOUT MATCHING SKETCH ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -154,21 +168,22 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"<p style='font-size: 11px; margin: 2px 0;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='font-size: 11px; margin: 2px 0;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
-# Vertically stacked column-wise navigation buttons
-if st.button("Store", use_container_width=True):
-    st.session_state.current_view = "Home"
-    st.rerun()
-
-cart_count = len(st.session_state.cart)
-if st.button(f"Cart ({cart_count})", use_container_width=True):
-    st.session_state.current_view = "Cart"
-    st.rerun()
-
-if st.button("Exit", use_container_width=True):
-    st.session_state.clear()
-    st.rerun()
+# Row layout: Store, Cart(0), Exit side-by-side in exact proportions
+nav_col1, nav_col2, nav_col3 = st.columns([1, 1, 1], gap="small")
+with nav_col1:
+    if st.button("Store", use_container_width=True):
+        st.session_state.current_view = "Home"
+        st.rerun()
+with nav_col2:
+    if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True):
+        st.session_state.current_view = "Cart"
+        st.rerun()
+with nav_col3:
+    if st.button("Exit", use_container_width=True):
+        st.session_state.clear()
+        st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
 
