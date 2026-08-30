@@ -53,23 +53,23 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Professional Compact Light Blue Header Banner */
-        .brand-banner {
+        /* Ultra-Compact Top Bar for Brand Name */
+        .brand-top-bar {
             background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 4px;
             color: #0f172a !important;
             text-align: center;
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 8px;
             border: 1px solid #7dd3fc;
+            margin-bottom: 6px;
         }
-        .brand-title {
-            font-size: 15px;
+        .brand-top-title {
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
             color: #0f172a !important;
             margin: 0;
+            line-height: 1.2;
         }
 
         /* Compact Buttons */
@@ -91,7 +91,7 @@ st.markdown("""
         }
 
         .block-container {
-            padding-top: 0.6rem;
+            padding-top: 0.4rem;
             padding-bottom: 0rem;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
@@ -135,8 +135,8 @@ def log_login_to_sheet(name, phone):
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 22px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 12px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <h1 style='font-size: 20px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES - THIRUVERKADU</h1>
+            <p style='font-size: 12px; font-weight: 400;'>Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -172,17 +172,17 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: COMPACT TOP BANNER & HORIZONTAL NAVIGATION ROW ---
+# --- AFTER LOGIN: ULTRA-SMALL SINGLE LINE BRAND TITLE & NAVIGATION ROW ---
 st.markdown("""
-    <div class="brand-banner">
-        <h1 class="brand-title">HM MOBILES - THIRUVERKADU</h1>
+    <div class="brand-top-bar">
+        <p class="brand-top-title">HM MOBILES - THIRUVERKADU</p>
     </div>
 """, unsafe_allow_html=True)
 
 # Single horizontal line layout for Welcome message, Home, Cart, and Logout buttons
 top_c1, top_c2, top_c3, top_c4 = st.columns([1.6, 0.8, 0.9, 0.8], gap="small")
 with top_c1:
-    st.markdown(f"<p style='font-size: 13px; margin: 6px 0;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 13px; margin: 4px 0;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with top_c2:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
