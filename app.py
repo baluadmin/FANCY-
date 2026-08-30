@@ -40,7 +40,7 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
-        /* Sticky Header Panel Container */
+        /* Sticky Header Panel Container with tightly minimized padding */
         .sticky-header-container {
             position: fixed;
             top: 0;
@@ -48,47 +48,49 @@ st.markdown("""
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
-            padding: 6px 10px 4px 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            padding: 2px 6px 2px 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
             border-bottom: 1px solid #cbd5e1;
         }
 
+        /* Tightly reduced top padding for page content */
         .block-container {
-            padding-top: 5.8rem !important;
+            padding-top: 4.2rem !important;
             padding-left: 0.8rem;
             padding-right: 0.8rem;
             max-width: 100% !important;
         }
 
-        /* Professional Header Banner matching exact design layout */
+        /* 1/3 Reduced Compact Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 5px 10px;
-            border-radius: 6px;
+            padding: 2px 4px;
+            border-radius: 4px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1px;
         }
         .brand-title {
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             color: #ffffff !important;
             margin: 0;
+            line-height: 1.2;
         }
 
-        /* Compact Buttons sized strictly to fit side-by-side cleanly */
+        /* Compact Navigation Buttons sized strictly side-by-side */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
-            border: 1.5px solid #cbd5e1 !important;
+            border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 11px !important;
-            border-radius: 4px !important;
+            font-size: 10px !important;
+            border-radius: 3px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.2rem 0.2rem !important;
+            padding: 0.1rem 0.1rem !important;
             white-space: nowrap !important;
         }
         div.stButton > button:hover {
@@ -97,13 +99,13 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* Force single row alignment for navigation columns on all screens */
+        /* Force single row alignment for navigation columns */
         .sticky-header-container div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            gap: 4px !important;
+            gap: 2px !important;
         }
         .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
             width: auto !important;
@@ -136,7 +138,7 @@ def log_login_to_sheet(name, phone):
 # Customer Login Gateway
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div class='brand-banner' style='margin-top: 20px;'>
+        <div class='brand-banner' style='margin-top: 10px;'>
             <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
         </div>
     """, unsafe_allow_html=True)
@@ -159,7 +161,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- STICKY TOP HEADER MATCHING YOUR DRAWN SKETCH EXACTLY ---
+# --- STICKY TOP HEADER WITH ZERO EXTRA SPACES & REDUCED HEADER SIZE ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -168,9 +170,9 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"<p style='font-size: 11px; margin: 2px 0;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='font-size: 10px; margin: 1px 0;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 
-# Row layout: Store, Cart(0), Exit side-by-side matching the sketch layout precisely
+# Row layout: Store, Cart(0), Exit side-by-side with zero wasted vertical gap
 nav_col1, nav_col2, nav_col3 = st.columns([1, 1, 1], gap="small")
 with nav_col1:
     if st.button("Store", use_container_width=True):
