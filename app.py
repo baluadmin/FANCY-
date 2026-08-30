@@ -48,7 +48,7 @@ st.markdown("""
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
-            padding: 2px 6px 2px 6px !important;
+            padding: 2px 4px 2px 4px !important;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             border-bottom: 1px solid #cbd5e1;
         }
@@ -61,7 +61,7 @@ st.markdown("""
             max-width: 100% !important;
         }
 
-        /* Compact top header styling matching professional e-commerce style bars */
+        /* Compact top header styling */
         .brand-banner {
             background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 0%);
             padding: 4px 8px;
@@ -81,7 +81,7 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* Compact buttons styled cleanly side-by-side */
+        /* Perfectly sized compact buttons for Store and Cart */
         div.stButton > button {
             background-color: #f8fafc !important;
             color: #0f172a !important;
@@ -91,7 +91,8 @@ st.markdown("""
             border-radius: 4px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.15rem 0.2rem !important;
+            padding: 0.25rem 0.2rem !important;
+            line-height: 1.2 !important;
             white-space: nowrap !important;
             margin: 0px !important;
         }
@@ -172,7 +173,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH CLEAN E-COMMERCE STYLING ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH MATCHING LINE SIZING ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -184,7 +185,7 @@ st.markdown("""
 # Side-by-side horizontal row layout for Welcome message, Store button, and Cart button
 header_col1, header_col2, header_col3 = st.columns([1.2, 1, 1], gap="small")
 with header_col1:
-    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 4px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 6px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with header_col2:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
