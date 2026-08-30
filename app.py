@@ -55,7 +55,7 @@ st.markdown("""
 
         /* Target Streamlit structural container to completely strip out native top padding */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
-            padding-top: 2.8rem !important;
+            padding-top: 0rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
@@ -163,7 +163,7 @@ def log_login_to_sheet(name, phone):
 # Customer Login Gateway
 if not st.session_state.logged_in_user:
     st.markdown("""
-        <div class='brand-banner' style='margin-top: 10px;'>
+        <div class='brand-banner'>
             <h1 class='brand-title'>HM MOBILES</h1>
         </div>
     """, unsafe_allow_html=True)
