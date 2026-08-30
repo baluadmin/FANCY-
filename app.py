@@ -55,7 +55,7 @@ st.markdown("""
 
         /* Target Streamlit structural container to completely strip out native top padding */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
-            padding-top: 3.0rem !important;
+            padding-top: 2.8rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
@@ -64,7 +64,7 @@ st.markdown("""
         /* Compact top header styling */
         .brand-banner {
             background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 0%);
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
             color: #ffffff !important;
             text-align: center;
@@ -72,37 +72,38 @@ st.markdown("""
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         .brand-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
             text-transform: uppercase;
         }
 
-        /* Single unified outer container box wrapping Store and Cart inside a single boxed frame */
+        /* Small, compact boxed layout for Store and Cart side-by-side */
         .unified-nav-box {
             background-color: #ffffff;
-            border: 1.5px solid #2563eb;
-            border-radius: 6px;
-            padding: 6px 8px;
-            margin: 0px !important;
-            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
+            border: 1px solid #2563eb;
+            border-radius: 5px;
+            padding: 2px 4px;
+            margin: 0px auto !important;
+            max-width: 260px;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.12);
         }
 
-        /* Seamless text-link style buttons matching the exact reference layout */
+        /* Seamless text-link style buttons matching the exact small reference layout */
         div.stButton > button {
             background-color: transparent !important;
             color: #2563eb !important;
             border: none !important;
             font-weight: 700 !important;
-            font-size: 14px !important;
+            font-size: 13px !important;
             border-radius: 0px !important;
             width: 100% !important;
             display: block !important;
-            padding: 0.1rem 0.1rem !important;
-            line-height: 1.2 !important;
+            padding: 0.05rem 0.05rem !important;
+            line-height: 1.1 !important;
             white-space: nowrap !important;
             margin: 0px !important;
             box-shadow: none !important;
@@ -119,13 +120,14 @@ st.markdown("""
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            gap: 4px !important;
+            justify-content: center !important;
+            gap: 12px !important;
             margin: 0px !important;
             padding: 0px !important;
         }
         .sticky-header-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
             width: auto !important;
-            flex: 1 1 auto !important;
+            flex: 0 1 auto !important;
             min-width: 0px !important;
             padding: 0px !important;
         }
@@ -184,7 +186,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SINGLE BOX ENCLOSING STORE & CART ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SMALL BOX FOR STORE & CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -193,10 +195,10 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Opening single outer container box wrapping Store and Cart inside one box frame
+# Opening small unified box container wrapping Store and Cart inside one small frame
 st.markdown('<div class="unified-nav-box">', unsafe_allow_html=True)
 
-header_col1, header_col2 = st.columns([1, 1], gap="small")
+header_col1, header_col2 = st.columns(2, gap="small")
 with header_col1:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
