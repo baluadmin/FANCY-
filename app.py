@@ -61,7 +61,7 @@ st.markdown("""
             max-width: 100% !important;
         }
 
-        /* Header banner matching exact same larger font size as Store and Cart buttons */
+        /* Header banner matching exact same compact size */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
             padding: 2px 4px;
@@ -71,7 +71,7 @@ st.markdown("""
             margin: 0px !important;
         }
         .brand-title {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.3px;
             color: #ffffff !important;
@@ -80,13 +80,13 @@ st.markdown("""
             white-space: nowrap;
         }
 
-        /* Compact buttons with standard font size to match HM Mobiles banner */
+        /* Compact buttons styled side-by-side */
         div.stButton > button {
             background-color: #f1f5f9 !important;
             color: #1e293b !important;
             border: 1px solid #cbd5e1 !important;
             font-weight: 700 !important;
-            font-size: 14px !important;
+            font-size: 12px !important;
             border-radius: 3px !important;
             width: 100% !important;
             display: block !important;
@@ -171,7 +171,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH MATCHING FONT SIZES ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SIDE-BY-SIDE STORE AND CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -180,15 +180,15 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown(f"<p style='font-size: 11px; margin: 0px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
-
-# Side-by-side horizontal row layout for Store and Cart
-nav_col1, nav_col2 = st.columns([1, 1], gap="small")
-with nav_col1:
+# Container for greeting and side-by-side buttons in the same row
+header_col1, header_col2, header_col3 = st.columns([1.5, 1, 1], gap="small")
+with header_col1:
+    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 4px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+with header_col2:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
-with nav_col2:
+with header_col3:
     if st.button(f"Cart({len(st.session_state.cart)})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
