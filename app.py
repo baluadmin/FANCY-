@@ -40,10 +40,10 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Completely lock header to absolute top zero padding/margin and shift negative to clip browser padding */
+        /* Completely lock header to the absolute top, removing any browser chrome padding gaps */
         .sticky-header-container {
             position: fixed;
-            top: -50px;
+            top: 0px;
             left: 0;
             width: 100%;
             background-color: var(--background-color, #ffffff);
@@ -53,16 +53,16 @@ st.markdown("""
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Pull main container up aggressively to eliminate any top gap */
+        /* Target Streamlit's absolute wrapper to eliminate top margin */
+        .stMainBlockContainer, div[data-testid="stMainBlockContainer"] {
+            padding-top: 3.5rem !important;
+        }
+
         .block-container {
-            padding-top: 0.8rem !important;
+            padding-top: 3.5rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
-        }
-        
-        div.block-container {
-            padding-top: 0.8rem !important;
         }
 
         /* Tightly fitted single line header banner */
@@ -175,7 +175,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER REMOVING ALL TOP SPACES ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER FLUSHED TO SCREEN TOP ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
