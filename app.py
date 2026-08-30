@@ -40,7 +40,7 @@ st.markdown("""
             border-radius: 4px !important;
         }
 
-        /* Completely lock header to the absolute top, removing any browser chrome padding gaps */
+        /* Completely flush sticky header to the absolute browser top with zero top spacing */
         .sticky-header-container {
             position: fixed;
             top: 0px;
@@ -53,13 +53,9 @@ st.markdown("""
             border-bottom: 1px solid #cbd5e1;
         }
 
-        /* Target Streamlit's absolute wrapper to eliminate top margin */
-        .stMainBlockContainer, div[data-testid="stMainBlockContainer"] {
-            padding-top: 3.5rem !important;
-        }
-
-        .block-container {
-            padding-top: 3.5rem !important;
+        /* Target Streamlit's structural container to completely strip out native top padding */
+        .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
+            padding-top: 2.8rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
