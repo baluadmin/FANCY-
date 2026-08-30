@@ -61,10 +61,10 @@ st.markdown("""
             max-width: 100% !important;
         }
 
-        /* Header banner matching exact text sizing of navigation buttons */
+        /* Header banner with small font matching button text size */
         .brand-banner {
             background: linear-gradient(135deg, #1e293b 100%, #334155 0%);
-            padding: 2px 4px;
+            padding: 1px 3px;
             border-radius: 3px;
             color: #ffffff !important;
             text-align: center;
@@ -76,7 +76,7 @@ st.markdown("""
             letter-spacing: 0.3px;
             color: #ffffff !important;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
             white-space: nowrap;
         }
 
@@ -171,12 +171,12 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SIDE-BY-SIDE STORE & CART ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH COMPACT HEADER & SIDE-BY-SIDE STORE/CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
     <div class='brand-banner'>
-        <h1 class='brand-title'>HM MOBILES</h1>
+        <div class='brand-title'>HM MOBILES</div>
     </div>
 """, unsafe_allow_html=True)
 
