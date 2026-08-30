@@ -81,20 +81,17 @@ st.markdown("""
             text-transform: uppercase;
         }
 
-        /* Single unified container box styling wrapping both Store and Cart buttons */
-        .nav-wrapper-box {
+        /* Single outer container box wrapping both Store and Cart buttons inside a single unified frame */
+        .unified-nav-box {
             background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
+            border: 1.5px solid #cbd5e1;
             border-radius: 6px;
-            padding: 3px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 6px;
+            padding: 4px 6px;
             margin: 0px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         }
 
-        /* Compact buttons styled cleanly inside the unified wrapper */
+        /* Compact buttons styled cleanly inside the single unified box */
         div.stButton > button {
             background-color: #ffffff !important;
             color: #0f172a !important;
@@ -115,7 +112,7 @@ st.markdown("""
             border: 1px solid #2563eb !important;
         }
 
-        /* Force single row layout for navigation columns inside the box */
+        /* Force single row layout for navigation side-by-side with zero vertical gap */
         .sticky-header-container div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             flex-direction: row !important;
@@ -186,7 +183,7 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH UNIFIED CONTAINER BOX ---
+# --- ZERO-GAP ABSOLUTE TOP STICKY HEADER WITH SINGLE UNIFIED BOX FOR STORE & CART ---
 st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
@@ -195,12 +192,12 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Opening single unified box container for greeting and independent navigation links
-st.markdown('<div class="nav-wrapper-box">', unsafe_allow_html=True)
+# Opening single outer container box wrapping greeting, store button, and cart button together
+st.markdown('<div class="unified-nav-box">', unsafe_allow_html=True)
 
 header_col1, header_col2, header_col3 = st.columns([1.2, 1, 1], gap="small")
 with header_col1:
-    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 2px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 11px; margin: 0px; padding-top: 4px;'>Hi <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 with header_col2:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
@@ -210,7 +207,7 @@ with header_col3:
         st.session_state.current_view = "Cart"
         st.rerun()
 
-st.markdown('</div>', unsafe_allow_html=True) # Close nav-wrapper-box
+st.markdown('</div>', unsafe_allow_html=True) # Close unified-nav-box
 st.markdown('</div>', unsafe_allow_html=True) # Close sticky-header-container
 
 # LIVE Sync Inventory from Google Sheet with TTL=0
