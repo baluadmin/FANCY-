@@ -65,20 +65,7 @@ st.markdown("""
             font-weight: 700 !important;
             border-radius: 6px !important;
             width: 100% !important;
-            padding: 0.4rem 0.2rem !important;
-            font-size: 13px !important;
-        }
-
-        /* Force Streamlit horizontal columns to stay side-by-side on all screens without wrapping */
-        div[data-testid="stHorizontalBlock"] {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-        }
-        div[data-testid="column"] {
-            flex: 1 1 0% !important;
-            min-width: 0px !important;
-            padding: 0px 2px !important;
+            padding: 0.4rem 0.5rem !important;
         }
 
         .block-container {
@@ -135,29 +122,30 @@ if not st.session_state.logged_in_user:
                     st.warning("⚠️ Enter a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- TOP BANNER & 3 BUTTONS IN EXACTLY ONE SINGLE HORIZONTAL LINE ---
+# --- TOP BANNER & HORIZONTAL NAVIGATION ROW ---
 st.markdown("""
     <div class='brand-banner'>
         <h1 class='brand-title'>HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-# 3 Columns placed side-by-side for Store, Cart, and Exit
-nav_col1, nav_col2, nav_col3 = st.columns(3, gap="small")
+# Row-wise layout for user welcome message and navigation buttons side-by-side
+nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([2, 1, 1, 1], gap="small")
 with nav_col1:
+    st.markdown(f"👋 **{st.session_state.logged_in_user}**")
+with nav_col2:
     if st.button("Store", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
-with nav_col2:
+with nav_col3:
     if st.button(f"Cart ({len(st.session_state.cart)})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
-with nav_col3:
+with nav_col4:
     if st.button("Exit", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
-st.markdown(f"<p style='text-align: center; margin-top: 5px; font-size: 13px;'>Welcome, <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
 st.markdown("---")
 
 # LIVE Sync Inventory from Google Sheet with TTL=0
