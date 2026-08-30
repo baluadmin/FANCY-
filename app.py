@@ -187,6 +187,22 @@ st.markdown("""
             padding: 0px !important;
             line-height: 1.1 !important;
         }
+
+        /* Move Product Category upward closer to Store / Cart / Logout */
+        .st-key-product_category {
+            margin-top: -28px !important;
+            padding-top: 0 !important;
+        }
+
+        .st-key-product_category [data-testid="stSelectbox"] {
+            margin-top: 0 !important;
+        }
+
+        @media (max-width: 640px) {
+            .st-key-product_category {
+                margin-top: -30px !important;
+            }
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -301,7 +317,8 @@ if not product_records:
 # Main Application Views
 if st.session_state.current_view == "Home":
     categories = sorted(list(set([p['category'] for p in product_records])))
-    selected_cat = st.selectbox("Select Product Category:", categories)
+    with st.container(key="product_category"):
+        selected_cat = st.selectbox("Select Product Category:", categories)
     
     st.markdown(f"### {selected_cat} Catalog")
     
