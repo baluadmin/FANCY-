@@ -53,23 +53,45 @@ st.markdown("""
             border-radius: 6px !important;
         }
 
+        /* Sticky Header Panel Container */
+        .sticky-header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--background-color, #ffffff);
+            z-index: 99999;
+            padding: 8px 16px 4px 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        /* Push main content down so it doesn't hide behind the fixed sticky header */
+        .block-container {
+            padding-top: 5.5rem !important;
+            padding-bottom: 0rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
+            max-width: 100% !important;
+        }
+
         /* Ultra-Compact Top Bar for Brand Name */
         .brand-top-bar {
             background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
             color: #0f172a !important;
             text-align: center;
             border: 1px solid #7dd3fc;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .brand-top-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #0f172a !important;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         /* Compact Buttons */
@@ -88,14 +110,6 @@ st.markdown("""
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
             border: 1px solid #94a3b8 !important;
-        }
-
-        .block-container {
-            padding-top: 0.4rem;
-            padding-bottom: 0rem;
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
-            max-width: 100% !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -172,14 +186,16 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: ULTRA-SMALL SINGLE LINE BRAND TITLE & SINGLE-ROW NAVIGATION ---
+# --- AFTER LOGIN: STICKY TOP HEADER WRAPPED IN A FIXED CONTAINER ---
+st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
+
 st.markdown("""
     <div class="brand-top-bar">
         <p class="brand-top-title">HM MOBILES - THIRUVERKADU</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Single horizontal row layout for Welcome, Home, Cart, and Logout
+# Single horizontal row layout for Welcome, Home, Cart, and Logout inside sticky block
 top_c1, top_c2, top_c3, top_c4 = st.columns([1.8, 0.7, 0.8, 0.7], gap="small")
 with top_c1:
     st.markdown(f"<p style='font-size: 12px; margin: 4px 0; white-space: nowrap;'>👋 <b>{st.session_state.logged_in_user}</b></p>", unsafe_allow_html=True)
@@ -197,7 +213,7 @@ with top_c4:
         st.session_state.clear()
         st.rerun()
 
-st.markdown("---")
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
