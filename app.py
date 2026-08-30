@@ -85,20 +85,70 @@ st.markdown("""
         }
 
         /* Small, compact boxed layout for Store and Cart side-by-side */
+        /* One outer box containing two separate Store + Cart boxes */
         .unified-nav-box {
             background-color: #ffffff;
-            border: 1px solid #2563eb;
+            border: 1.5px solid #2563eb;
             border-radius: 5px;
-            padding: 1px 2px !important;
-            margin: 1px auto 0px auto !important;
+            padding: 5px 7px !important;
+            margin: 2px auto 0px auto !important;
             width: fit-content !important;
-            max-width: 180px !important;
+            max-width: 230px !important;
             box-shadow: 0 1px 2px rgba(37, 99, 235, 0.12);
+            box-sizing: border-box;
         }
 
         .unified-nav-box > div {
             margin: 0 !important;
             padding: 0 !important;
+        }
+
+        .unified-nav-box div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .unified-nav-box div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            width: auto !important;
+            flex: 0 0 auto !important;
+            min-width: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Individual Store / Cart inner boxes */
+        .unified-nav-box div.stButton {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .unified-nav-box div.stButton > button {
+            background-color: #ffffff !important;
+            color: #2563eb !important;
+            border: 1.5px solid #2563eb !important;
+            border-radius: 4px !important;
+            width: 78px !important;
+            min-width: 78px !important;
+            height: 30px !important;
+            padding: 2px 7px !important;
+            margin: 0 !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            line-height: 1 !important;
+            box-shadow: none !important;
+            white-space: nowrap !important;
+        }
+
+        .unified-nav-box div.stButton > button:hover {
+            background-color: #eff6ff !important;
+            color: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
         }
 
         /* Seamless text-link style buttons matching the exact small reference layout */
@@ -121,6 +171,16 @@ st.markdown("""
             background-color: #eff6ff !important;
             color: #1d4ed8 !important;
             border: none !important;
+        }
+
+        /* Keep Store and Cart as visible individual boxes */
+        .unified-nav-box div.stButton > button {
+            border: 1.5px solid #2563eb !important;
+            border-radius: 4px !important;
+            width: 78px !important;
+            min-width: 78px !important;
+            height: 30px !important;
+            padding: 2px 7px !important;
         }
 
         /* Force single row layout for navigation side-by-side with zero vertical gap */
