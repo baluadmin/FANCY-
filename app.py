@@ -43,12 +43,14 @@ st.markdown("""
         /* Pull sticky header completely flush to the absolute screen top edge */
         .sticky-header-container {
             position: fixed;
-            top: 0px;
+            top: 0 !important;
             left: 0;
             width: 100%;
             background-color: var(--background-color, #ffffff);
             z-index: 99999;
             padding: 2px 4px 2px 4px !important;
+            margin: 0 !important;
+            box-sizing: border-box;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             border-bottom: 1px solid #cbd5e1;
         }
@@ -56,6 +58,7 @@ st.markdown("""
         /* Target Streamlit structural container to completely strip out native top padding */
         .stMainBlockContainer, div[data-testid="stMainBlockContainer"], .block-container {
             padding-top: 0rem !important;
+            margin-top: 0rem !important;
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             max-width: 100% !important;
