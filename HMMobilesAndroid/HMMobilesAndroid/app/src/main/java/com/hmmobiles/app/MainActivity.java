@@ -2,7 +2,7 @@ package com.hmmobiles.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -21,41 +21,56 @@ public class MainActivity extends Activity {
 
         WebSettings settings = webView.getSettings();
 
-        // Enable website features
+        // JavaScript
         settings.setJavaScriptEnabled(true);
+
+        // Storage
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // Allow Streamlit to work correctly
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setSupportMultipleWindows(true);
+        // Cookies / login sessions
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setAcceptThirdPartyCookies(webView, true);
 
-        // Desktop-style website view
+        // Windows / redirects
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setSupportMultipleWindows(false);
+
+        // Desktop-style layout
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
 
-        // Allow zooming
+        // Zoom
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
-        // Keep links inside the app
-        webView.setWebViewClient(new WebViewClient());
+        // Cache
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        // Support Streamlit browser features
-        webView.setWebChromeClient(new WebChromeClient());
-
-        // Keep the app full screen
-        webView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        // Important: use a normal Chrome-like User Agent
+        settings.setUserAgentString(
+                "Mozilla/5.0 (Linux; Android 13) " +
+                "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/131.0.0.0 Mobile Safari/537.36"
         );
 
-        // Open your HM Mobiles application
-        webView.loadUrl("https://baluaiproject1.streamlit.app/");
+        // Keep navigation inside WebView
+        webView.setWebViewClient(new WebViewClient());
+
+        // Streamlit / JavaScript support
+        webView.setWebChromeClient(new WebChromeClient());
+
+        // Load Streamlit
+        webView.loadUrl(
+                "https://baluaiproject1.streamlit.app/"
+        );
     }
 
     @Override
     public void onBackPressed() {
+
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
