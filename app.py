@@ -122,6 +122,97 @@ st.markdown("""
             padding-right: 1.2rem;
             max-width: 100% !important;
         }
+
+        /* Compact login screen for Android landscape */
+        .login-title {
+            text-align: center;
+            margin: 2px 0 4px 0;
+        }
+
+        .login-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 2px 0;
+        }
+
+        .login-title p {
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .login-card {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 9px 16px 10px 16px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .login-card h3 {
+            margin: 0 0 3px 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        div[data-testid="stForm"] {
+            border: none !important;
+            padding: 6px 0 0 0 !important;
+        }
+
+        @media (orientation: landscape) and (max-height: 700px) {
+            .block-container {
+                padding-top: 0.15rem !important;
+                padding-bottom: 0rem !important;
+                padding-left: 0.8rem !important;
+                padding-right: 0.8rem !important;
+            }
+
+            .login-title {
+                margin: 0 0 1px 0;
+            }
+
+            .login-title h1 {
+                font-size: 20px;
+                margin-bottom: 0;
+            }
+
+            .login-title p {
+                font-size: 9px;
+            }
+
+            .login-card {
+                max-width: 680px;
+                padding: 5px 14px 6px 14px;
+            }
+
+            .login-card h3 {
+                font-size: 14px;
+                margin-bottom: 1px;
+            }
+
+            div[data-testid="stForm"] {
+                padding-top: 2px !important;
+            }
+
+            div[data-testid="stTextInput"] {
+                margin-bottom: -5px !important;
+            }
+
+            button[kind="primaryFormSubmit"] {
+                min-height: 36px !important;
+                padding: 0.2rem 0.5rem !important;
+                font-size: 13px !important;
+            }
+        }
+
+        @media (max-width: 700px) and (orientation: portrait) {
+            .login-card {
+                max-width: 100%;
+                padding: 10px;
+            }
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -156,44 +247,68 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Professional Compact Customer Login Screen (Before Login)
+# 2. Compact landscape-friendly Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
+
     st.markdown("""
-        <div style='text-align: center; margin-top: 20px; margin-bottom: 10px;'>
-            <h1 style='font-size: 26px; font-weight: 700; margin-bottom: 2px;'>HM MOBILES</h1>
-            <p style='font-size: 13px; font-weight: 400;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div class="login-title">
+            <h1>HM MOBILES</h1>
+            <p>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    _, mid_col, _ = st.columns([1.5, 1, 1.5])
-    
-    with mid_col:
-        with st.container():
-            st.markdown("""
-                <div style='padding: 20px; border-radius: 10px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 12px; font-size: 16px; font-weight: 600;'>Customer Portal Login</h3>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            with st.form("customer_direct_login_center"):
+
+    # Center the login card while using the available landscape width
+    _, login_col, _ = st.columns([1, 2.4, 1])
+
+    with login_col:
+
+        st.markdown("""
+            <div class="login-card">
+                <h3>Customer Portal Login</h3>
+            </div>
+        """, unsafe_allow_html=True)
+
+        with st.form("customer_direct_login_center"):
+
+            # Side-by-side fields keep the complete login form
+            # visible on a landscape phone screen.
+            name_col, phone_col = st.columns(2, gap="small")
+
+            with name_col:
                 cust_name = st.text_input("Your Name:")
-                cust_phone = st.text_input("Mobile Number:", max_chars=10)
-                login_btn = st.form_submit_button("Secure Login", use_container_width=True)
 
-                if login_btn:
-                    if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                        st.session_state.logged_in_user = cust_name.strip()
-                        st.session_state.user_phone = cust_phone.strip()
-                        st.session_state.user_role = "Customer"
-                        st.session_state.selected_menu = "Headset"
-                        
-                        log_login_to_sheet(cust_name.strip(), cust_phone.strip())
+            with phone_col:
+                cust_phone = st.text_input(
+                    "Mobile Number:",
+                    max_chars=10
+                )
 
-                        st.success("✅ Login Successful!")
-                        st.rerun()
-                    else:
-                        st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-    
+            login_btn = st.form_submit_button(
+                "Secure Login",
+                use_container_width=True
+            )
+
+            if login_btn:
+                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+
+                    st.session_state.logged_in_user = cust_name.strip()
+                    st.session_state.user_phone = cust_phone.strip()
+                    st.session_state.user_role = "Customer"
+                    st.session_state.selected_menu = "Headset"
+
+                    log_login_to_sheet(
+                        cust_name.strip(),
+                        cust_phone.strip()
+                    )
+
+                    st.success("✅ Login Successful!")
+                    st.rerun()
+
+                else:
+                    st.warning(
+                        "⚠️ Please provide a valid name and 10-digit mobile number."
+                    )
+
     st.stop()
 
 
