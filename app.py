@@ -17,10 +17,10 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
 
-        /* Apply Font Family Globally */
+        /* Increased Font Sizes Globally by 6px (Base increased from 34px to 40px) */
         html, body, [class*="css"] {
             font-family: 'Montserrat', sans-serif !important;
-            font-size: 20px !important;
+            font-size: 40px !important;
         }
 
         /* Set App Background to Light Yellow */
@@ -43,19 +43,19 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color */
+        /* Automatically adapt text color & increased font size (+6px from 32px to 38px) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #1e293b !important;
             font-weight: 600 !important;
-            font-size: 18px !important;
+            font-size: 38px !important;
         }
         
-        /* Input boxes styling supporting light yellow theme */
+        /* Input boxes styling supporting light yellow theme with +6px font size */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #1e293b !important;
             border: 2px solid #fde047 !important;
-            font-size: 18px !important;
+            font-size: 38px !important;
             font-weight: 500 !important;
             border-radius: 8px !important;
         }
@@ -72,7 +72,7 @@ st.markdown("""
             border: 2px solid #facc15;
         }
         .brand-title {
-            font-size: 32px !important;
+            font-size: 58px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
             color: #713f12 !important;
@@ -85,9 +85,9 @@ st.markdown("""
             color: #713f12 !important;
             border: 2px solid #facc15 !important;
             font-weight: 700 !important;
-            font-size: 18px !important;
+            font-size: 38px !important;
             border-radius: 8px !important;
-            padding: 0.6rem 0.8rem !important;
+            padding: 0.5rem 0.6rem !important;
             width: 100% !important;
             display: block !important;
         }
@@ -97,7 +97,7 @@ st.markdown("""
             border: 2px solid #eab308 !important;
         }
 
-        /* Responsive Mobile Handling: Fix Header Buttons Wrapping */
+        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
         @media (max-width: 900px) {
             .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
                 flex-direction: row !important;
@@ -130,20 +130,21 @@ st.markdown("""
             max-width: 100% !important;
         }
 
+        /* Compact login screen for Android landscape */
         .login-title {
             text-align: center;
             margin: 2px 0 4px 0;
         }
 
         .login-title h1 {
-            font-size: 32px !important;
+            font-size: 62px !important;
             font-weight: 800 !important;
             margin: 0 0 2px 0;
             color: #713f12 !important;
         }
 
         .login-title p {
-            font-size: 16px !important;
+            font-size: 32px !important;
             margin: 0;
         }
 
@@ -160,13 +161,66 @@ st.markdown("""
 
         .login-card h3 {
             margin: 0 0 5px 0;
-            font-size: 22px !important;
+            font-size: 42px !important;
             font-weight: 700 !important;
         }
 
         div[data-testid="stForm"] {
             border: none !important;
             padding: 6px 0 0 0 !important;
+        }
+
+        @media (orientation: landscape) and (max-height: 700px) {
+            .block-container {
+                padding-top: 0.15rem !important;
+                padding-bottom: 0rem !important;
+                padding-left: 0.8rem !important;
+                padding-right: 0.8rem !important;
+            }
+
+            .login-title {
+                margin: 0 0 1px 0;
+            }
+
+            .login-title h1 {
+                font-size: 50px !important;
+                margin-bottom: 0;
+            }
+
+            .login-title p {
+                font-size: 26px !important;
+            }
+
+            .login-card {
+                max-width: 680px;
+                padding: 5px 14px 6px 14px;
+            }
+
+            .login-card h3 {
+                font-size: 36px !important;
+                margin-bottom: 1px;
+            }
+
+            div[data-testid="stForm"] {
+                padding-top: 2px !important;
+            }
+
+            div[data-testid="stTextInput"] {
+                margin-bottom: -5px !important;
+            }
+
+            button[kind="primaryFormSubmit"] {
+                min-height: 38px !important;
+                padding: 0.2rem 0.5rem !important;
+                font-size: 36px !important;
+            }
+        }
+
+        @media (max-width: 700px) and (orientation: portrait) {
+            .login-card {
+                max-width: 100%;
+                padding: 10px;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -274,7 +328,6 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Adjusted column ratios to ensure Home, Cart, and Logout fit neatly in a single horizontal row without wrapping
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.2, 0.4, 1.3, 1.3, 1.3], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -397,7 +450,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=2400, border=True):
+        with st.container(height=3000, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -409,7 +462,7 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=2400, border=True):
+        with st.container(height=3000, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
@@ -445,7 +498,7 @@ if st.session_state.current_view == "Home":
                                 l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 45px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{global_idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -460,24 +513,21 @@ if st.session_state.current_view == "Home":
                                             _, center_sub1, _ = st.columns([1, 4, 1])
                                             with center_sub1:
                                                 st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                                # BIGGER IMAGE SIZE (Increased width to 160px)
                                                 st.image(valid_paths[current_idx], width=160)
                                         with sub_col2:
                                             _, center_sub2, _ = st.columns([1, 4, 1])
                                             with center_sub2:
                                                 st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                                # BIGGER IMAGE SIZE (Increased width to 160px)
                                                 next_idx = (current_idx + 1) % total_imgs
                                                 st.image(valid_paths[next_idx], width=160)
                                     else:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
                                             st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                            # BIGGER IMAGE SIZE (Increased width to 180px for single image)
                                             st.image(valid_paths[0], width=180)
                                         
                                 with r_btn:
-                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 45px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{global_idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
@@ -485,14 +535,14 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = total_imgs - 1
                                         st.rerun()
                             else:
-                                st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
-                                st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 20px;'>No Image</p>", unsafe_allow_html=True)
+                                st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+                                st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 24px;'>No Image</p>", unsafe_allow_html=True)
                         else:
-                            st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
-                            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 20px;'>No Image</p>", unsafe_allow_html=True)
+                            st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+                            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 24px;'>No Image</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 110px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 130px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -500,7 +550,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 110px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 130px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -517,7 +567,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #fde047;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 6px; margin-bottom: 6px; border: none; border-top: 2px solid #fde047;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
