@@ -64,26 +64,33 @@ st.markdown("""
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
         }
 
-        /* Professional Luxury E-Commerce Dark Slate/Indigo Header Banner */
+        /* Premium Luxury Gradient Header Banner with Integrated Contact Info */
         .brand-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            padding: 24px 30px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            padding: 22px 30px;
             border-radius: 16px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         .brand-title {
             font-size: 34px !important;
             font-weight: 800 !important;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
             color: #ffffff !important;
-            margin: 0;
-            background: linear-gradient(to right, #ffffff, #94a3b8);
+            margin: 0 0 6px 0;
+            background: linear-gradient(to right, #ffffff, #e0e7ff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        .brand-phone {
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px;
+            color: #fde047 !important;
+            margin: 0;
         }
 
         /* Specific Vibrant Pink Styling for Menu Column Buttons */
@@ -106,7 +113,7 @@ st.markdown("""
             transform: translateY(-1px);
         }
 
-        /* Compact, Full-Width Light Blue Buttons for other areas */
+        /* Compact, Full-Width Light Blue Action Buttons */
         div.stButton > button {
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
             color: #0369a1 !important;
@@ -243,7 +250,7 @@ if not st.session_state.logged_in_user:
     st.markdown("""
         <div class="login-title">
             <h1>HM MOBILES</h1>
-            <p>Thiruverkadu - Premium Mobile Accessories & Service</p>
+            <p>Thiruverkadu - Premium Mobile Accessories & Service | 📞 9840450113</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -300,10 +307,11 @@ if not st.session_state.logged_in_user:
     st.stop()
 
 
-# --- AFTER LOGIN: PROPERLY ARRANGED HEADER & NAVIGATION (NO WRAPPING) ---
+# --- AFTER LOGIN: PROPERLY ARRANGED HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
+        <p class="brand-phone">📞 Mobile: 9840450113</p>
     </div>
 """, unsafe_allow_html=True)
 
@@ -542,7 +550,7 @@ else:
         st.subheader("📍 Secure Checkout Form")
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
-            secondary_phone = st.text_input("Alternative Contact Number:", max_cards=10)
+            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
             submit_checkout = st.form_submit_button("Complete Order")
