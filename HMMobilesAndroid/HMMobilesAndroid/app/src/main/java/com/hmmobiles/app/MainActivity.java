@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Keep phone in portrait
+        // ALWAYS PORTRAIT
         setRequestedOrientation(
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         );
@@ -26,40 +26,29 @@ public class MainActivity extends Activity {
 
         WebSettings settings = webView.getSettings();
 
-        // JavaScript required by Streamlit
         settings.setJavaScriptEnabled(true);
-
-        // Streamlit storage
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // Streamlit/browser features
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(true);
 
-        /*
-         * IMPORTANT:
-         * Do NOT force desktop wide viewport scaling.
-         */
+        // IMPORTANT:
+        // Do NOT force desktop-width rendering
         settings.setUseWideViewPort(false);
         settings.setLoadWithOverviewMode(false);
 
-        /*
-         * Normal browser-style zoom
-         */
-        settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(true);
+        // Disable WebView zoom
+        settings.setSupportZoom(false);
+        settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
-        /*
-         * Keep links inside the app
-         */
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setVerticalScrollBarEnabled(true);
+
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
-        /*
-         * Open your Streamlit application
-         */
         webView.loadUrl(
                 "https://baluaiproject1.streamlit.app/"
         );
