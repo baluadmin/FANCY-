@@ -15,11 +15,16 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 
-        /* Apply Professional Font Family Globally */
+        /* Apply Professional Font Family Globally (Roboto) */
         html, body, [class*="css"] {
-            font-family: 'Poppins', sans-serif !important;
+            font-family: 'Roboto', sans-serif !important;
+        }
+
+        /* Set App Background to Light Yellow */
+        .stApp {
+            background-color: #fefce8 !important; /* Soft light yellow */
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -37,46 +42,46 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
+        /* Automatically adapt text color based on Streamlit's active theme */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: var(--text-color) !important;
+            color: #1e293b !important;
             font-weight: 500 !important;
         }
         
-        /* Input boxes styling supporting both modes */
+        /* Input boxes styling supporting light yellow theme */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: var(--secondary-background-color) !important;
-            color: var(--text-color) !important;
-            border: 1.5px solid #cbd5e1 !important;
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            border: 1.5px solid #fde047 !important;
             font-size: 14px !important;
             font-weight: 400 !important;
             border-radius: 6px !important;
         }
 
-        /* Professional Light Blue Header Banner */
+        /* Professional Warm Yellow Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
+            background: linear-gradient(135deg, #fef08a 100%, #fde047 0%);
             padding: 14px 18px;
             border-radius: 8px;
-            color: #0f172a !important;
+            color: #713f12 !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 12px;
-            border: 1.5px solid #7dd3fc;
+            border: 1.5px solid #facc15;
         }
         .brand-title {
             font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: #0f172a !important;
+            color: #713f12 !important;
             margin: 0;
         }
 
         /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
-            background-color: #f1f5f9 !important;
-            color: #1e293b !important;
-            border: 1.5px solid #cbd5e1 !important;
+            background-color: #fef08a !important;
+            color: #713f12 !important;
+            border: 1.5px solid #facc15 !important;
             font-weight: 600 !important;
             font-size: 15px !important;
             border-radius: 6px !important;
@@ -85,9 +90,9 @@ st.markdown("""
             display: block !important;
         }
         div.stButton > button:hover {
-            background-color: #e2e8f0 !important;
-            color: #0f172a !important;
-            border: 1px solid #94a3b8 !important;
+            background-color: #fde047 !important;
+            color: #713f12 !important;
+            border: 1px solid #eab308 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
@@ -133,6 +138,7 @@ st.markdown("""
             font-size: 24px;
             font-weight: 700;
             margin: 0 0 2px 0;
+            color: #713f12 !important;
         }
 
         .login-title p {
@@ -145,7 +151,8 @@ st.markdown("""
             margin: 0 auto;
             padding: 9px 16px 10px 16px;
             border-radius: 10px;
-            border: 1.5px solid #cbd5e1;
+            background-color: #ffffff;
+            border: 1.5px solid #fde047;
             box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
             text-align: center;
         }
@@ -359,7 +366,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
+# Load Product Records from Google Sheet Data dynamically with correct index mapping
 product_records = []
 if not inv_df.empty:
     try:
@@ -512,7 +519,7 @@ if st.session_state.current_view == "Home":
                             st.caption("No Image")
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #fde047; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
@@ -520,7 +527,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #fde047; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
@@ -537,7 +544,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #fde047;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
 
@@ -572,7 +579,6 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
-    # Centering container for the cart empty state message and button alignment
         _, center_msg_col, _ = st.columns([1, 2, 1])
         with center_msg_col:
             st.info("Your cart is empty. Click **Home** above to browse and add products.")
