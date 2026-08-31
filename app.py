@@ -399,6 +399,9 @@ if not product_records:
         {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
         {"id": "ITM012", "name": "MagSafe Wireless Power Bank", "price": "2200", "stock": "60", "category": "Charger", "image": "", "description": "High-capacity magnetic portable charger for fast wireless charging."},
         {"id": "ITM013", "name": "RGB Phone Cooler Fan", "price": "950", "stock": "85", "category": "Headset", "image": "", "description": "Semiconductor mobile radiator gaming cooler with RGB lights."},
+        # Added 2 more products to fill the empty space on the page:
+        {"id": "ITM014", "name": "Heavy Duty Phone Stand", "price": "350", "stock": "110", "category": "Headset", "image": "", "description": "Adjustable aluminum desktop phone and tablet holder stand."},
+        {"id": "ITM015", "name": "Bluetooth Camera Shutter Remote", "price": "180", "stock": "150", "category": "Headset", "image": "", "description": "Wireless remote control selfie clicker for smartphones."},
     ]
 
 
@@ -535,7 +538,6 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
-                                # Vertical & horizontal centering for placeholder text to fill empty space
                                 st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
                                 st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Image</p>", unsafe_allow_html=True)
                         else:
@@ -596,7 +598,7 @@ else:
             with cc1:
                 st.markdown(f"- **{item['product']}** ({item['quantity']})")
             with cc2:
-                if st.button("Remove Item", key=f"rem_cart_view_{c_idx} "):
+                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
