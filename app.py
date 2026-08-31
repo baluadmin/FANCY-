@@ -47,7 +47,7 @@ st.markdown("""
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #0f172a !important;
             font-weight: 700 !important;
-            font-size: 18px !important;
+            font-size: 20px !important;
         }
         
         /* Input boxes styling supporting light theme */
@@ -55,7 +55,7 @@ st.markdown("""
             background-color: #f8fafc !important;
             color: #0f172a !important;
             border: 2px solid #cbd5e1 !important;
-            font-size: 18px !important;
+            font-size: 20px !important;
             font-weight: 600 !important;
             border-radius: 12px !important;
         }
@@ -64,28 +64,29 @@ st.markdown("""
             box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15) !important;
         }
 
-        /* Soft Light Pink Gradient Header Banner with Contact Info */
+        /* Compact & Enlarged Soft Light Pink Gradient Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%);
-            padding: 28px 30px;
-            border-radius: 16px;
+            padding: 14px 20px;
+            border-radius: 12px;
             color: #831843 !important;
             text-align: center;
-            box-shadow: 0 4px 15px -3px rgba(244, 114, 182, 0.2);
-            margin-bottom: 20px;
+            box-shadow: 0 3px 10px -2px rgba(244, 114, 182, 0.2);
+            margin-bottom: 12px;
             border: 1px solid #f472b6;
+            max-width: 100%;
         }
         .brand-banner .brand-title {
             font-family: 'Mulish', sans-serif !important;
-            font-size: 38px !important;
+            font-size: 44px !important;
             font-weight: 900 !important;
             letter-spacing: 0.5px;
             color: #831843 !important;
-            margin: 0 0 6px 0;
+            margin: 0 0 2px 0;
             text-transform: lowercase;
         }
         .brand-banner .brand-phone {
-            font-size: 19px !important;
+            font-size: 22px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
             color: #9d174d !important;
@@ -101,7 +102,7 @@ st.markdown("""
             color: #ffffff !important;
             border: none !important;
             font-weight: 800 !important;
-            font-size: 18px !important;
+            font-size: 20px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
@@ -124,7 +125,7 @@ st.markdown("""
             color: #0f172a !important;
             border: 2px solid #cbd5e1 !important;
             font-weight: 800 !important;
-            font-size: 18px !important;
+            font-size: 20px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
@@ -180,7 +181,7 @@ st.markdown("""
 
         .login-title h1 {
             font-family: 'Mulish', sans-serif !important;
-            font-size: 36px !important;
+            font-size: 38px !important;
             font-weight: 900 !important;
             margin: 0 0 5px 0;
             color: #0f172a !important;
@@ -188,7 +189,7 @@ st.markdown("""
         }
 
         .login-title p {
-            font-size: 16px !important;
+            font-size: 18px !important;
             color: #64748b !important;
             margin: 0;
         }
@@ -206,7 +207,7 @@ st.markdown("""
 
         .login-card h3 {
             margin: 0 0 10px 0;
-            font-size: 22px !important;
+            font-size: 24px !important;
             font-weight: 800 !important;
             color: #1e293b !important;
         }
