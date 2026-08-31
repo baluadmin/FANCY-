@@ -64,29 +64,29 @@ st.markdown("""
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
         }
 
-        /* Light & Clean Premium Gradient Header Banner with Contact Info */
+        /* Pink Gradient Header Banner with Contact Info */
         .brand-banner {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
             padding: 22px 30px;
             border-radius: 16px;
-            color: #0f172a !important;
+            color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px -3px rgba(236, 72, 153, 0.2);
             margin-bottom: 20px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #db2777;
         }
-        .brand-title {
+        .brand-banner .brand-title {
             font-size: 34px !important;
             font-weight: 800 !important;
             letter-spacing: 1px;
-            color: #0f172a !important;
+            color: #ffffff !important;
             margin: 0 0 6px 0;
         }
-        .brand-phone {
+        .brand-banner .brand-phone {
             font-size: 18px !important;
             font-weight: 700 !important;
             letter-spacing: 0.5px;
-            color: #0284c7 !important;
+            color: #fdf2f8 !important;
             margin: 0;
         }
 
