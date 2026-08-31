@@ -334,21 +334,21 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High quality wireless sound with long battery backup."},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "Immersive sound with noise cancellation mic."},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Quick charge adapter for modern smartphones."},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "Charge two devices simultaneously safely."},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "Durable tangle-free charging and sync cable."},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "High-speed data transfer and quick charging cable."},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "Clear vocal recording microphone for creators."},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "Compact clip-on microphone for interviews and vlogs."},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "Reliable high-capacity replacement battery."},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "9H hardness crystal clear screen protector."},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "True wireless earbuds with charging case."},
-        {"id": "ITM012", "name": "MagSafe Wireless Power Bank", "price": "2200", "stock": "60", "category": "Charger", "image": "", "description": "High-capacity magnetic portable charger for fast wireless charging."},
-        {"id": "ITM013", "name": "RGB Phone Cooler Fan", "price": "950", "stock": "85", "category": "Headset", "image": "", "description": "Semiconductor mobile radiator gaming cooler with RGB lights."},
-        {"id": "ITM014", "name": "Heavy Duty Phone Stand", "price": "350", "stock": "110", "category": "Headset", "image": "", "description": "Adjustable aluminum desktop phone and tablet holder stand."},
-        {"id": "ITM015", "name": "Bluetooth Camera Shutter Remote", "price": "180", "stock": "150", "category": "Headset", "image": "", "description": "Wireless remote control selfie clicker for smartphones."},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": ""},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": ""},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": ""},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": ""},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": ""},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": ""},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": ""},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": ""},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": ""},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": ""},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": ""},
+        {"id": "ITM012", "name": "MagSafe Wireless Power Bank", "price": "2200", "stock": "60", "category": "Charger", "image": "", "description": ""},
+        {"id": "ITM013", "name": "RGB Phone Cooler Fan", "price": "950", "stock": "85", "category": "Headset", "image": "", "description": ""},
+        {"id": "ITM014", "name": "Heavy Duty Phone Stand", "price": "350", "stock": "110", "category": "Headset", "image": "", "description": ""},
+        {"id": "ITM015", "name": "Bluetooth Camera Shutter Remote", "price": "180", "stock": "150", "category": "Headset", "image": "", "description": ""},
     ]
 
 
@@ -427,78 +427,28 @@ if st.session_state.current_view == "Home":
 
                 for idx, prod in enumerate(current_page_items):
                     global_idx = start_idx + idx
-                    slide_key = f"slide_{current_cat}_{global_idx}"
-                    
-                    if slide_key not in st.session_state:
-                        st.session_state[slide_key] = 0
 
-                    p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
+                    p_imgs_col, p_div1_col, p_details_col = st.columns([4.8, 0.05, 1.8], gap="small")
                     
-                    with p_img_col:
+                    with p_imgs_col:
                         raw_img = prod.get("image", "")
                         if raw_img:
                             img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                             valid_paths = [p for p in img_paths if os.path.exists(p)]
-                            if valid_paths:
-                                total_imgs = len(valid_paths)
-                                current_idx = st.session_state[slide_key]
-                                
-                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
-                                
-                                with l_btn:
-                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-                                    if st.button("‹", key=f"prev_{current_cat}_{global_idx}"):
-                                        if st.session_state[slide_key] > 0:
-                                            st.session_state[slide_key] -= 1
-                                        else:
-                                            st.session_state[slide_key] = total_imgs - 1
-                                        st.rerun()
-                                        
-                                with img_display:
-                                    if total_imgs >= 2:
-                                        sub_col1, sub_col2 = st.columns(2, gap="small")
-                                        with sub_col1:
-                                            _, center_sub1, _ = st.columns([1, 4, 1])
-                                            with center_sub1:
-                                                st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                                st.image(valid_paths[current_idx], width=160)
-                                        with sub_col2:
-                                            _, center_sub2, _ = st.columns([1, 4, 1])
-                                            with center_sub2:
-                                                st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                                next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=160)
-                                    else:
-                                        _, center_img_col, _ = st.columns([1, 4, 1])
-                                        with center_img_col:
-                                            st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                            st.image(valid_paths[0], width=180)
-                                        
-                                with r_btn:
-                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-                                    if st.button("›", key=f"next_{current_cat}_{global_idx}"):
-                                        if st.session_state[slide_key] + 1 < total_imgs:
-                                            st.session_state[slide_key] += 1
-                                        else:
-                                            st.session_state[slide_key] = total_imgs - 1
-                                        st.rerun()
-                            else:
-                                st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
-                                st.markdown("<p style='text-align: center; color: #64748b; font-size: 20px;'>No Image</p>", unsafe_allow_html=True)
                         else:
-                            st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
-                            st.markdown("<p style='text-align: center; color: #64748b; font-size: 20px;'>No Image</p>", unsafe_allow_html=True)
+                            valid_paths = []
+                        
+                        # Display up to 6 images side by side in a grid/row
+                        img_cols = st.columns(6, gap="small")
+                        for i in range(6):
+                            with img_cols[i]:
+                                if i < len(valid_paths):
+                                    st.image(valid_paths[i], width=80)
+                                else:
+                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 110px; margin-top: 1px;'></div>", unsafe_allow_html=True)
-
-                    with p_desc_col:
-                        st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                        st.markdown("**Description:**")
-                        st.caption(prod.get('description', ''))
-
-                    with p_div2_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 110px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 90px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
