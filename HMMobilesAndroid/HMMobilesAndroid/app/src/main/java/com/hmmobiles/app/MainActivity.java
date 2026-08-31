@@ -16,39 +16,54 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ALWAYS PORTRAIT
-        setRequestedOrientation(
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        );
+        // PORTRAIT ONLY
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         webView = new WebView(this);
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
 
+        // JavaScript
         settings.setJavaScriptEnabled(true);
+
+        // Streamlit storage
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
+        // Web pages
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(true);
 
-        // IMPORTANT:
-        // Do NOT force desktop-width rendering
+        /*
+         * IMPORTANT:
+         * Do NOT use:
+         *
+         * setUseWideViewPort(true)
+         * setLoadWithOverviewMode(true)
+         *
+         * because they can make the Streamlit page behave like
+         * a desktop-width page on a portrait phone.
+         */
+
         settings.setUseWideViewPort(false);
         settings.setLoadWithOverviewMode(false);
 
-        // Disable WebView zoom
+        // Disable user zoom
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setVerticalScrollBarEnabled(true);
+        // Normal WebView rendering
+        settings.setDefaultTextEncodingName("UTF-8");
+        settings.setTextZoom(100);
+
+        webView.setInitialScale(100);
 
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
+        // HM Mobiles
         webView.loadUrl(
                 "https://baluaiproject1.streamlit.app/"
         );
@@ -68,6 +83,7 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
 
         if (webView != null) {
+            webView.stopLoading();
             webView.destroy();
         }
 
