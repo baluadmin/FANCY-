@@ -50,32 +50,32 @@ st.markdown("""
             font-size: 18px !important;
         }
         
-        /* Input boxes styling supporting red accents */
+        /* Input boxes styling supporting dark red accents */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
-            border: 2px solid #fecaca !important;
+            border: 2px solid #b91c1c !important;
             font-size: 18px !important;
             font-weight: 500 !important;
             border-radius: 8px !important;
         }
 
-        /* Professional Soft Red Header Banner on Light Blue */
+        /* Professional Dark Red Header Banner on Light Blue */
         .brand-banner {
-            background: linear-gradient(135deg, #fef2f2 100%, #fee2e2 0%);
+            background: linear-gradient(135deg, #991b1b 100%, #7f1d1d 0%);
             padding: 18px 22px;
             border-radius: 10px;
-            color: #991b1b !important;
+            color: #ffffff !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 15px;
-            border: 2px solid #fca5a5;
+            border: 2px solid #7f1d1d;
         }
         .brand-title {
             font-size: 32px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
-            color: #991b1b !important;
+            color: #ffffff !important;
             margin: 0;
         }
 
@@ -97,11 +97,11 @@ st.markdown("""
             border: 2px solid #be185d !important;
         }
 
-        /* Compact, Full-Width Red Buttons for other areas */
+        /* Compact, Full-Width Dark Red Buttons for other areas */
         div.stButton > button {
-            background-color: #fef2f2 !important;
+            background-color: #fee2e2 !important;
             color: #991b1b !important;
-            border: 2px solid #fca5a5 !important;
+            border: 2px solid #b91c1c !important;
             font-weight: 700 !important;
             font-size: 18px !important;
             border-radius: 8px !important;
@@ -110,9 +110,9 @@ st.markdown("""
             display: block !important;
         }
         div.stButton > button:hover {
-            background-color: #fee2e2 !important;
-            color: #991b1b !important;
-            border: 2px solid #f87171 !important;
+            background-color: #fecaca !important;
+            color: #7f1d1d !important;
+            border: 2px solid #991b1b !important;
         }
 
         /* Responsive Mobile Handling: Fix Header Buttons Wrapping */
@@ -157,7 +157,7 @@ st.markdown("""
             font-size: 32px !important;
             font-weight: 800 !important;
             margin: 0 0 2px 0;
-            color: #0369a1 !important;
+            color: #991b1b !important;
         }
 
         .login-title p {
@@ -171,7 +171,7 @@ st.markdown("""
             padding: 12px 18px 14px 18px;
             border-radius: 10px;
             background-color: #ffffff;
-            border: 2px solid #fca5a5;
+            border: 2px solid #b91c1c;
             box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
             text-align: center;
         }
@@ -180,7 +180,7 @@ st.markdown("""
             margin: 0 0 5px 0;
             font-size: 22px !important;
             font-weight: 700 !important;
-            color: #0369a1 !important;
+            color: #991b1b !important;
         }
 
         div[data-testid="stForm"] {
@@ -475,7 +475,7 @@ if st.session_state.current_view == "Home":
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fca5a5; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #b91c1c; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -492,7 +492,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #fca5a5;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #b91c1c;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
