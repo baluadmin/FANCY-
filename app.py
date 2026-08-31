@@ -79,11 +79,11 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Specific Light Pink Styling for Menu Column Buttons */
+        /* Specific Pink Styling for Menu Column Buttons */
         div[data-testid="column"]:first-of-type div.stButton > button {
-            background-color: #fce7f3 !important; /* Soft light pink */
-            color: #831843 !important;
-            border: 2px solid #fbcfe8 !important;
+            background-color: #f472b6 !important; /* Pink colour */
+            color: #ffffff !important;
+            border: 2px solid #db2777 !important;
             font-weight: 700 !important;
             font-size: 18px !important;
             border-radius: 8px !important;
@@ -92,9 +92,9 @@ st.markdown("""
             display: block !important;
         }
         div[data-testid="column"]:first-of-type div.stButton > button:hover {
-            background-color: #fbcfe8 !important;
-            color: #831843 !important;
-            border: 2px solid #f472b6 !important;
+            background-color: #db2777 !important;
+            color: #ffffff !important;
+            border: 2px solid #be185d !important;
         }
 
         /* Compact, Full-Width Light Yellow Buttons for other areas */
