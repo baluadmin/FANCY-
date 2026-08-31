@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
+# 1. Streamlit Page Configuration & Professional High-End E-Commerce Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -15,17 +15,17 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
         /* Apply Font Family Globally */
         html, body, [class*="css"] {
-            font-family: 'Montserrat', sans-serif !important;
-            font-size: 20px !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 18px !important;
         }
 
-        /* Set App Background to Light Blue */
+        /* Set App Background to Ultra-Clean Modern Off-White */
         .stApp {
-            background-color: #e0f2fe !important; /* Soft light blue */
+            background-color: #f8fafc !important; 
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -43,76 +43,87 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color */
+        /* Automatically adapt text color for high contrast */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #0f172a !important;
+            color: #1e293b !important;
             font-weight: 600 !important;
-            font-size: 18px !important;
+            font-size: 16px !important;
         }
         
-        /* Input boxes styling supporting dark red accents */
+        /* Input boxes styling supporting sophisticated slate/indigo theme */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
-            border: 2px solid #b91c1c !important;
-            font-size: 18px !important;
+            border: 2px solid #e2e8f0 !important;
+            font-size: 16px !important;
             font-weight: 500 !important;
-            border-radius: 8px !important;
+            border-radius: 12px !important;
+        }
+        input:focus, textarea:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
         }
 
-        /* Professional Dark Red Header Banner on Light Blue */
+        /* Professional Luxury E-Commerce Dark Slate/Indigo Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #991b1b 100%, #7f1d1d 0%);
-            padding: 18px 22px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 24px 30px;
+            border-radius: 16px;
             color: #ffffff !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-            border: 2px solid #7f1d1d;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .brand-title {
-            font-size: 32px !important;
+            font-size: 34px !important;
             font-weight: 800 !important;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             color: #ffffff !important;
             margin: 0;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Specific Pink Styling for Menu Column Buttons */
+        /* Specific Vibrant Pink/Magenta Styling for Menu Column Buttons */
         div[data-testid="column"]:first-of-type div.stButton > button {
-            background-color: #f472b6 !important; /* Pink colour */
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
             color: #ffffff !important;
-            border: 2px solid #db2777 !important;
+            border: none !important;
             font-weight: 700 !important;
-            font-size: 18px !important;
-            border-radius: 8px !important;
-            padding: 0.6rem 0.8rem !important;
+            font-size: 16px !important;
+            border-radius: 12px !important;
+            padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25) !important;
+            transition: all 0.2s ease-in-out;
         }
         div[data-testid="column"]:first-of-type div.stButton > button:hover {
-            background-color: #db2777 !important;
-            color: #ffffff !important;
-            border: 2px solid #be185d !important;
+            background: linear-gradient(135deg, #db2777 0%, #be185d 100%) !important;
+            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.4) !important;
+            transform: translateY(-1px);
         }
 
-        /* Compact, Full-Width Dark Red Buttons for other areas */
+        /* Compact, Full-Width Modern Indigo/Purple Action Buttons for other areas */
         div.stButton > button {
-            background-color: #fee2e2 !important;
-            color: #991b1b !important;
-            border: 2px solid #b91c1c !important;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
             font-weight: 700 !important;
-            font-size: 18px !important;
-            border-radius: 8px !important;
-            padding: 0.6rem 0.8rem !important;
+            font-size: 16px !important;
+            border-radius: 12px !important;
+            padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25) !important;
+            transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background-color: #fecaca !important;
-            color: #7f1d1d !important;
-            border: 2px solid #991b1b !important;
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4) !important;
+            transform: translateY(-1px);
         }
 
         /* Responsive Mobile Handling: Fix Header Buttons Wrapping */
@@ -150,37 +161,38 @@ st.markdown("""
 
         .login-title {
             text-align: center;
-            margin: 2px 0 4px 0;
+            margin: 10px 0 15px 0;
         }
 
         .login-title h1 {
-            font-size: 32px !important;
+            font-size: 34px !important;
             font-weight: 800 !important;
-            margin: 0 0 2px 0;
-            color: #991b1b !important;
+            margin: 0 0 5px 0;
+            color: #0f172a !important;
         }
 
         .login-title p {
             font-size: 16px !important;
+            color: #64748b !important;
             margin: 0;
         }
 
         .login-card {
             max-width: 620px;
             margin: 0 auto;
-            padding: 12px 18px 14px 18px;
-            border-radius: 10px;
+            padding: 20px 24px;
+            border-radius: 16px;
             background-color: #ffffff;
-            border: 2px solid #b91c1c;
-            box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
             text-align: center;
         }
 
         .login-card h3 {
-            margin: 0 0 5px 0;
+            margin: 0 0 10px 0;
             font-size: 22px !important;
             font-weight: 700 !important;
-            color: #991b1b !important;
+            color: #1e293b !important;
         }
 
         div[data-testid="stForm"] {
@@ -475,7 +487,7 @@ if st.session_state.current_view == "Home":
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #b91c1c; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #e2e8f0; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -492,7 +504,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #b91c1c;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #e2e8f0;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
