@@ -397,6 +397,9 @@ if not product_records:
         {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
         {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
         {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        # Added 2 extra sample products below:
+        {"id": "ITM012", "name": "MagSafe Wireless Power Bank", "price": "2200", "stock": "60", "category": "Charger", "image": "", "description": "High-capacity magnetic portable charger for fast wireless charging."},
+        {"id": "ITM013", "name": "RGB Phone Cooler Fan", "price": "950", "stock": "85", "category": "Headset", "image": "", "description": "Semiconductor mobile radiator gaming cooler with RGB lights."},
     ]
 
 
