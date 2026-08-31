@@ -17,10 +17,10 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
 
-        /* Font size reduced by 4 points (from 40px down to 34px) */
+        /* Font size reduced by another 2 points (from 34px down to 32px) */
         html, body, [class*="css"] {
             font-family: 'Montserrat', sans-serif !important;
-            font-size: 34px !important;
+            font-size: 32px !important;
         }
 
         /* Set App Background to Light Yellow */
@@ -43,11 +43,11 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color & font size reduced by 4px (from 38px down to 32px) */
+        /* Automatically adapt text color & font size reduced by 2px (from 32px down to 30px) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #1e293b !important;
             font-weight: 600 !important;
-            font-size: 32px !important;
+            font-size: 30px !important;
         }
         
         /* Input boxes styling supporting light yellow theme with reduced font size */
@@ -55,7 +55,7 @@ st.markdown("""
             background-color: #ffffff !important;
             color: #1e293b !important;
             border: 2px solid #fde047 !important;
-            font-size: 32px !important;
+            font-size: 30px !important;
             font-weight: 500 !important;
             border-radius: 8px !important;
         }
@@ -72,7 +72,7 @@ st.markdown("""
             border: 2px solid #facc15;
         }
         .brand-title {
-            font-size: 52px !important;
+            font-size: 48px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
             color: #713f12 !important;
@@ -85,7 +85,7 @@ st.markdown("""
             color: #713f12 !important;
             border: 2px solid #facc15 !important;
             font-weight: 700 !important;
-            font-size: 32px !important;
+            font-size: 30px !important;
             border-radius: 8px !important;
             padding: 0.5rem 0.6rem !important;
             width: 100% !important;
@@ -137,14 +137,14 @@ st.markdown("""
         }
 
         .login-title h1 {
-            font-size: 56px !important;
+            font-size: 52px !important;
             font-weight: 800 !important;
             margin: 0 0 2px 0;
             color: #713f12 !important;
         }
 
         .login-title p {
-            font-size: 28px !important;
+            font-size: 26px !important;
             margin: 0;
         }
 
@@ -161,7 +161,7 @@ st.markdown("""
 
         .login-card h3 {
             margin: 0 0 5px 0;
-            font-size: 36px !important;
+            font-size: 34px !important;
             font-weight: 700 !important;
         }
 
@@ -183,12 +183,12 @@ st.markdown("""
             }
 
             .login-title h1 {
-                font-size: 44px !important;
+                font-size: 40px !important;
                 margin-bottom: 0;
             }
 
             .login-title p {
-                font-size: 22px !important;
+                font-size: 20px !important;
             }
 
             .login-card {
@@ -197,7 +197,7 @@ st.markdown("""
             }
 
             .login-card h3 {
-                font-size: 30px !important;
+                font-size: 28px !important;
                 margin-bottom: 1px;
             }
 
@@ -212,7 +212,7 @@ st.markdown("""
             button[kind="primaryFormSubmit"] {
                 min-height: 38px !important;
                 padding: 0.2rem 0.5rem !important;
-                font-size: 30px !important;
+                font-size: 28px !important;
             }
         }
 
@@ -532,7 +532,7 @@ if st.session_state.current_view == "Home":
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
                                         else:
-                                            st.session_state[slide_key] = total_imgs - 1
+                                            st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
                                 st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
