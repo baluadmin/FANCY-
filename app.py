@@ -1,7 +1,5 @@
 from datetime import datetime
 from io import BytesIO
-from urllib.parse import quote
-
 import pandas as pd
 from PIL import Image
 import requests
@@ -64,20 +62,12 @@ label, .stTextInput label, p {
    ============================================================ */
 
 .brand-banner {
-    background: linear-gradient(
-        135deg,
-        #6366f1 0%,
-        #a855f7 50%,
-        #ec4899 100%
-    );
-
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
     padding: 3px 6px;
     border-radius: 6px;
     text-align: center;
     margin: 0 0 2px 0 !important;
-
-    box-shadow:
-        0 2px 4px rgba(168, 85, 247, 0.25);
+    box-shadow: 0 2px 4px rgba(168, 85, 247, 0.25);
 }
 
 .brand-title {
@@ -85,28 +75,22 @@ label, .stTextInput label, p {
     font-size: 12px !important;
     font-weight: 800 !important;
     letter-spacing: 0.8px;
-
     margin: 0 !important;
     padding: 0 !important;
-
     line-height: 1.1 !important;
-
-    text-shadow:
-        0 1px 2px rgba(0,0,0,0.15);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
 
 /* ============================================================
-   STORE + CART
+   STORE + CART (SIDE BY SIDE COMPACT COLORFUL BOX)
    ============================================================ */
 
 .hm-nav-box {
     width: 170px !important;
     max-width: 170px !important;
-
     margin: 1px auto 3px auto !important;
     padding: 0 !important;
-
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
@@ -122,34 +106,25 @@ label, .stTextInput label, p {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-
     gap: 4px !important;
-
     justify-content: center !important;
     align-items: center !important;
 }
 
 .hm-nav-box [data-testid="stRadio"] > div > label {
     flex: 1 1 0 !important;
-
     width: 50% !important;
     max-width: 50% !important;
     min-width: 0 !important;
-
     height: 24px !important;
-
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-
     padding: 0 2px !important;
     margin: 0 !important;
-
     border: 1.5px solid #a855f7 !important;
     border-radius: 5px !important;
-
     background: #fdf4ff !important;
-
     box-sizing: border-box !important;
 }
 
@@ -159,27 +134,17 @@ label, .stTextInput label, p {
 
 .hm-nav-box [data-testid="stRadio"] > div > label p {
     color: #9333ea !important;
-
     font-size: 10px !important;
     font-weight: 700 !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
     white-space: nowrap !important;
 }
 
 .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) {
-    background: linear-gradient(
-        135deg,
-        #8b5cf6 0%,
-        #ec4899 100%
-    ) !important;
-
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%) !important;
     border-color: #7c3aed !important;
-
-    box-shadow:
-        0 1px 3px rgba(236, 72, 153, 0.3);
+    box-shadow: 0 1px 3px rgba(236, 72, 153, 0.3);
 }
 
 .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) p {
@@ -198,12 +163,9 @@ label, .stTextInput label, p {
 
 .category-area div[data-baseweb="select"] > div {
     min-height: 24px !important;
-
     padding-top: 0px !important;
     padding-bottom: 0px !important;
-
     border-color: #cbd5e1 !important;
-
     background-color: #f8fafc !important;
 }
 
@@ -214,119 +176,64 @@ label, .stTextInput label, p {
 
 .product-card {
     width: 100%;
-
     border: 1.5px solid #e2e8f0;
     border-radius: 6px;
-
     padding: 3px 4px;
     margin-bottom: 3px;
-
     box-sizing: border-box;
-
     background: white;
-
-    box-shadow:
-        0 1px 3px rgba(0,0,0,0.03);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 [data-testid="stImageCaption"] {
     display: none !important;
 }
 
-
-/* ============================================================
-   PRODUCT NAME
-   ============================================================ */
-
 .product-name {
     text-align: center;
-
     font-size: 10px;
     font-weight: 700;
-
     color: #1e293b;
-
     margin-top: 1px;
     margin-bottom: 0px;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-
-/* ============================================================
-   PRODUCT PRICE
-   ============================================================ */
-
 .product-price {
     text-align: center;
-
     font-size: 9px;
     font-weight: 700;
-
     color: #059669;
-
     margin-bottom: 1px;
 }
-
-
-/* ============================================================
-   NUMBER INPUT
-   ============================================================ */
 
 div[data-baseweb="input"] input {
     height: 20px !important;
     min-height: 20px !important;
-
     padding-top: 0px !important;
     padding-bottom: 0px !important;
-
     font-size: 10px !important;
 }
 
-
-/* ============================================================
-   BUTTONS
-   ============================================================ */
-
 div.stButton > button {
-    background: linear-gradient(
-        135deg,
-        #6366f1 0%,
-        #ec4899 100%
-    ) !important;
-
+    background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%) !important;
     color: white !important;
-
     border: none !important;
-
     font-weight: 700 !important;
-
     padding-top: 0.02rem !important;
     padding-bottom: 0.02rem !important;
-
     min-height: 21px !important;
-
     font-size: 9px !important;
-
     border-radius: 4px !important;
-
-    box-shadow:
-        0 1px 2px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 1px 2px rgba(99, 102, 241, 0.2);
 }
 
 div.stButton > button:hover {
-    background: linear-gradient(
-        135deg,
-        #4f46e5 0%,
-        #db2777 100%
-    ) !important;
-
+    background: linear-gradient(135deg, #4f46e5 0%, #db2777 100%) !important;
     color: white !important;
-
-    box-shadow:
-        0 2px 4px rgba(219, 39, 119, 0.3);
+    box-shadow: 0 2px 4px rgba(219, 39, 119, 0.3);
 }
 
 </style>
@@ -361,14 +268,8 @@ GOOGLE_SCRIPT_URL = (
 )
 
 
-# ============================================================
-# LOGIN LOG
-# ============================================================
-
 def log_login_to_sheet(name, phone):
-
     try:
-
         payload = {
             "Type": "Login",
             "Customer_Name": name,
@@ -393,41 +294,29 @@ if not st.session_state.logged_in_user:
 
     st.markdown("""
         <div class="brand-banner">
-            <div class="brand-title">
-                HM MOBILES
-            </div>
+            <div class="brand-title">HM MOBILES</div>
         </div>
     """, unsafe_allow_html=True)
 
-
     _, mid_col, _ = st.columns([1, 2, 1])
-
 
     with mid_col:
 
         with st.form("login_form"):
 
-            st.markdown(
-                "### Customer Portal Login"
-            )
+            st.markdown("### Customer Portal Login")
 
-
-            cust_name = st.text_input(
-                "Your Name:"
-            )
-
+            cust_name = st.text_input("Your Name:")
 
             cust_phone = st.text_input(
                 "Mobile Number (10 digits):",
                 max_chars=10
             )
 
-
             login_btn = st.form_submit_button(
                 "Secure Login",
                 use_container_width=True
             )
-
 
             if login_btn:
 
@@ -445,12 +334,10 @@ if not st.session_state.logged_in_user:
                         cust_phone.strip()
                     )
 
-
                     log_login_to_sheet(
                         cust_name.strip(),
                         cust_phone.strip()
                     )
-
 
                     st.rerun()
 
@@ -459,7 +346,6 @@ if not st.session_state.logged_in_user:
                     st.warning(
                         "⚠️ Enter a valid name and 10-digit mobile number."
                     )
-
 
     st.stop()
 
@@ -473,12 +359,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
 st.markdown("""
     <div class="brand-banner">
-        <div class="brand-title">
-            HM MOBILES
-        </div>
+        <div class="brand-title">HM MOBILES</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -492,29 +375,21 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
 nav_choice = st.radio(
-
     "Navigation",
-
     [
         "Store",
         f"Cart({len(st.session_state.cart)})"
     ],
-
     index=(
         0
         if st.session_state.current_view == "Home"
         else 1
     ),
-
     horizontal=True,
-
     label_visibility="collapsed",
-
     key="hm_navigation"
 )
-
 
 new_view = (
     "Home"
@@ -522,19 +397,16 @@ new_view = (
     else "Cart"
 )
 
-
 if st.session_state.current_view != new_view:
 
     st.session_state.current_view = new_view
 
     st.rerun()
 
-
 st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
-
 
 st.markdown(
     "</div>",
@@ -568,140 +440,24 @@ def load_inventory_from_sheet():
         return pd.DataFrame()
 
 
-# ============================================================
-# GET INVENTORY
-# ============================================================
-
 inv_df = load_inventory_from_sheet()
 
 product_records = []
 
 
 # ============================================================
-# GITHUB SETTINGS
-# ============================================================
-
-GITHUB_USER = "Balumahendran"
-REPO_NAME = "python-project1"
-
-
-# ============================================================
-# IMAGE URL BUILDER
-# ============================================================
-
-def build_github_image_url(image_name):
-
-    """
-    Converts:
-
-        Headset 1 1.jpg
-
-    into:
-
-        https://raw.githubusercontent.com/
-        Balumahendran/python-project1/main/
-        images/Headset%201%201.jpg
-    """
-
-    image_name = str(image_name).strip()
-
-    if not image_name:
-        return None
-
-    if image_name.lower() == "nan":
-        return None
-
-    # --------------------------------------------------------
-    # Already a full URL
-    # --------------------------------------------------------
-
-    if (
-        image_name.startswith("http://")
-        or image_name.startswith("https://")
-    ):
-
-        return image_name
-
-
-    # --------------------------------------------------------
-    # Remove unwanted leading slashes
-    # --------------------------------------------------------
-
-    image_name = image_name.lstrip("/")
-
-
-    # --------------------------------------------------------
-    # Your sheet contains only:
-    #
-    # Headset 1 1.jpg
-    #
-    # So add images/ here.
-    #
-    # If somebody later puts:
-    #
-    # images/Headset 1 1.jpg
-    #
-    # don't add images/ twice.
-    # --------------------------------------------------------
-
-    if image_name.lower().startswith("images/"):
-
-        github_path = image_name
-
-    else:
-
-        github_path = (
-            f"images/{image_name}"
-        )
-
-
-    # --------------------------------------------------------
-    # Encode filename spaces correctly
-    # --------------------------------------------------------
-
-    encoded_parts = []
-
-    for part in github_path.split("/"):
-
-        encoded_parts.append(
-            quote(
-                part,
-                safe=""
-            )
-        )
-
-
-    encoded_path = "/".join(
-        encoded_parts
-    )
-
-
-    # --------------------------------------------------------
-    # FINAL RAW GITHUB URL
-    # --------------------------------------------------------
-
-    return (
-        "https://raw.githubusercontent.com/"
-        f"{GITHUB_USER}/"
-        f"{REPO_NAME}/"
-        f"main/"
-        f"{encoded_path}"
-    )
-
-
-# ============================================================
-# READ PRODUCT DATA
+# READ PRODUCT DATA (UPDATE USERNAME & REPO NAME HERE)
 # ============================================================
 
 if not inv_df.empty:
 
     try:
 
-        for _, row in inv_df.iterrows():
+        GITHUB_USER = "Balumahendran"
 
-            # =================================================
-            # IMAGE COLUMN
-            # =================================================
+        REPO_NAME = "python-project1"
+
+        for _, row in inv_df.iterrows():
 
             raw_img = (
                 str(row.iloc[6]).strip()
@@ -710,65 +466,32 @@ if not inv_df.empty:
                 else ""
             )
 
-
             img_list = []
 
+            for img in raw_img.replace(",", "\n").split("\n"):
 
-            # =================================================
-            # IMPORTANT
-            #
-            # Google Sheet value:
-            #
-            # Headset 1 1.jpg \
-            # Headset 1 2.jpg \
-            # Headset 1 3.jpg
-            #
-            # Split by:
-            #   \
-            #   ,
-            #   newline
-            # =================================================
+                img_name = img.strip()
 
-            image_values = (
-                raw_img
-                .replace("\\", "\n")
-                .replace(",", "\n")
-                .split("\n")
-            )
+                if (
+                    img_name
+                    and img_name.lower() != "nan"
+                ):
 
+                    if img_name.startswith("http"):
 
-            for image_value in image_values:
+                        img_list.append(
+                            img_name
+                        )
 
-                image_value = (
-                    image_value.strip()
-                )
+                    else:
 
-
-                if not image_value:
-                    continue
-
-
-                if image_value.lower() == "nan":
-                    continue
-
-
-                image_url = (
-                    build_github_image_url(
-                        image_value
-                    )
-                )
-
-
-                if image_url:
-
-                    img_list.append(
-                        image_url
-                    )
-
-
-            # =================================================
-            # PRODUCT RECORD
-            # =================================================
+                        img_list.append(
+                            f"https://raw.githubusercontent.com/"
+                            f"{GITHUB_USER}/"
+                            f"{REPO_NAME}/"
+                            f"main/images/"
+                            f"{img_name}"
+                        )
 
             product_records.append({
 
@@ -818,7 +541,6 @@ if not inv_df.empty:
 
             })
 
-
     except Exception as e:
 
         print(
@@ -855,26 +577,20 @@ if not product_records:
     ]
 
 
-# ============================================================
-# DOWNLOAD + COMPRESS IMAGE
-# ============================================================
-
 @st.cache_data
 def get_compressed_image(url):
 
     """
-    Downloads the GitHub image,
-    compresses it and creates
-    a small thumbnail.
+    Downloads, compresses, and forces small
+    thumbnail dimensions in-memory.
     """
 
     try:
 
         response = requests.get(
             url,
-            timeout=8
+            timeout=4
         )
-
 
         if response.status_code == 200:
 
@@ -883,7 +599,6 @@ def get_compressed_image(url):
                     response.content
                 )
             )
-
 
             if img.mode in (
                 "RGBA",
@@ -894,32 +609,24 @@ def get_compressed_image(url):
                     "RGB"
                 )
 
-
             img.thumbnail(
                 (90, 90)
             )
 
-
             return img
-
 
     except Exception:
 
         pass
 
-
     return None
 
 
 # ============================================================
-# STORE
+# STORE (2-COLUMN GRID)
 # ============================================================
 
 if st.session_state.current_view == "Home":
-
-    # --------------------------------------------------------
-    # GET CATEGORIES
-    # --------------------------------------------------------
 
     categories = sorted(
         list(
@@ -932,37 +639,21 @@ if st.session_state.current_view == "Home":
         )
     )
 
-
-    # --------------------------------------------------------
-    # CATEGORY SELECTOR
-    # --------------------------------------------------------
-
     st.markdown(
         '<div class="category-area">',
         unsafe_allow_html=True
     )
 
-
     selected_cat = st.selectbox(
-
         "Select Product Category:",
-
         categories,
-
         key="category_selector"
-
     )
-
 
     st.markdown(
         "</div>",
         unsafe_allow_html=True
     )
-
-
-    # --------------------------------------------------------
-    # FILTER PRODUCTS
-    # --------------------------------------------------------
 
     filtered_items = [
 
@@ -978,11 +669,6 @@ if st.session_state.current_view == "Home":
 
     ]
 
-
-    # ========================================================
-    # DISPLAY PRODUCTS
-    # ========================================================
-
     if filtered_items:
 
         for i in range(
@@ -993,13 +679,11 @@ if st.session_state.current_view == "Home":
 
             cols = st.columns(2)
 
-
             for col_idx in range(2):
 
                 item_index = (
                     i + col_idx
                 )
-
 
                 if item_index < len(
                     filtered_items
@@ -1009,7 +693,6 @@ if st.session_state.current_view == "Home":
                         item_index
                     ]
 
-
                     with cols[col_idx]:
 
                         st.markdown(
@@ -1017,23 +700,10 @@ if st.session_state.current_view == "Home":
                             unsafe_allow_html=True
                         )
 
-
-                        # ====================================================
-                        # IMAGE + LEFT/RIGHT BUTTONS
-                        # ====================================================
-
                         left_col, image_col, right_col = st.columns(
-
                             [0.3, 5, 0.3],
-
                             vertical_alignment="center"
-
                         )
-
-
-                        # ------------------------------------------------
-                        # UNIQUE IMAGE STATE
-                        # ------------------------------------------------
 
                         img_key = (
                             f"img_idx_"
@@ -1041,22 +711,15 @@ if st.session_state.current_view == "Home":
                             f"{item_index}"
                         )
 
-
                         if img_key not in st.session_state:
 
                             st.session_state[
                                 img_key
                             ] = 0
 
-
                         total_imgs = len(
                             prod["images"]
                         )
-
-
-                        # ====================================================
-                        # LEFT BUTTON
-                        # ====================================================
 
                         with left_col:
 
@@ -1077,48 +740,28 @@ if st.session_state.current_view == "Home":
 
                                         st.session_state[
                                             img_key
-                                        ]
-                                        - 1
+                                        ] - 1
                                     ) % total_imgs
 
-
                                     st.rerun()
-
-
-                        # ====================================================
-                        # IMAGE
-                        # ====================================================
 
                         with image_col:
 
                             if total_imgs > 0:
 
                                 current_idx = (
-
                                     st.session_state[
                                         img_key
-                                    ]
-
-                                    % total_imgs
-
+                                    ] % total_imgs
                                 )
-
-
-                                current_url = (
-
-                                    prod["images"][
-                                        current_idx
-                                    ]
-
-                                )
-
 
                                 compressed_img = (
                                     get_compressed_image(
-                                        current_url
+                                        prod["images"][
+                                            current_idx
+                                        ]
                                     )
                                 )
-
 
                                 if compressed_img:
 
@@ -1126,7 +769,6 @@ if st.session_state.current_view == "Home":
                                         compressed_img,
                                         width=80
                                     )
-
 
                                 else:
 
@@ -1144,10 +786,21 @@ if st.session_state.current_view == "Home":
                                         unsafe_allow_html=True
                                     )
 
+                            else:
 
-                        # ====================================================
-                        # RIGHT BUTTON
-                        # ====================================================
+                                st.markdown(
+                                    """
+                                    <p style="
+                                        font-size:9px;
+                                        text-align:center;
+                                        color:#94a3b8;
+                                        margin:0;
+                                    ">
+                                        No image
+                                    </p>
+                                    """,
+                                    unsafe_allow_html=True
+                                )
 
                         with right_col:
 
@@ -1168,51 +821,25 @@ if st.session_state.current_view == "Home":
 
                                         st.session_state[
                                             img_key
-                                        ]
-                                        + 1
+                                        ] + 1
                                     ) % total_imgs
-
 
                                     st.rerun()
 
-
-                        # ====================================================
-                        # PRODUCT NAME
-                        # ====================================================
-
                         st.markdown(
-
-                            f"""
-                            <div class="product-name">
-                                {prod["name"]}
-                            </div>
-                            """,
-
+                            f'<div class="product-name">'
+                            f'{prod["name"]}'
+                            f'</div>',
                             unsafe_allow_html=True
-
                         )
 
-
-                        # ====================================================
-                        # PRICE + STOCK
-                        # ====================================================
-
                         st.markdown(
-
-                            f"""
-                            <div class="product-price">
-                                ₹{prod["price"]} | Stk: {prod["stock"]}
-                            </div>
-                            """,
-
+                            f'<div class="product-price">'
+                            f'₹{prod["price"]} | '
+                            f'Stk: {prod["stock"]}'
+                            f'</div>',
                             unsafe_allow_html=True
-
                         )
-
-
-                        # ====================================================
-                        # QUANTITY
-                        # ====================================================
 
                         q_val = st.number_input(
 
@@ -1233,11 +860,6 @@ if st.session_state.current_view == "Home":
                             label_visibility="collapsed"
 
                         )
-
-
-                        # ====================================================
-                        # ADD TO CART
-                        # ====================================================
 
                         if st.button(
 
@@ -1263,20 +885,16 @@ if st.session_state.current_view == "Home":
 
                             })
 
-
                             st.success(
                                 "Added!"
                             )
 
-
                             st.rerun()
 
-
                         st.markdown(
-                            "</div>",
+                            '</div>',
                             unsafe_allow_html=True
                         )
-
 
     else:
 
@@ -1296,11 +914,6 @@ else:
         "🛒 Shopping Cart & Checkout"
     )
 
-
-    # ========================================================
-    # CART HAS ITEMS
-    # ========================================================
-
     if st.session_state.cart:
 
         for i, item in enumerate(
@@ -1311,22 +924,12 @@ else:
                 st.columns([3, 1])
             )
 
-
-            # ------------------------------------------------
-            # ITEM NAME
-            # ------------------------------------------------
-
             with col_item_name:
 
                 st.write(
                     f"• {item['product']} "
                     f"({item['quantity']})"
                 )
-
-
-            # ------------------------------------------------
-            # REMOVE
-            # ------------------------------------------------
 
             with col_item_remove:
 
@@ -1341,15 +944,9 @@ else:
 
                     st.rerun()
 
-
         st.markdown(
             "---"
         )
-
-
-        # ====================================================
-        # CHECKOUT FORM
-        # ====================================================
 
         with st.form(
             "checkout_form"
@@ -1359,24 +956,18 @@ else:
                 "Delivery Address:"
             )
 
-
             sec_phone = st.text_input(
                 "Alternative Phone Number:",
                 max_chars=10
             )
 
-
             pay_method = st.selectbox(
-
                 "Payment Gateway",
-
                 [
                     "UPI / GPay",
                     "Cash on Delivery"
                 ]
-
             )
-
 
             checkout_button = (
                 st.form_submit_button(
@@ -1385,21 +976,12 @@ else:
                 )
             )
 
-
-            # =================================================
-            # PLACE ORDER
-            # =================================================
-
             if checkout_button:
 
                 if (
-
                     address.strip()
-
                     and len(sec_phone) == 10
-
                     and sec_phone.isdigit()
-
                 ):
 
                     try:
@@ -1443,39 +1025,28 @@ else:
 
                         }
 
-
                         requests.post(
-
                             GOOGLE_SCRIPT_URL,
-
                             json=order_payload,
-
                             timeout=5
-
                         )
-
 
                     except Exception:
 
                         pass
-
 
                     st.success(
                         "🎉 Order successfully placed "
                         "and synced with Google Sheets!"
                     )
 
-
                     st.session_state.cart = []
-
 
                     st.session_state.current_view = (
                         "Home"
                     )
 
-
                     st.rerun()
-
 
                 else:
 
@@ -1483,11 +1054,6 @@ else:
                         "Please provide a delivery address "
                         "and valid 10-digit alternative phone."
                     )
-
-
-    # ========================================================
-    # EMPTY CART
-    # ========================================================
 
     else:
 
