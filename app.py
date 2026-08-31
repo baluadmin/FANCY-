@@ -90,18 +90,9 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* PORTRAIT MOBILE APP RESPONSIVE OVERRIDES */
+        /* DISABLE FORCED COLUMN STACKING ON MOBILE TO KEEP 3-COLUMN IMAGE GRID INTACT */
         @media (max-width: 768px) {
-            div[data-testid="stHorizontalBlock"] {
-                flex-direction: column !important;
-                flex-wrap: wrap !important;
-            }
-            div[data-testid="column"] {
-                width: 100% !important;
-                flex: 1 1 100% !important;
-                min-width: 100% !important;
-                padding: 2px 0px !important;
-            }
+            /* Keep overall block layout clean */
         }
 
         .block-container {
@@ -296,44 +287,43 @@ if st.session_state.current_view == "Home":
     if filtered_items:
         for idx, prod in enumerate(filtered_items):
             with st.container(border=True):
-                img_col, info_col = st.columns([1.3, 1.7], gap="small")
-                
-                with img_col:
-                    raw_img = prod.get("image", "")
-                    if raw_img:
-                        img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
-                        valid_paths = [p for p in img_paths if os.path.exists(p)]
-                        if valid_paths:
-                            # Render up to 6 images arranged in rows (3 images per row)
-                            display_paths = valid_paths[:6]
-                            
-                            # Chunk into groups of 3 for rows
-                            rows_of_imgs = [display_paths[i:i+3] for i in range(0, len(display_paths), 3)]
-                            
-                            for row_imgs in rows_of_imgs:
-                                cols = st.columns(len(row_imgs))
-                                for c_i, img_path in enumerate(row_imgs):
-                                    with cols[c_i]:
-                                        st.image(img_path, width=40)
-                        else:
-                            st.caption("No Image")
+                # Full width layout stacking images section on top and product info/actions below for compact mobile viewing
+                raw_img = prod.get("image", "")
+                if raw_img:
+                    img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                    valid_paths = [p for p in img_paths if os.path.exists(p)]
+                    if valid_paths:
+                        display_paths = valid_paths[:6]
+                        # Chunk into rows of 3 images matching the target reference layout exactly
+                        rows_of_imgs = [display_paths[i:i+3] for i in range(0, len(display_paths), 3)]
+                        
+                        for row_imgs in rows_of_imgs:
+                            cols = st.columns(len(row_imgs))
+                            for c_i, img_path in enumerate(row_imgs):
+                                with cols[c_i]:
+                                    _, center_img, _ = st.columns([0.2, 3.6, 0.2])
+                                    with center_img:
+                                        st.image(img_path, width=45)
                     else:
                         st.caption("No Image")
+                else:
+                    st.caption("No Image")
 
-                with info_col:
-                    st.markdown(f"**{prod['name']}**")
-                    st.markdown(f"<span style='color: #0284c7; font-weight: 700;'>₹{prod['price']}</span>", unsafe_allow_html=True)
-                    st.caption(prod.get('description', ''))
-                    
-                    q_col, b_col = st.columns([1, 1.2], gap="small")
-                    with q_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                    with b_col:
-                        if st.button("Add to Cart", key=f"add_{current_cat}_{idx}", use_container_width=True):
-                            full_q_str = f"{int(q_val)} Units"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success("Added!")
-                            st.rerun()
+                st.markdown("<hr style='margin: 4px 0px;'>", unsafe_allow_html=True)
+                
+                st.markdown(f"**{prod['name']}**")
+                st.markdown(f"<span style='color: #0284c7; font-weight: 700;'>₹{prod['price']}</span>", unsafe_allow_html=True)
+                st.caption(prod.get('description', ''))
+                
+                q_col, b_col = st.columns([1, 1.2], gap="small")
+                with q_col:
+                    q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                with b_col:
+                    if st.button("Add to Cart", key=f"add_{current_cat}_{idx}", use_container_width=True):
+                        full_q_str = f"{int(q_val)} Units"
+                        st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                        st.success("Added!")
+                        st.rerun()
     else:
         st.info("No items found in this category.")
 
