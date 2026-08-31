@@ -90,194 +90,129 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-
-        /* =========================================================
-           NEW RESPONSIVE STRUCTURE
-           Desktop remains wide; mobile becomes compact portrait.
-           ========================================================= */
-
-        /* Global spacing */
-        .block-container {
-            padding-top: 0.45rem !important;
-            padding-bottom: 0.3rem !important;
-            padding-left: 0.7rem !important;
-            padding-right: 0.7rem !important;
-            max-width: 100% !important;
-        }
-
-        /* Compact post-login brand header */
-        .brand-banner {
-            padding: 7px 10px !important;
-            margin: 0 0 6px 0 !important;
-            border-radius: 8px !important;
-        }
-
-        .brand-title {
-            font-size: 16px !important;
-            line-height: 1.15 !important;
-            margin: 0 !important;
-        }
-
-        /* Navigation */
-        .mobile-welcome {
-            font-size: 11px !important;
-            line-height: 1.2 !important;
-            margin: 0 !important;
-        }
-
-        div.stButton > button {
-            min-height: 34px !important;
-            height: 34px !important;
-            padding: 0.15rem 0.35rem !important;
-            font-size: 11px !important;
-            border-radius: 6px !important;
-            white-space: nowrap !important;
-        }
-
-        /* Reduce Streamlit's default vertical gaps */
-        div[data-testid="stVerticalBlock"] {
-            gap: 0.35rem !important;
-        }
-
-        div[data-testid="stHorizontalBlock"] {
-            gap: 0.45rem !important;
-        }
-
-        div[data-testid="column"] {
-            min-width: 0 !important;
-        }
-
-        /* Product cards */
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            border-radius: 8px !important;
-        }
-
-        /* Images never overflow their column */
-        img {
-            max-width: 100% !important;
-            height: auto !important;
-            object-fit: contain !important;
-        }
-
-        /* Inputs/selects */
-        input,
-        textarea,
-        div[data-baseweb="select"] > div {
-            font-size: 12px !important;
-        }
-
-        /* =========================================================
-           PHONE PORTRAIT
-           ========================================================= */
-        @media (max-width: 700px) {
-
-            .block-container {
-                padding: 0.25rem 0.3rem 0.2rem 0.3rem !important;
+        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
+        @media (max-width: 900px) {
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
+                width: auto !important;
+                flex: 1 1 auto !important;
+                min-width: 0px !important;
+                padding: 0px 2px !important;
             }
 
-            /* Header */
-            .brand-banner {
-                padding: 5px 7px !important;
-                margin-bottom: 4px !important;
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
+                flex-direction: column !important;
+                flex-wrap: wrap !important;
             }
-
-            .brand-title {
-                font-size: 13px !important;
-            }
-
-            /* Top navigation is always one row */
-            div[data-testid="stHorizontalBlock"] {
-                gap: 3px !important;
-            }
-
-            div.stButton > button {
-                min-height: 29px !important;
-                height: 29px !important;
-                padding: 0.05rem 0.15rem !important;
-                font-size: 9px !important;
-                border-radius: 5px !important;
-            }
-
-            .mobile-welcome {
-                font-size: 9px !important;
-            }
-
-            /* Keep product navigation controls compact */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-                padding-left: 1px !important;
-                padding-right: 1px !important;
-            }
-
-            /* Product content */
-            .stMarkdown {
-                font-size: 11px !important;
-                line-height: 1.25 !important;
-            }
-
-            .stCaption {
-                font-size: 9px !important;
-            }
-
-            /* Product cards should use the full phone width */
-            div[data-testid="stVerticalBlockBorderWrapper"] {
+            div[data-testid="stHorizontalBlock"]:not(:first-of-type) > div[data-testid="column"] {
                 width: 100% !important;
-                margin-left: 0 !important;
-                margin-right: 0 !important;
+                flex: 1 1 100% !important;
+                min-width: 100% !important;
+                padding: 4px 0px !important;
+            }
+        }
+
+        .block-container {
+            padding-top: 0.8rem;
+            padding-bottom: 0rem;
+            padding-left: 1.2rem;
+            padding-right: 1.2rem;
+            max-width: 100% !important;
+        }
+
+        /* Compact login screen for Android landscape */
+        .login-title {
+            text-align: center;
+            margin: 2px 0 4px 0;
+        }
+
+        .login-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 2px 0;
+        }
+
+        .login-title p {
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .login-card {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 9px 16px 10px 16px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .login-card h3 {
+            margin: 0 0 3px 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        div[data-testid="stForm"] {
+            border: none !important;
+            padding: 6px 0 0 0 !important;
+        }
+
+        @media (orientation: landscape) and (max-height: 700px) {
+            .block-container {
+                padding-top: 0.15rem !important;
+                padding-bottom: 0rem !important;
+                padding-left: 0.8rem !important;
+                padding-right: 0.8rem !important;
             }
 
-            /* Compact checkout/cart controls */
-            [data-testid="stNumberInput"] input {
-                font-size: 11px !important;
-            }
-
-            /* Login */
             .login-title {
-                margin: 0 0 3px 0 !important;
+                margin: 0 0 1px 0;
             }
 
             .login-title h1 {
-                font-size: 20px !important;
-                margin: 0 !important;
+                font-size: 20px;
+                margin-bottom: 0;
             }
 
             .login-title p {
-                font-size: 9px !important;
-                margin: 0 !important;
+                font-size: 9px;
             }
 
             .login-card {
-                max-width: 100% !important;
-                padding: 7px 8px !important;
+                max-width: 680px;
+                padding: 5px 14px 6px 14px;
+            }
+
+            .login-card h3 {
+                font-size: 14px;
+                margin-bottom: 1px;
             }
 
             div[data-testid="stForm"] {
-                padding-top: 3px !important;
+                padding-top: 2px !important;
+            }
+
+            div[data-testid="stTextInput"] {
+                margin-bottom: -5px !important;
+            }
+
+            button[kind="primaryFormSubmit"] {
+                min-height: 36px !important;
+                padding: 0.2rem 0.5rem !important;
+                font-size: 13px !important;
             }
         }
 
-        /* Very narrow phones */
-        @media (max-width: 380px) {
-
-            .block-container {
-                padding-left: 0.2rem !important;
-                padding-right: 0.2rem !important;
-            }
-
-            .brand-title {
-                font-size: 11px !important;
-            }
-
-            div.stButton > button {
-                font-size: 8px !important;
-                min-height: 27px !important;
-                height: 27px !important;
-            }
-
-            .mobile-welcome {
-                font-size: 8px !important;
+        @media (max-width: 700px) and (orientation: portrait) {
+            .login-card {
+                max-width: 100%;
+                padding: 10px;
             }
         }
-
     </style>
 """, unsafe_allow_html=True)
 
@@ -317,7 +252,7 @@ if not st.session_state.logged_in_user:
 
     st.markdown("""
         <div class="login-title">
-            <h1>HM Mobile</h1>
+            <h1>HM MOBILES</h1>
             <p>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
@@ -387,7 +322,7 @@ st.markdown("""
 # Commercial banner area on the left and right-aligned navigation buttons on the right
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
 with top_comm:
-    st.markdown(f"<div class="mobile-welcome">👋 Welcome, <b>{st.session_state.logged_in_user}</b>!</div>", unsafe_allow_html=True)
+    st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
 with top_space:
     st.empty()
 with top_c1:
@@ -503,7 +438,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=360, border=True):
+        with st.container(height=480, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -514,7 +449,7 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=360, border=True):
+        with st.container(height=480, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
@@ -552,16 +487,16 @@ if st.session_state.current_view == "Home":
                                         with sub_col1:
                                             _, center_sub1, _ = st.columns([1, 4, 1])
                                             with center_sub1:
-                                                st.image(valid_paths[current_idx], width=75)
+                                                st.image(valid_paths[current_idx], width=95)
                                         with sub_col2:
                                             _, center_sub2, _ = st.columns([1, 4, 1])
                                             with center_sub2:
                                                 next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=75)
+                                                st.image(valid_paths[next_idx], width=95)
                                     else:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
-                                            st.image(valid_paths[0], width=75)
+                                            st.image(valid_paths[0], width=95)
                                         
                                 with r_btn:
                                     st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
