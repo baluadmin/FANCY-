@@ -99,7 +99,7 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Specific Pink Styling for Menu Column Buttons & Header Action Buttons (Home, Cart, Logout) */
+        /* Specific Pink Styling for Menu Category Buttons & Header Action Buttons (Home, Cart, Logout) */
         div[data-testid="column"]:first-of-type div.stButton > button,
         div[data-testid="column"]:nth-of-type(3) div.stButton > button,
         div[data-testid="column"]:nth-of-type(4) div.stButton > button,
@@ -120,6 +120,26 @@ st.markdown("""
         div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover,
         div[data-testid="column"]:nth-of-type(4) div.stButton > button:hover,
         div[data-testid="column"]:nth-of-type(5) div.stButton > button:hover {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Specific Pink Styling for "Add to Cart" Buttons inside Product Columns */
+        div[data-testid="column"] div[data-testid="column"]:last-of-type div.stButton > button {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-weight: 800 !important;
+            font-size: 20px !important;
+            border-radius: 12px !important;
+            padding: 0.7rem 1rem !important;
+            width: 100% !important;
+            display: block !important;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
+            transition: all 0.2s ease-in-out;
+        }
+        div[data-testid="column"] div[data-testid="column"]:last-of-type div.stButton > button:hover {
             background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
             box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
             transform: translateY(-1px);
