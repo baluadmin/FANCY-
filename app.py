@@ -39,9 +39,11 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
-        /* Completely hide header link icons next to section headers */
+        /* Completely hide header link icons next to section headers and image expand/zoom buttons */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
+        button[kind="header"] {visibility: hidden !important;}
+        [data-testid="stImage"] button {visibility: hidden !important; display: none !important;}
         
         /* Automatically adapt text color for high contrast */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
@@ -496,7 +498,7 @@ if st.session_state.current_view == "Home":
                         for i in range(2):
                             with img_cols_1[i]:
                                 if i < len(valid_paths):
-                                    st.image(valid_paths[i], width=210)
+                                    st.image(valid_paths[i], width=210, use_container_width=False)
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                         
@@ -505,7 +507,7 @@ if st.session_state.current_view == "Home":
                         for i in range(2, 4):
                             with img_cols_2[i - 2]:
                                 if i < len(valid_paths):
-                                    st.image(valid_paths[i], width=210)
+                                    st.image(valid_paths[i], width=210, use_container_width=False)
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
