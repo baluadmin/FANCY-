@@ -90,15 +90,19 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* FORCE IMAGE ROWS TO REMAIN SIDE-BY-SIDE ON MOBILE DEVICES */
+        /* FORCE IMAGE GRID COLUMNS TO STAY HORIZONTAL ON MOBILE */
         @media (max-width: 768px) {
-            /* Keep image rows horizontally aligned instead of stacking vertically */
+            /* Target the specific container holding the 3 image columns */
+            div.element-container:has(img) {
+                display: inline-block !important;
+                width: 33.33% !important;
+            }
             div[data-testid="stHorizontalBlock"]:has(img) {
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
             }
             div[data-testid="stHorizontalBlock"]:has(img) > div[data-testid="column"] {
-                width: auto !important;
+                width: 33.33% !important;
                 flex: 1 1 33.33% !important;
                 min-width: 0px !important;
                 padding: 0px 1px !important;
