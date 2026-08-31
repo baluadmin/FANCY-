@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Keep the entire app in PORTRAIT
+        // Keep phone in portrait
         setRequestedOrientation(
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         );
@@ -26,31 +26,40 @@ public class MainActivity extends Activity {
 
         WebSettings settings = webView.getSettings();
 
-        // Enable JavaScript
+        // JavaScript required by Streamlit
         settings.setJavaScriptEnabled(true);
 
-        // Enable Streamlit storage
+        // Streamlit storage
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // Streamlit support
+        // Streamlit/browser features
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(true);
 
-        // Website viewport
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
+        /*
+         * IMPORTANT:
+         * Do NOT force desktop wide viewport scaling.
+         */
+        settings.setUseWideViewPort(false);
+        settings.setLoadWithOverviewMode(false);
 
-        // Zoom
+        /*
+         * Normal browser-style zoom
+         */
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
-        // Keep website inside the Android app
+        /*
+         * Keep links inside the app
+         */
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
-        // Open HM Mobiles
+        /*
+         * Open your Streamlit application
+         */
         webView.loadUrl(
                 "https://baluaiproject1.streamlit.app/"
         );
@@ -60,11 +69,8 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
 
         if (webView != null && webView.canGoBack()) {
-
             webView.goBack();
-
         } else {
-
             super.onBackPressed();
         }
     }
