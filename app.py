@@ -23,7 +23,7 @@ st.markdown("""
             font-size: 20px !important;
         }
 
-        /* Set App Background to Light Blue with Yellow Accents */
+        /* Set App Background to Light Blue */
         .stApp {
             background-color: #e0f2fe !important; /* Soft light blue */
         }
@@ -50,26 +50,26 @@ st.markdown("""
             font-size: 18px !important;
         }
         
-        /* Input boxes styling supporting light blue / yellow theme */
+        /* Input boxes styling supporting light yellow accents */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
-            border: 2px solid #fde047 !important;
+            border: 2px solid #fef08a !important;
             font-size: 18px !important;
             font-weight: 500 !important;
             border-radius: 8px !important;
         }
 
-        /* Professional Warm Yellow Header Banner on Light Blue */
+        /* Professional Soft Light Yellow Header Banner on Light Blue */
         .brand-banner {
-            background: linear-gradient(135deg, #fef08a 100%, #fde047 0%);
+            background: linear-gradient(135deg, #fefce8 100%, #fef08a 0%);
             padding: 18px 22px;
             border-radius: 10px;
             color: #713f12 !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 15px;
-            border: 2px solid #facc15;
+            border: 2px solid #fef08a;
         }
         .brand-title {
             font-size: 32px !important;
@@ -79,11 +79,11 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact, Full-Width Yellow Buttons tightly fitted inside columns */
+        /* Compact, Full-Width Light Yellow Buttons tightly fitted inside columns */
         div.stButton > button {
-            background-color: #fef08a !important;
+            background-color: #fefce8 !important;
             color: #713f12 !important;
-            border: 2px solid #facc15 !important;
+            border: 2px solid #fef08a !important;
             font-weight: 700 !important;
             font-size: 18px !important;
             border-radius: 8px !important;
@@ -92,9 +92,9 @@ st.markdown("""
             display: block !important;
         }
         div.stButton > button:hover {
-            background-color: #fde047 !important;
+            background-color: #fef08a !important;
             color: #713f12 !important;
-            border: 2px solid #eab308 !important;
+            border: 2px solid #fde047 !important;
         }
 
         /* Responsive Mobile Handling: Fix Header Buttons Wrapping */
@@ -153,7 +153,7 @@ st.markdown("""
             padding: 12px 18px 14px 18px;
             border-radius: 10px;
             background-color: #ffffff;
-            border: 2px solid #fde047;
+            border: 2px solid #fef08a;
             box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
             text-align: center;
         }
@@ -438,7 +438,7 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 2 images (Max 4 images total: 2 per line across 2 lines) - Expanded width to 210px
+                        # Row 1: 2 images (Width = 210px)
                         img_cols_1 = st.columns(2, gap="small")
                         for i in range(2):
                             with img_cols_1[i]:
@@ -447,7 +447,7 @@ if st.session_state.current_view == "Home":
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 2 images - Expanded width to 210px
+                        # Row 2: 2 images (Width = 210px)
                         img_cols_2 = st.columns(2, gap="small")
                         for i in range(2, 4):
                             with img_cols_2[i - 2]:
@@ -457,7 +457,7 @@ if st.session_state.current_view == "Home":
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fef08a; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -474,7 +474,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #fde047;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #fef08a;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
