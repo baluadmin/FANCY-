@@ -1,1173 +1,747 @@
-from datetime import datetime
-import pandas as pd
-import requests
 import streamlit as st
+import requests
+import pandas as pd
+import urllib.parse
 
+SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwO0yuuoGKlF6zAlA30OVjKxAHRE5wgl1xJ7uAr9DF5OFtnpesK5UD4C3pdnClWdKxQ/exec"
 
-# ============================================================
-# PAGE CONFIGURATION
-# ============================================================
-
-st.set_page_config(
-    page_title="HM Mobiles",
-    page_icon="📱",
-    layout="wide"
-)
-
-
-# ============================================================
-# CSS
-# ============================================================
+st.set_page_config(page_title="Bavesh Stationary", page_icon="📚", layout="wide")
 
 st.markdown("""
 <style>
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif !important;
-}
-
-#MainMenu {
-    visibility: hidden;
-}
-
-header {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-div[data-testid="stToolbar"] {
+.stHeadingWithAction > a,
+.markdown-text-container a.anchor-link,
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     display: none !important;
 }
 
-section[data-testid="stStatusWidget"] {
-    display: none !important;
-}
-
-
-/* ============================================================
-   GENERAL
-   ============================================================ */
-
-.stMainBlockContainer,
-div[data-testid="stMainBlockContainer"],
 .block-container {
-    padding-top: 0rem !important;
-    margin-top: 0rem !important;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important;
     max-width: 100% !important;
 }
 
-label,
-.stTextInput label,
-p {
+.element-container {
+    margin-bottom: 0 !important;
+}
+
+hr {
+    margin: 4px 0 !important;
+}
+
+.stButton button {
+    padding: 3px 5px !important;
+    font-size: 12px !important;
     font-weight: 600 !important;
-}
-
-
-/* ============================================================
-   HM MOBILES HEADER
-   ============================================================ */
-
-.brand-banner {
-    background: #2563eb;
-
-    padding: 4px 6px;
-
-    border-radius: 4px;
-
-    text-align: center;
-
-    margin: 0 0 2px 0 !important;
-
-    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-}
-
-.brand-title {
-    color: white !important;
-
-    font-size: 13px !important;
-
-    font-weight: 800 !important;
-
-    letter-spacing: 0.5px;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
-
-    line-height: 1.1 !important;
-}
-
-
-/* ============================================================
-   STORE + CART
-   ============================================================ */
-
-.hm-nav-box {
-    width: 190px !important;
-
-    max-width: 190px !important;
-
-    margin: 2px auto 3px auto !important;
-
-    padding: 0 !important;
-
-    border: none !important;
-
-    background: transparent !important;
-
-    box-shadow: none !important;
-}
-
-.hm-nav-box [data-testid="stRadio"] {
-    margin: 0 !important;
-
-    padding: 0 !important;
-
+    min-height: 32px !important;
     width: 100% !important;
+    border-radius: 7px !important;
 }
 
-.hm-nav-box [data-testid="stRadio"] > div {
-    display: flex !important;
-
-    flex-direction: row !important;
-
-    flex-wrap: nowrap !important;
-
-    gap: 5px !important;
-
-    justify-content: center !important;
-
-    align-items: center !important;
+.desktop-only {
+    display: block !important;
 }
 
-.hm-nav-box [data-testid="stRadio"] > div > label {
-    flex: 1 1 0 !important;
-
-    width: 50% !important;
-
-    max-width: 50% !important;
-
-    min-width: 0 !important;
-
-    height: 30px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    justify-content: center !important;
-
-    padding: 0 4px !important;
-
-    margin: 0 !important;
-
-    border: 1.5px solid #2563eb !important;
-
-    border-radius: 4px !important;
-
-    background: white !important;
-
-    box-sizing: border-box !important;
-}
-
-.hm-nav-box [data-testid="stRadio"] > div > label > div:first-child {
+.mobile-only {
     display: none !important;
 }
 
-.hm-nav-box [data-testid="stRadio"] > div > label p {
-    color: #2563eb !important;
+/* ============================================================
+   DESKTOP PRODUCT VIEW
+   ============================================================ */
 
-    font-size: 12px !important;
+.desktop-product-row {
+    display: block !important;
+}
 
+.desktop-main-image img {
+    width: 100% !important;
+    height: 120px !important;
+    object-fit: contain !important;
+    background: #f8fafc !important;
+    border: 2px solid #ff4b4b !important;
+    border-radius: 7px !important;
+    box-shadow: 0 3px 7px rgba(0,0,0,.10) !important;
+}
+
+.desktop-preview-image img {
+    width: 100% !important;
+    height: 75px !important;
+    object-fit: contain !important;
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 7px !important;
+    opacity: .75 !important;
+}
+
+/* ============================================================
+   MOBILE PRODUCT VIEW
+   ============================================================ */
+
+.mobile-product-card {
+    display: none !important;
+}
+
+.mobile-main-image img {
+    width: 100% !important;
+    height: 180px !important;
+    object-fit: contain !important;
+    background: #f8fafc !important;
+    border: 2px solid #ff4b4b !important;
+    border-radius: 8px !important;
+    box-shadow: 0 3px 7px rgba(0,0,0,.10) !important;
+}
+
+.mobile-preview-image img {
+    width: 100% !important;
+    height: 88px !important;
+    object-fit: contain !important;
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 7px !important;
+    opacity: .75 !important;
+}
+
+.mobile-product-name {
+    font-size: 15px !important;
     font-weight: 700 !important;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
-
-    white-space: nowrap !important;
+    line-height: 1.25 !important;
 }
 
-.hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) {
-    background: #eff6ff !important;
-
-    border-color: #1d4ed8 !important;
+.mobile-product-desc {
+    color: #666 !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
 }
 
+.mobile-product-price {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+.mobile-product-card [data-testid="stVerticalBlockBorderWrapper"] {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 9px !important;
+    padding: 7px !important;
+    background: #ffffff !important;
+}
 
 /* ============================================================
-   CATEGORY
+   MOBILE PHONE
    ============================================================ */
 
-.category-area {
-    margin-top: 0 !important;
-
-    margin-bottom: 5px !important;
-}
-
-
-/* ============================================================
-   PRODUCT CARD
-   ============================================================ */
-
-.product-card {
-    width: 100%;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 8px;
-
-    padding: 6px;
-
-    margin-bottom: 10px;
-
-    box-sizing: border-box;
-
-    background: white;
-}
-
-
-/* ============================================================
-   PRODUCT IMAGE ROW
-   BUTTONS ARE CENTERED WITH IMAGE
-   ============================================================ */
-
-.product-image-row {
-    display: flex;
-
-    flex-direction: row;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 100%;
-
-    gap: 3px;
-}
-
-
-/* ============================================================
-   IMAGE
-   ============================================================ */
-
-.product-image-wrapper {
-    flex: 1;
-
-    min-width: 0;
-
-    max-width: 520px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-}
-
-.product-image-wrapper img {
-    width: 100%;
-
-    max-width: 500px;
-
-    height: 250px;
-
-    object-fit: contain;
-
-    display: block;
-
-    border-radius: 6px;
-}
-
-
-/* ============================================================
-   SIDE BUTTONS
-   ============================================================ */
-
-.image-button {
-    width: 38px;
-
-    min-width: 38px;
-
-    height: 38px;
-
-    border: 1.5px solid #2563eb;
-
-    border-radius: 50%;
-
-    background: white;
-
-    color: #2563eb;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 19px;
-
-    font-weight: 700;
-}
-
-
-/* ============================================================
-   PRODUCT INFORMATION
-   ============================================================ */
-
-.product-name {
-    text-align: center;
-
-    font-size: 16px;
-
-    font-weight: 700;
-
-    margin-top: 4px;
-
-    margin-bottom: 2px;
-}
-
-.product-price {
-    text-align: center;
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-    margin-bottom: 2px;
-}
-
-.product-description {
-    text-align: center;
-
-    font-size: 12px;
-
-    margin-bottom: 3px;
-}
-
-
-/* ============================================================
-   MOBILE
-   ============================================================ */
-
-@media (max-width: 640px) {
-
-    .product-card {
-        padding: 4px;
-
-        margin-bottom: 8px;
+@media screen and (max-width: 768px) {
+
+    .block-container {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        padding: 0.35rem 6px !important;
     }
 
-    .product-image-row {
-        gap: 2px;
+    .desktop-only,
+    .desktop-product-row {
+        display: none !important;
     }
 
-    .product-image-wrapper {
-        max-width: calc(100% - 78px);
+    .mobile-only,
+    .mobile-product-card {
+        display: block !important;
     }
 
-    .product-image-wrapper img {
-        width: 100%;
-
-        height: 210px;
-
-        object-fit: contain;
+    .mobile-product-card .stButton button {
+        min-height: 38px !important;
+        font-size: 11px !important;
     }
 
-    .image-button {
-        width: 34px;
-
-        min-width: 34px;
-
-        height: 34px;
-
-        font-size: 17px;
+    .mobile-product-card input {
+        min-height: 38px !important;
+        font-size: 16px !important;
     }
 
-    .product-name {
-        font-size: 15px;
+    /* Header automatically fits */
+    .mobile-safe-row {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
-    .product-price {
-        font-size: 13px;
+    h1, h2, h3 {
+        max-width: 100% !important;
     }
 }
 
+@media screen and (max-width: 480px) {
+
+    .mobile-main-image img {
+        height: 155px !important;
+    }
+
+    .mobile-preview-image img {
+        height: 70px !important;
+    }
+
+    .mobile-product-name {
+        font-size: 14px !important;
+    }
+
+    .mobile-product-desc {
+        font-size: 10px !important;
+    }
+
+    .mobile-product-price {
+        font-size: 16px !important;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
-
-# ============================================================
-# SESSION STATES
-# ============================================================
-
-if "logged_in_user" not in st.session_state:
-    st.session_state.logged_in_user = None
-
-if "user_phone" not in st.session_state:
-    st.session_state.user_phone = None
-
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "username" not in st.session_state:
+    st.session_state.username = ""
+if "mobile" not in st.session_state:
+    st.session_state.mobile = ""
+if "page" not in st.session_state:
+    st.session_state.page = "home"
+if "selected_category" not in st.session_state:
+    st.session_state.selected_category = ""
 if "cart" not in st.session_state:
-    st.session_state.cart = []
+    st.session_state.cart = {}
+if "image_indices" not in st.session_state:
+    st.session_state.image_indices = {}
 
-if "current_view" not in st.session_state:
-    st.session_state.current_view = "Home"
+# LOGIN SCREEN
+if not st.session_state.logged_in:
+    st.markdown("## 🔐 Store Login")
+    username = st.text_input("Username")
+    mobile = st.text_input("Mobile Number", type="password")
+    
+    if st.button("Login"):
+        if username and mobile:
+            try:
+                requests.get(f"{SCRIPT_URL}?action=login&user={username}&pass={mobile}")
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                st.session_state.mobile = mobile
+                st.rerun()
+            except Exception as e:
+                st.error(f"Connection error: {e}")
+        else:
+            st.error("Please fill in both fields")
 
+# MAIN APP SCREEN
+else:
+    head_col1, head_col2, head_col3, head_col4 = st.columns([3, 1, 1, 1])
+    with head_col1:
+        st.markdown("### 📚 BAVESH STATIONARY")
+    with head_col2:
+        if st.button("🏠 Home", use_container_width=True):
+            st.session_state.page = "home"
+            st.rerun()
+    with head_col3:
+        cart_count = sum(st.session_state.cart.values())
+        if st.button(f"🛒 Cart ({cart_count})", use_container_width=True):
+            st.session_state.page = "cart"
+            st.rerun()
+    with head_col4:
+        if st.button("🚪 Logout", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.cart = {}
+            st.rerun()
+            
+    st.markdown("<hr style='margin: 2px 0px 6px 0px;'>", unsafe_allow_html=True)
 
-# ============================================================
-# GOOGLE SCRIPT
-# ============================================================
+    # HOME PAGE
+    if st.session_state.page == "home":
+        try:
+            res = requests.get(f"{SCRIPT_URL}?action=getInventory", timeout=20)
+            rows = res.json()
 
-GOOGLE_SCRIPT_URL = (
-    "https://script.google.com/macros/s/"
-    "AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/"
-    "exec"
-)
+            if len(rows) > 1:
+                headers = [str(h).strip().upper() for h in rows[0]]
+                df = pd.DataFrame(rows[1:], columns=headers)
 
-
-def log_login_to_sheet(name, phone):
-
-    try:
-
-        payload = {
-            "Type": "Login",
-            "Customer_Name": name,
-            "Primary_Phone": phone
-        }
-
-        requests.post(
-            GOOGLE_SCRIPT_URL,
-            json=payload,
-            timeout=3
-        )
-
-    except Exception:
-        pass
-
-
-# ============================================================
-# LOGIN PAGE
-# ============================================================
-
-if not st.session_state.logged_in_user:
-
-    st.markdown("""
-        <div class="brand-banner">
-            <div class="brand-title">HM MOBILES</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-
-    _, mid_col, _ = st.columns([1, 2, 1])
-
-
-    with mid_col:
-
-        with st.form("login_form"):
-
-            st.markdown("### Customer Portal Login")
-
-
-            cust_name = st.text_input(
-                "Your Name:"
-            )
-
-
-            cust_phone = st.text_input(
-                "Mobile Number (10 digits):",
-                max_chars=10
-            )
-
-
-            login_btn = st.form_submit_button(
-                "Secure Login",
-                use_container_width=True
-            )
-
-
-            if login_btn:
+                categories = (
+                    df["CATEGORY"].dropna().astype(str).unique().tolist()
+                    if "CATEGORY" in df.columns
+                    else ["General"]
+                )
 
                 if (
-                    cust_name.strip()
-                    and len(cust_phone) == 10
-                    and cust_phone.isdigit()
-                ):
+                    not st.session_state.selected_category
+                    or st.session_state.selected_category not in categories
+                ) and categories:
+                    st.session_state.selected_category = categories[0]
 
-                    st.session_state.logged_in_user = (
-                        cust_name.strip()
+                # ====================================================
+                # DESKTOP CATEGORY + PRODUCT AREA
+                # ====================================================
+                desktop_left, desktop_right = st.columns([1, 4])
+
+                with desktop_left:
+                    st.markdown("##### 📁 Categories")
+
+                    with st.container(height=520):
+                        for cat in categories:
+                            is_active = cat == st.session_state.selected_category
+
+                            if st.button(
+                                str(cat),
+                                use_container_width=True,
+                                key=f"desktop_cat_{cat}",
+                                type="primary" if is_active else "secondary"
+                            ):
+                                st.session_state.selected_category = cat
+                                st.rerun()
+
+                with desktop_right:
+                    active_cat = st.session_state.selected_category
+                    st.markdown(f"##### Products: {active_cat}")
+
+                    filtered_df = (
+                        df[df["CATEGORY"] == active_cat]
+                        if "CATEGORY" in df.columns
+                        else df
                     )
 
-                    st.session_state.user_phone = (
-                        cust_phone.strip()
-                    )
-
-
-                    log_login_to_sheet(
-                        cust_name.strip(),
-                        cust_phone.strip()
-                    )
-
-
-                    st.rerun()
-
-                else:
-
-                    st.warning(
-                        "⚠️ Enter a valid name and 10-digit mobile number."
-                    )
-
-
-    st.stop()
-
-
-# ============================================================
-# HEADER
-# ============================================================
-
-st.markdown(
-    '<div class="sticky-header-container">',
-    unsafe_allow_html=True
-)
-
-
-st.markdown("""
-    <div class="brand-banner">
-        <div class="brand-title">HM MOBILES</div>
-    </div>
-""", unsafe_allow_html=True)
-
-
-# ============================================================
-# STORE / CART
-# ============================================================
-
-st.markdown(
-    '<div class="hm-nav-box">',
-    unsafe_allow_html=True
-)
-
-
-nav_choice = st.radio(
-    "Navigation",
-
-    [
-        "Store",
-        f"Cart({len(st.session_state.cart)})"
-    ],
-
-    index=(
-        0
-        if st.session_state.current_view == "Home"
-        else 1
-    ),
-
-    horizontal=True,
-
-    label_visibility="collapsed",
-
-    key="hm_navigation"
-)
-
-
-new_view = (
-    "Home"
-    if nav_choice == "Store"
-    else "Cart"
-)
-
-
-if st.session_state.current_view != new_view:
-
-    st.session_state.current_view = new_view
-
-    st.rerun()
-
-
-st.markdown(
-    "</div>",
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    "</div>",
-    unsafe_allow_html=True
-)
-
-
-# ============================================================
-# LOAD INVENTORY FROM GOOGLE SHEET
-# ============================================================
-
-@st.cache_data(ttl=0)
-def load_inventory_from_sheet():
-
-    sheet_csv_url = (
-        "https://docs.google.com/spreadsheets/d/"
-        "1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/"
-        "export?format=csv"
-    )
-
-    try:
-
-        df = pd.read_csv(
-            sheet_csv_url
-        )
-
-        return df
-
-    except Exception:
-
-        return pd.DataFrame()
-
-
-inv_df = load_inventory_from_sheet()
-
-product_records = []
-
-
-# ============================================================
-# READ PRODUCT DATA
-# ============================================================
-
-if not inv_df.empty:
-
-    try:
-
-        for _, row in inv_df.iterrows():
-
-            product_records.append({
-
-                "id":
-                    str(row.iloc[0])
-                    if len(row) > 0
-                    and pd.notna(row.iloc[0])
-                    else "N/A",
-
-                "name":
-                    str(row.iloc[1])
-                    if len(row) > 1
-                    and pd.notna(row.iloc[1])
-                    else "Unknown",
-
-                "category":
-                    str(row.iloc[2]).strip()
-                    if len(row) > 2
-                    and pd.notna(row.iloc[2])
-                    else "General",
-
-                "stock":
-                    str(row.iloc[3])
-                    if len(row) > 3
-                    and pd.notna(row.iloc[3])
-                    else "0",
-
-                "price":
-                    str(row.iloc[4])
-                    if len(row) > 4
-                    and pd.notna(row.iloc[4])
-                    else "0",
-
-                "description":
-                    str(row.iloc[5]).strip()
-                    if len(row) > 5
-                    and pd.notna(row.iloc[5])
-                    else "",
-
-                # IMAGE COLUMN
-                "image":
-                    str(row.iloc[6]).strip()
-                    if len(row) > 6
-                    and pd.notna(row.iloc[6])
-                    else ""
-            })
-
-
-    except Exception as e:
-
-        print(
-            f"Parsing error: {e}"
-        )
-
-
-# ============================================================
-# DEFAULT PRODUCT
-# ============================================================
-
-if not product_records:
-
-    product_records = [
-
-        {
-            "id": "ITM001",
-
-            "name":
-                "Bluetooth Wireless Headset",
-
-            "price":
-                "1200",
-
-            "stock":
-                "50",
-
-            "category":
-                "Headset",
-
-            "image":
-                "",
-
-            "description":
-                "High performance audio"
-        }
-    ]
-
-
-# ============================================================
-# STORE
-# ============================================================
-
-if st.session_state.current_view == "Home":
-
-    # --------------------------------------------------------
-    # CATEGORY SELECTOR
-    # --------------------------------------------------------
-
-    categories = sorted(
-        list(
-            set(
-                [
-                    p["category"]
-                    for p in product_records
-                ]
-            )
-        )
-    )
-
-
-    st.markdown(
-        '<div class="category-area">',
-        unsafe_allow_html=True
-    )
-
-
-    selected_cat = st.selectbox(
-        "Select Product Category:",
-        categories,
-        key="category_selector"
-    )
-
-
-    st.markdown(
-        "</div>",
-        unsafe_allow_html=True
-    )
-
-
-    # --------------------------------------------------------
-    # FILTER ONLY
-    # CATEGORY IS NEVER STORED IN CART
-    # --------------------------------------------------------
-
-    filtered_items = [
-
-        p
-
-        for p in product_records
-
-        if p["category"].strip().lower()
-        == selected_cat.strip().lower()
-
-    ]
-
-
-    # --------------------------------------------------------
-    # SHOW ALL PRODUCTS
-    # ONE IMAGE FOR EACH PRODUCT
-    # --------------------------------------------------------
-
-    if filtered_items:
-
-        for idx, prod in enumerate(
-            filtered_items
-        ):
-
-            # =================================================
-            # PRODUCT CARD
-            # =================================================
-
-            st.markdown(
-                '<div class="product-card">',
-                unsafe_allow_html=True
-            )
-
-
-            # =================================================
-            # IMAGE + SIDE BUTTONS
-            # =================================================
-
-            left_col, image_col, right_col = st.columns(
-                [0.55, 5, 0.55],
-                vertical_alignment="center"
-            )
-
-
-            # -------------------------------------------------
-            # LEFT BUTTON
-            # -------------------------------------------------
-
-            with left_col:
-
-                if st.button(
-                    "◀",
-                    key=f"previous_{selected_cat}_{idx}",
-                    use_container_width=True
-                ):
-
-                    # Button is vertically centered
-                    # beside the product image.
-
-                    st.session_state[
-                        f"image_index_{idx}"
-                    ] = max(
-                        0,
-                        st.session_state.get(
-                            f"image_index_{idx}",
-                            0
-                        ) - 1
-                    )
-
-                    st.rerun()
-
-
-            # -------------------------------------------------
-            # IMAGE
-            # -------------------------------------------------
-
-            with image_col:
-
-                if prod["image"]:
-
-                    try:
-
-                        st.image(
-                            prod["image"],
-                            use_container_width=True
-                        )
-
-                    except Exception:
-
-                        st.info(
-                            "Product image could not be loaded."
-                        )
-
-                else:
-
-                    st.info(
-                        "No product image available."
-                    )
-
-
-            # -------------------------------------------------
-            # RIGHT BUTTON
-            # -------------------------------------------------
-
-            with right_col:
-
-                if st.button(
-                    "▶",
-                    key=f"next_{selected_cat}_{idx}",
-                    use_container_width=True
-                ):
-
-                    st.session_state[
-                        f"image_index_{idx}"
-                    ] = (
-                        st.session_state.get(
-                            f"image_index_{idx}",
-                            0
-                        ) + 1
-                    )
-
-                    st.rerun()
-
-
-            # =================================================
-            # PRODUCT NAME
-            # =================================================
-
-            st.markdown(
-                f"""
-                <div class="product-name">
-                    {prod["name"]}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-
-            # =================================================
-            # PRICE + STOCK
-            # =================================================
-
-            st.markdown(
-                f"""
-                <div class="product-price">
-                    Price: ₹{prod["price"]}
-                    &nbsp; | &nbsp;
-                    Stock: {prod["stock"]} units
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-
-            # =================================================
-            # DESCRIPTION
-            # =================================================
-
-            if prod["description"]:
-
+                    if filtered_df.empty:
+                        st.info("No products available in this category.")
+                    else:
+                        with st.container(height=520):
+                            grouped_df = filtered_df.groupby("ITEM ID", sort=False)
+
+                            for item_id, group in grouped_df:
+                                first_row = group.iloc[0]
+                                item_name = first_row.get("ITEM NAME", "Product")
+                                price = first_row.get("PRICE", "0")
+                                desc = first_row.get("DESCRIPTION", "")
+
+                                raw_list = []
+
+                                for _, r in group.iterrows():
+                                    img_raw = str(
+                                        r.get("IMAGES", r.get("IMAGE", ""))
+                                    )
+
+                                    if img_raw.strip():
+                                        for part in img_raw.replace("\\", ",").split(","):
+                                            c_name = part.strip()
+                                            if (
+                                                c_name
+                                                and not c_name.lower().endswith(
+                                                    (".mp4", ".mov", ".avi")
+                                                )
+                                            ):
+                                                raw_list.append(c_name)
+
+                                img_list = []
+
+                                for name in raw_list:
+                                    if name.startswith("http"):
+                                        img_list.append(name)
+                                    else:
+                                        encoded_name = urllib.parse.quote(name)
+                                        img_list.append(
+                                            "https://raw.githubusercontent.com/"
+                                            "baveshstationary-max/fancy/main/IMAGES/"
+                                            f"{encoded_name}"
+                                        )
+
+                                if not img_list:
+                                    img_list = [
+                                        "https://images.unsplash.com/"
+                                        "photo-1505740420928-5e560c06d30e"
+                                        "?q=80&w=300"
+                                    ]
+
+                                idx_key = f"idx_{item_id}"
+
+                                if idx_key not in st.session_state.image_indices:
+                                    st.session_state.image_indices[idx_key] = 0
+
+                                current_idx = (
+                                    st.session_state.image_indices[idx_key]
+                                    % len(img_list)
+                                )
+                                prev_idx = (current_idx - 1) % len(img_list)
+                                next_idx = (current_idx + 1) % len(img_list)
+
+                                st.markdown(
+                                    "<div class='desktop-only desktop-product-row'>",
+                                    unsafe_allow_html=True
+                                )
+
+                                cols = st.columns(
+                                    [0.4, 0.9, 1.3, 0.9, 0.4, 2.2, 0.7, 1.0]
+                                )
+
+                                with cols[0]:
+                                    if st.button(
+                                        "◀",
+                                        key=f"desktop_prev_{item_id}",
+                                        use_container_width=True
+                                    ):
+                                        st.session_state.image_indices[idx_key] = next_idx
+                                        st.rerun()
+
+                                with cols[1]:
+                                    st.markdown(
+                                        "<div class='desktop-preview-image'>",
+                                        unsafe_allow_html=True
+                                    )
+                                    st.image(
+                                        img_list[prev_idx],
+                                        use_container_width=True
+                                    )
+                                    st.markdown("</div>", unsafe_allow_html=True)
+
+                                with cols[2]:
+                                    st.markdown(
+                                        "<div class='desktop-main-image'>",
+                                        unsafe_allow_html=True
+                                    )
+                                    st.image(
+                                        img_list[current_idx],
+                                        use_container_width=True
+                                    )
+                                    st.markdown("</div>", unsafe_allow_html=True)
+
+                                with cols[3]:
+                                    st.markdown(
+                                        "<div class='desktop-preview-image'>",
+                                        unsafe_allow_html=True
+                                    )
+                                    st.image(
+                                        img_list[next_idx],
+                                        use_container_width=True
+                                    )
+                                    st.markdown("</div>", unsafe_allow_html=True)
+
+                                with cols[4]:
+                                    if st.button(
+                                        "▶",
+                                        key=f"desktop_next_{item_id}",
+                                        use_container_width=True
+                                    ):
+                                        st.session_state.image_indices[idx_key] = prev_idx
+                                        st.rerun()
+
+                                with cols[5]:
+                                    st.markdown(f"**{item_name}**")
+                                    if desc:
+                                        st.markdown(
+                                            f"<span style='color:#666;font-size:10px'>{desc}</span>",
+                                            unsafe_allow_html=True
+                                        )
+
+                                with cols[6]:
+                                    st.markdown(f"**₹{price}**")
+
+                                with cols[7]:
+                                    current_qty = st.session_state.cart.get(
+                                        str(item_id), 1
+                                    )
+                                    qty = st.number_input(
+                                        "Qty",
+                                        min_value=1,
+                                        value=current_qty,
+                                        key=f"desktop_qty_{item_id}",
+                                        label_visibility="collapsed"
+                                    )
+
+                                    if st.button(
+                                        "Add",
+                                        key=f"desktop_add_{item_id}",
+                                        use_container_width=True
+                                    ):
+                                        st.session_state.cart[str(item_id)] = qty
+                                        st.rerun()
+
+                                st.markdown("</div>", unsafe_allow_html=True)
+                                st.markdown("<hr>", unsafe_allow_html=True)
+
+                # ====================================================
+                # MOBILE CATEGORY + PRODUCT AREA
+                # ====================================================
                 st.markdown(
-                    f"""
-                    <div class="product-description">
-                        {prod["description"]}
-                    </div>
-                    """,
+                    "<div class='mobile-only'>",
                     unsafe_allow_html=True
                 )
 
+                st.markdown("##### 📁 Categories")
 
-            # =================================================
-            # QUANTITY
-            # =================================================
-
-            q_val = st.number_input(
-                "Quantity",
-                min_value=1.0,
-                value=1.0,
-                step=1.0,
-                key=f"qty_{selected_cat}_{idx}"
-            )
-
-
-            # =================================================
-            # ADD TO CART
-            # =================================================
-
-            if st.button(
-                "Add to Cart",
-                key=f"add_{selected_cat}_{idx}",
-                use_container_width=True
-            ):
-
-                # IMPORTANT:
-                # ONLY PRODUCT NAME + QUANTITY
-                # CATEGORY IS NOT ADDED.
-
-                cart_item = {
-                    "product": prod["name"],
-                    "quantity": f"{int(q_val)} Units"
-                }
-
-
-                st.session_state.cart.append(
-                    cart_item
+                mobile_category_cols = st.columns(
+                    min(4, max(1, len(categories)))
                 )
 
+                # Show first categories across the available mobile width.
+                # Extra categories remain in a compact second line.
+                for i, cat in enumerate(categories):
+                    with mobile_category_cols[i % len(mobile_category_cols)]:
+                        is_active = cat == st.session_state.selected_category
 
-                st.success(
-                    f"{prod['name']} added to cart!"
+                        if st.button(
+                            str(cat),
+                            use_container_width=True,
+                            key=f"mobile_cat_{cat}",
+                            type="primary" if is_active else "secondary"
+                        ):
+                            st.session_state.selected_category = cat
+                            st.rerun()
+
+                active_cat = st.session_state.selected_category
+
+                st.markdown(
+                    f"##### 🛍️ Products: {active_cat}"
                 )
 
-
-                st.rerun()
-
-
-            # =================================================
-            # CLOSE PRODUCT CARD
-            # =================================================
-
-            st.markdown(
-                "</div>",
-                unsafe_allow_html=True
-            )
-
-
-    else:
-
-        st.info(
-            f"No items found under category "
-            f"'{selected_cat}'."
-        )
-
-
-# ============================================================
-# CART
-# ============================================================
-
-else:
-
-    st.subheader(
-        "🛒 Shopping Cart & Checkout"
-    )
-
-
-    if st.session_state.cart:
-
-        # ----------------------------------------------------
-        # CART ITEMS
-        # ----------------------------------------------------
-
-        for i, item in enumerate(
-            st.session_state.cart
-        ):
-
-            col_item_name, col_item_remove = st.columns(
-                [3, 1]
-            )
-
-
-            with col_item_name:
-
-                # ONLY PRODUCT + QUANTITY
-                st.write(
-                    f"• {item['product']} "
-                    f"({item['quantity']})"
+                filtered_df = (
+                    df[df["CATEGORY"] == active_cat]
+                    if "CATEGORY" in df.columns
+                    else df
                 )
 
-
-            with col_item_remove:
-
-                if st.button(
-                    "Remove",
-                    key=f"remove_cart_{i}"
-                ):
-
-                    st.session_state.cart.pop(
-                        i
-                    )
-
-                    st.rerun()
-
-
-        st.markdown("---")
-
-
-        # ----------------------------------------------------
-        # CHECKOUT
-        # ----------------------------------------------------
-
-        with st.form("checkout_form"):
-
-            address = st.text_area(
-                "Delivery Address:"
-            )
-
-
-            sec_phone = st.text_input(
-                "Alternative Phone Number:",
-                max_chars=10
-            )
-
-
-            pay_method = st.selectbox(
-                "Payment Gateway",
-                [
-                    "UPI / GPay",
-                    "Cash on Delivery"
-                ]
-            )
-
-
-            checkout_button = st.form_submit_button(
-                "Confirm & Dispatch Order",
-                use_container_width=True
-            )
-
-
-            if checkout_button:
-
-                if (
-                    address.strip()
-                    and len(sec_phone) == 10
-                    and sec_phone.isdigit()
-                ):
-
-                    try:
-
-                        order_payload = {
-
-                            "Type":
-                                "Order",
-
-                            "Timestamp":
-                                datetime.now().strftime(
-                                    "%Y-%m-%d %H:%M:%S"
-                                ),
-
-                            "Customer_Name":
-                                st.session_state.logged_in_user,
-
-                            "Primary_Phone":
-                                st.session_state.user_phone,
-
-                            "Items":
-                                str(
-                                    st.session_state.cart
-                                ),
-
-                            "Address":
-                                address.strip(),
-
-                            "Secondary_Phone":
-                                sec_phone.strip(),
-
-                            "Payment_Method":
-                                pay_method
-                        }
-
-
-                        requests.post(
-                            GOOGLE_SCRIPT_URL,
-                            json=order_payload,
-                            timeout=5
-                        )
-
-
-                    except Exception:
-
-                        pass
-
-
-                    st.success(
-                        "🎉 Order successfully placed "
-                        "and synced with Google Sheets!"
-                    )
-
-
-                    st.session_state.cart = []
-
-                    st.session_state.current_view = "Home"
-
-                    st.rerun()
-
-
+                if filtered_df.empty:
+                    st.info("No products available in this category.")
                 else:
+                    for item_id, group in filtered_df.groupby(
+                        "ITEM ID", sort=False
+                    ):
+                        first_row = group.iloc[0]
+                        item_name = first_row.get("ITEM NAME", "Product")
+                        price = first_row.get("PRICE", "0")
+                        desc = first_row.get("DESCRIPTION", "")
 
-                    st.error(
-                        "Please provide a delivery address "
-                        "and valid 10-digit alternative phone."
-                    )
+                        raw_list = []
 
+                        for _, r in group.iterrows():
+                            img_raw = str(
+                                r.get("IMAGES", r.get("IMAGE", ""))
+                            )
 
-    else:
+                            if img_raw.strip():
+                                for part in img_raw.replace("\\", ",").split(","):
+                                    c_name = part.strip()
 
-        st.info(
-            "Your cart is empty."
-        )
+                                    if (
+                                        c_name
+                                        and not c_name.lower().endswith(
+                                            (".mp4", ".mov", ".avi")
+                                        )
+                                    ):
+                                        raw_list.append(c_name)
+
+                        img_list = []
+
+                        for name in raw_list:
+                            if name.startswith("http"):
+                                img_list.append(name)
+                            else:
+                                encoded_name = urllib.parse.quote(name)
+                                img_list.append(
+                                    "https://raw.githubusercontent.com/"
+                                    "baveshstationary-max/fancy/main/IMAGES/"
+                                    f"{encoded_name}"
+                                )
+
+                        if not img_list:
+                            img_list = [
+                                "https://images.unsplash.com/"
+                                "photo-1505740420928-5e560c06d30e"
+                                "?q=80&w=300"
+                            ]
+
+                        idx_key = f"idx_{item_id}"
+
+                        if idx_key not in st.session_state.image_indices:
+                            st.session_state.image_indices[idx_key] = 0
+
+                        current_idx = (
+                            st.session_state.image_indices[idx_key]
+                            % len(img_list)
+                        )
+                        prev_idx = (current_idx - 1) % len(img_list)
+                        next_idx = (current_idx + 1) % len(img_list)
+
+                        # Native Streamlit container gives us a reliable
+                        # DOM boundary for the mobile card.
+                        with st.container(
+                            border=True,
+                            key=f"mobile_product_{item_id}"
+                        ):
+
+                            st.markdown(
+                                "<div class='mobile-product-card'>",
+                                unsafe_allow_html=True
+                            )
+
+                            image_cols = st.columns([0.22, 0.56, 0.22])
+
+                            with image_cols[0]:
+                                if st.button(
+                                    "◀",
+                                    key=f"mobile_prev_{item_id}",
+                                    use_container_width=True
+                                ):
+                                    st.session_state.image_indices[idx_key] = prev_idx
+                                    st.rerun()
+
+                            with image_cols[1]:
+                                st.markdown(
+                                    "<div class='mobile-main-image'>",
+                                    unsafe_allow_html=True
+                                )
+                                st.image(
+                                    img_list[current_idx],
+                                    use_container_width=True
+                                )
+                                st.markdown("</div>", unsafe_allow_html=True)
+
+                            with image_cols[2]:
+                                if st.button(
+                                    "▶",
+                                    key=f"mobile_next_{item_id}",
+                                    use_container_width=True
+                                ):
+                                    st.session_state.image_indices[idx_key] = next_idx
+                                    st.rerun()
+
+                            preview_cols = st.columns([0.25, 0.5, 0.25])
+
+                            with preview_cols[0]:
+                                st.markdown(
+                                    "<div class='mobile-preview-image'>",
+                                    unsafe_allow_html=True
+                                )
+                                st.image(
+                                    img_list[prev_idx],
+                                    use_container_width=True
+                                )
+                                st.markdown("</div>", unsafe_allow_html=True)
+
+                            with preview_cols[1]:
+                                st.markdown(
+                                    "<div style='text-align:center;font-size:10px;color:#64748b'>"
+                                    f"{current_idx + 1} / {len(img_list)}"
+                                    "</div>",
+                                    unsafe_allow_html=True
+                                )
+
+                            with preview_cols[2]:
+                                st.markdown(
+                                    "<div class='mobile-preview-image'>",
+                                    unsafe_allow_html=True
+                                )
+                                st.image(
+                                    img_list[next_idx],
+                                    use_container_width=True
+                                )
+                                st.markdown("</div>", unsafe_allow_html=True)
+
+                            st.markdown(
+                                f"<div class='mobile-product-name'>{item_name}</div>",
+                                unsafe_allow_html=True
+                            )
+
+                            if desc:
+                                st.markdown(
+                                    f"<div class='mobile-product-desc'>{desc}</div>",
+                                    unsafe_allow_html=True
+                                )
+
+                            price_qty_cols = st.columns([1, 1])
+
+                            with price_qty_cols[0]:
+                                st.markdown(
+                                    f"<div class='mobile-product-price'>₹{price}</div>",
+                                    unsafe_allow_html=True
+                                )
+
+                            with price_qty_cols[1]:
+                                current_qty = st.session_state.cart.get(
+                                    str(item_id), 1
+                                )
+
+                                qty = st.number_input(
+                                    "Qty",
+                                    min_value=1,
+                                    value=current_qty,
+                                    key=f"mobile_qty_{item_id}",
+                                    label_visibility="collapsed"
+                                )
+
+                            if st.button(
+                                "🛒 Add to Cart",
+                                key=f"mobile_add_{item_id}",
+                                use_container_width=True
+                            ):
+                                st.session_state.cart[str(item_id)] = qty
+                                st.rerun()
+
+                            st.markdown(
+                                "</div>",
+                                unsafe_allow_html=True
+                            )
+
+            else:
+                st.info("No products found in inventory.")
+
+        except Exception as e:
+            st.error(f"Could not load catalog: {e}")
+
+    # CART PAGE
+    elif st.session_state.page == "cart":
+        st.markdown("#### 📌 Secure Checkout Form")
+        if not st.session_state.cart:
+            st.info("Your cart is empty. Go back to Home to select products.")
+        else:
+            for item_id, qty in st.session_state.cart.items():
+                st.markdown(f"- **Item ID:** {item_id} | **Quantity:** {qty}")
+            
+            st.markdown("---")
+            
+            delivery_address = st.text_area("Delivery Address:", placeholder="Enter your full street address, landmark, and pin code...")
+            alt_contact = st.text_input("Alternative Contact Number:", placeholder="Enter secondary mobile number...")
+            custom_desc = st.text_area("Product Specifications / Custom Description:", placeholder="Specify any specific instructions, colors, or custom requirements...")
+            
+            if st.button("Complete Order", use_container_width=False):
+                if not delivery_address.strip():
+                    st.error("Please enter a delivery address before completing your order.")
+                else:
+                    try:
+                        res = requests.get(f"{SCRIPT_URL}?action=getInventory")
+                        rows = res.json()
+                        item_prices = {}
+                        if len(rows) > 1:
+                            headers = [str(h).strip().upper() for h in rows[0]]
+                            inv_df = pd.DataFrame(rows[1:], columns=headers)
+                            if 'ITEM ID' in inv_df.columns and 'PRICE' in inv_df.columns:
+                                for _, row in inv_df.iterrows():
+                                    item_prices[str(row['ITEM ID'])] = float(row['PRICE'])
+
+                        for item_id, qty in st.session_state.cart.items():
+                            unit_price = item_prices.get(str(item_id), 0.0)
+                            total_cost = qty * unit_price
+                            
+                            order_data = {
+                                "mobile": st.session_state.mobile,
+                                "altContact": alt_contact,
+                                "deliveryAddress": delivery_address,
+                                "customDescription": custom_desc,
+                                "itemId": item_id,
+                                "itemName": f"Item {item_id}",
+                                "quantity": qty,
+                                "totalCost": total_cost
+                            }
+                            requests.post(SCRIPT_URL, json=order_data)
+                        
+                        st.success("Order successfully submitted to Google Sheets!")
+                        st.session_state.cart = {}
+                    except Exception as e:
+                        st.error(f"Error checking out: {e}")
