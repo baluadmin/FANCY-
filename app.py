@@ -17,15 +17,15 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
 
-        /* Font size reduced by another 2 points (from 34px down to 32px) */
+        /* Apply Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Montserrat', sans-serif !important;
-            font-size: 32px !important;
+            font-size: 20px !important;
         }
 
-        /* Set App Background to Light Yellow */
+        /* Set App Background to Light Blue with Yellow Accents */
         .stApp {
-            background-color: #fefce8 !important; /* Soft light yellow */
+            background-color: #e0f2fe !important; /* Soft light blue */
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -43,24 +43,24 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
-        /* Automatically adapt text color & font size reduced by 2px (from 32px down to 30px) */
+        /* Automatically adapt text color */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #1e293b !important;
+            color: #0f172a !important;
             font-weight: 600 !important;
-            font-size: 30px !important;
+            font-size: 18px !important;
         }
         
-        /* Input boxes styling supporting light yellow theme with reduced font size */
+        /* Input boxes styling supporting light blue / yellow theme */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
-            color: #1e293b !important;
+            color: #0f172a !important;
             border: 2px solid #fde047 !important;
-            font-size: 30px !important;
+            font-size: 18px !important;
             font-weight: 500 !important;
             border-radius: 8px !important;
         }
 
-        /* Professional Warm Yellow Header Banner */
+        /* Professional Warm Yellow Header Banner on Light Blue */
         .brand-banner {
             background: linear-gradient(135deg, #fef08a 100%, #fde047 0%);
             padding: 18px 22px;
@@ -72,22 +72,22 @@ st.markdown("""
             border: 2px solid #facc15;
         }
         .brand-title {
-            font-size: 48px !important;
+            font-size: 32px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
             color: #713f12 !important;
             margin: 0;
         }
 
-        /* Compact, Full-Width Buttons tightly fitted inside columns */
+        /* Compact, Full-Width Yellow Buttons tightly fitted inside columns */
         div.stButton > button {
             background-color: #fef08a !important;
             color: #713f12 !important;
             border: 2px solid #facc15 !important;
             font-weight: 700 !important;
-            font-size: 30px !important;
+            font-size: 18px !important;
             border-radius: 8px !important;
-            padding: 0.5rem 0.6rem !important;
+            padding: 0.6rem 0.8rem !important;
             width: 100% !important;
             display: block !important;
         }
@@ -97,7 +97,7 @@ st.markdown("""
             border: 2px solid #eab308 !important;
         }
 
-        /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
+        /* Responsive Mobile Handling: Fix Header Buttons Wrapping */
         @media (max-width: 900px) {
             .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
                 flex-direction: row !important;
@@ -130,21 +130,20 @@ st.markdown("""
             max-width: 100% !important;
         }
 
-        /* Compact login screen for Android landscape */
         .login-title {
             text-align: center;
             margin: 2px 0 4px 0;
         }
 
         .login-title h1 {
-            font-size: 52px !important;
+            font-size: 32px !important;
             font-weight: 800 !important;
             margin: 0 0 2px 0;
-            color: #713f12 !important;
+            color: #0369a1 !important;
         }
 
         .login-title p {
-            font-size: 26px !important;
+            font-size: 16px !important;
             margin: 0;
         }
 
@@ -161,66 +160,14 @@ st.markdown("""
 
         .login-card h3 {
             margin: 0 0 5px 0;
-            font-size: 34px !important;
+            font-size: 22px !important;
             font-weight: 700 !important;
+            color: #0369a1 !important;
         }
 
         div[data-testid="stForm"] {
             border: none !important;
             padding: 6px 0 0 0 !important;
-        }
-
-        @media (orientation: landscape) and (max-height: 700px) {
-            .block-container {
-                padding-top: 0.15rem !important;
-                padding-bottom: 0rem !important;
-                padding-left: 0.8rem !important;
-                padding-right: 0.8rem !important;
-            }
-
-            .login-title {
-                margin: 0 0 1px 0;
-            }
-
-            .login-title h1 {
-                font-size: 40px !important;
-                margin-bottom: 0;
-            }
-
-            .login-title p {
-                font-size: 20px !important;
-            }
-
-            .login-card {
-                max-width: 680px;
-                padding: 5px 14px 6px 14px;
-            }
-
-            .login-card h3 {
-                font-size: 28px !important;
-                margin-bottom: 1px;
-            }
-
-            div[data-testid="stForm"] {
-                padding-top: 2px !important;
-            }
-
-            div[data-testid="stTextInput"] {
-                margin-bottom: -5px !important;
-            }
-
-            button[kind="primaryFormSubmit"] {
-                min-height: 38px !important;
-                padding: 0.2rem 0.5rem !important;
-                font-size: 28px !important;
-            }
-        }
-
-        @media (max-width: 700px) and (orientation: portrait) {
-            .login-card {
-                max-width: 100%;
-                padding: 10px;
-            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -328,6 +275,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# Adjusted column ratios to ensure Home, Cart, and Logout fit neatly in a single horizontal row without wrapping
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.2, 0.4, 1.3, 1.3, 1.3], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -386,17 +334,17 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High quality wireless sound with long battery backup."},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "Immersive sound with noise cancellation mic."},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Quick charge adapter for modern smartphones."},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "Charge two devices simultaneously safely."},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "Durable tangle-free charging and sync cable."},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "High-speed data transfer and quick charging cable."},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "Clear vocal recording microphone for creators."},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "Compact clip-on microphone for interviews and vlogs."},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "Reliable high-capacity replacement battery."},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "9H hardness crystal clear screen protector."},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "True wireless earbuds with charging case."},
         {"id": "ITM012", "name": "MagSafe Wireless Power Bank", "price": "2200", "stock": "60", "category": "Charger", "image": "", "description": "High-capacity magnetic portable charger for fast wireless charging."},
         {"id": "ITM013", "name": "RGB Phone Cooler Fan", "price": "950", "stock": "85", "category": "Headset", "image": "", "description": "Semiconductor mobile radiator gaming cooler with RGB lights."},
         {"id": "ITM014", "name": "Heavy Duty Phone Stand", "price": "350", "stock": "110", "category": "Headset", "image": "", "description": "Adjustable aluminum desktop phone and tablet holder stand."},
@@ -450,7 +398,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=3000, border=True):
+        with st.container(height=2400, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -462,7 +410,7 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=3000, border=True):
+        with st.container(height=2400, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
@@ -498,7 +446,7 @@ if st.session_state.current_view == "Home":
                                 l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 45px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{global_idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -527,22 +475,22 @@ if st.session_state.current_view == "Home":
                                             st.image(valid_paths[0], width=180)
                                         
                                 with r_btn:
-                                    st.markdown("<div style='height: 45px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{global_idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
                                         else:
-                                            st.session_state[slide_key] = 0
+                                            st.session_state[slide_key] = total_imgs - 1
                                         st.rerun()
                             else:
-                                st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-                                st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 24px;'>No Image</p>", unsafe_allow_html=True)
+                                st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+                                st.markdown("<p style='text-align: center; color: #64748b; font-size: 20px;'>No Image</p>", unsafe_allow_html=True)
                         else:
-                            st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-                            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 24px;'>No Image</p>", unsafe_allow_html=True)
+                            st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+                            st.markdown("<p style='text-align: center; color: #64748b; font-size: 20px;'>No Image</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 130px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 110px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -550,7 +498,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 130px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 110px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -567,7 +515,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 6px; margin-bottom: 6px; border: none; border-top: 2px solid #fde047;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #fde047;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
