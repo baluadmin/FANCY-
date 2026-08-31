@@ -15,7 +15,7 @@ import streamlit as st
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed",
 )
 
@@ -27,751 +27,134 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* ============================================================
-       HM MOBILES
-       One fixed responsive design for desktop + mobile.
-       The page NEVER changes MENU|PRODUCT into stacked blocks.
-       ============================================================ */
+    * { box-sizing: border-box !important; }
 
-    * {
-        box-sizing: border-box !important;
-    }
-
-    html, body,
-    [data-testid="stApp"],
-    [data-testid="stAppViewContainer"],
-    [data-testid="stMain"],
-    [data-testid="stMainBlockContainer"] {
+    html, body, [data-testid="stApp"], [data-testid="stAppViewContainer"],
+    [data-testid="stMain"], [data-testid="stMainBlockContainer"] {
         width: 100% !important;
         max-width: 100% !important;
+        min-width: 0 !important;
         overflow-x: hidden !important;
     }
 
     .block-container {
         width: 100% !important;
-        max-width: 100% !important;
-        padding: 8px 10px 12px 10px !important;
+        max-width: 1050px !important;
         margin: 0 auto !important;
+        padding: 10px 14px 24px !important;
     }
 
-    /* Streamlit columns: never wrap on a phone. */
+    #MainMenu, header, footer, div[data-testid="stToolbar"],
+    section[data-testid="stStatusWidget"], div[data-testid="stDecoration"],
+    div[class*="viewerBadge"] { display: none !important; }
+
     div[data-testid="stHorizontalBlock"] {
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
         flex-wrap: nowrap !important;
-        align-items: flex-start !important;
-        gap: 5px !important;
     }
-
     div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
         min-width: 0 !important;
         max-width: 100% !important;
-        overflow: hidden !important;
     }
 
-    /* Remove Streamlit browser chrome. */
-    #MainMenu,
-    header,
-    footer,
-    div[data-testid="stToolbar"],
-    section[data-testid="stStatusWidget"],
-    div[data-testid="stDecoration"],
-    div[class*="viewerBadge"] {
-        display: none !important;
-    }
+    /* LOGIN */
+    .hm-login-title { text-align:center !important; margin:12px auto 16px !important; }
+    .hm-login-title h1 { margin:0 !important; font-size:32px !important; line-height:1.15 !important; }
+    .hm-login-title p { margin:5px 0 0 !important; font-size:13px !important; }
+    div[data-testid="stForm"] { width:min(430px,100%) !important; max-width:430px !important; margin:auto !important; }
 
-    /* ============================================================
-       LOGIN
-       ============================================================ */
+    input, textarea, div[data-baseweb="select"] > div { max-width:100% !important; min-width:0 !important; }
 
-    .hm-login-title {
-        width: 100% !important;
-        text-align: center !important;
-        margin: 7px auto 10px auto !important;
-    }
-
-    .hm-login-title h1 {
-        margin: 0 !important;
-        font-size: 28px !important;
-        line-height: 1.15 !important;
-        font-weight: 800 !important;
-    }
-
-    .hm-login-title p {
-        margin: 4px 0 0 0 !important;
-        font-size: 13px !important;
-        line-height: 1.3 !important;
-    }
-
-    div[data-testid="stForm"] {
-        width: min(430px, 100%) !important;
-        max-width: 430px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    input,
-    textarea,
-    div[data-baseweb="select"] > div {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    /* ============================================================
-       BRAND
-       ============================================================ */
-
+    /* HEADER */
     .hm-brand {
-        width: 100% !important;
-        padding: 10px 7px !important;
-        margin: 0 0 5px 0 !important;
-        background: #1e293b !important;
-        border-radius: 7px !important;
-        text-align: center !important;
+        width:100% !important;
+        min-height:146px !important;
+        display:flex !important; align-items:center !important; justify-content:center !important;
+        padding:20px 12px !important; margin:0 0 8px !important;
+        background:#dff1ff !important; border:1px solid #69b9f4 !important; border-radius:7px !important;
     }
-
     .hm-brand-title {
-        margin: 0 !important;
-        color: #ffffff !important;
-        font-size: 20px !important;
-        line-height: 1.2 !important;
-        font-weight: 800 !important;
-        overflow-wrap: anywhere !important;
+        width:100% !important; color:#071b35 !important; text-align:center !important;
+        font-size:34px !important; line-height:1.35 !important; font-weight:400 !important;
+        overflow-wrap:normal !important;
     }
 
-    /* ============================================================
-       NAVIGATION
-       Welcome | Home | Cart | Logout
-       ============================================================ */
+    /* NAV */
+    .hm-nav { width:100% !important; overflow:hidden !important; }
+    .hm-nav div[data-testid="stHorizontalBlock"] { gap:10px !important; align-items:center !important; }
+    .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child { flex:1 1 auto !important; width:auto !important; }
+    .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:not(:first-child) { flex:0 0 auto !important; width:auto !important; }
+    .hm-nav p { margin:0 !important; font-size:11px !important; white-space:nowrap !important; }
+    .hm-nav div.stButton > button { min-width:68px !important; min-height:36px !important; padding:5px 10px !important; font-size:11px !important; white-space:nowrap !important; }
 
-    .hm-nav {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
+    /* CATEGORY BAR */
+    .hm-category-bar { width:100% !important; overflow:hidden !important; }
+    .hm-category-bar div[data-testid="stHorizontalBlock"] { gap:14px !important; margin-bottom:0 !important; }
+    .hm-category-bar div[data-testid="stHorizontalBlock"] > div[data-testid="column"] { flex:1 1 0 !important; width:0 !important; overflow:hidden !important; }
+    .hm-category-bar div.stButton > button {
+        width:100% !important; min-width:0 !important; min-height:51px !important;
+        padding:6px 5px !important; font-size:11px !important; line-height:1.25 !important;
+        white-space:normal !important;
+    }
+    .hm-divider { border-top:1px solid #d7d7d7 !important; margin:20px 0 11px !important; width:100% !important; }
+    .hm-category-title { font-size:14px !important; font-weight:600 !important; margin:0 0 17px !important; }
+
+    /* PRODUCT CARD */
+    .hm-product-card {
+        width:100% !important; max-width:100% !important; min-width:0 !important; overflow:hidden !important;
+        border:1px solid #d5d5d5 !important; border-radius:8px !important;
+        padding:14px !important; margin:0 0 14px !important; background:#fff !important;
+    }
+    .hm-product-card div[data-testid="stHorizontalBlock"] { gap:8px !important; flex-wrap:nowrap !important; }
+    .hm-product-card img {
+        width:100% !important; max-width:100% !important; height:auto !important;
+        max-height:105px !important; object-fit:contain !important; display:block !important;
+    }
+    .hm-no-image { height:105px !important; display:flex !important; align-items:center !important; justify-content:center !important; color:#888 !important; font-size:12px !important; }
+    .hm-card-divider { border-top:1px solid #d8d8d8 !important; margin:13px 0 11px !important; width:100% !important; }
+    .hm-product-name { font-size:14px !important; line-height:1.25 !important; font-weight:500 !important; margin:0 0 16px !important; color:#101010 !important; }
+    .hm-product-price { font-size:14px !important; line-height:1.2 !important; margin:0 0 18px !important; color:#101010 !important; }
+    .hm-product-description { font-size:11px !important; line-height:1.3 !important; color:#888 !important; min-height:28px !important; margin:0 0 9px !important; overflow-wrap:anywhere !important; }
+    .hm-product-card .stNumberInput, .hm-product-card .stButton { width:100% !important; max-width:100% !important; }
+    .hm-product-card input { min-width:0 !important; width:100% !important; min-height:36px !important; font-size:11px !important; }
+    .hm-product-card div.stButton > button { width:100% !important; min-height:36px !important; font-size:11px !important; padding:5px 8px !important; }
+    .hm-product-card [data-testid="stVerticalBlock"] { gap:.35rem !important; }
+
+    /* CART */
+    .hm-cart { width:100% !important; max-width:100% !important; overflow:hidden !important; }
+
+    /* PHONE */
+    @media (max-width:600px) {
+        .block-container { max-width:100% !important; padding:8px 7px 20px !important; }
+        .hm-brand { min-height:146px !important; padding:18px 10px !important; }
+        .hm-brand-title { font-size:32px !important; line-height:1.35 !important; }
+        .hm-nav div[data-testid="stHorizontalBlock"] { gap:8px !important; }
+        .hm-nav p { font-size:10px !important; }
+        .hm-nav div.stButton > button { min-width:64px !important; min-height:36px !important; padding:5px 8px !important; font-size:10px !important; }
+        .hm-category-bar div[data-testid="stHorizontalBlock"] { gap:14px !important; }
+        .hm-category-bar div.stButton > button { min-height:51px !important; font-size:11px !important; }
+        .hm-divider { margin:20px 0 11px !important; }
+        .hm-product-card { padding:13px !important; margin-bottom:14px !important; }
+        .hm-product-card div[data-testid="stHorizontalBlock"] { gap:5px !important; }
+        .hm-product-card img { max-height:100px !important; }
+        .hm-product-name, .hm-product-price { font-size:14px !important; }
+        .hm-product-description { font-size:11px !important; }
     }
 
-    .hm-nav div[data-testid="stHorizontalBlock"] {
-        gap: 4px !important;
-        align-items: center !important;
+    @media (max-width:380px) {
+        .block-container { padding-left:6px !important; padding-right:6px !important; }
+        .hm-brand { min-height:132px !important; }
+        .hm-brand-title { font-size:28px !important; }
+        .hm-nav div[data-testid="stHorizontalBlock"] { gap:5px !important; }
+        .hm-nav div.stButton > button { min-width:59px !important; padding:5px 6px !important; font-size:9px !important; }
+        .hm-category-bar div[data-testid="stHorizontalBlock"] { gap:7px !important; }
+        .hm-category-bar div.stButton > button { font-size:10px !important; }
+        .hm-product-card { padding:11px !important; }
+        .hm-product-card img { max-height:88px !important; }
     }
-
-    .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-        overflow: hidden !important;
-    }
-
-    .hm-nav p {
-        margin: 0 !important;
-        font-size: 14px !important;
-        line-height: 1.3 !important;
-        overflow-wrap: anywhere !important;
-    }
-
-    .hm-nav div.stButton > button {
-        width: 100% !important;
-        min-width: 0 !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        padding: 5px 4px !important;
-    }
-
-    /* ============================================================
-       MAIN
-       Menu | Product
-       ============================================================ */
-
-    .hm-main {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .hm-main > div[data-testid="stHorizontalBlock"] {
-        gap: 6px !important;
-    }
-
-    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-        overflow: hidden !important;
-    }
-
-    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
-        flex: 0 0 24% !important;
-        width: 24% !important;
-    }
-
-    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
-        flex: 0 0 76% !important;
-        width: 76% !important;
-    }
-
-    .hm-main h3 {
-        margin: 2px 0 6px 0 !important;
-        font-size: 18px !important;
-    }
-
-    .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child div.stButton > button {
-        width: 100% !important;
-        min-width: 0 !important;
-        padding: 6px 4px !important;
-        font-size: 13px !important;
-        line-height: 1.15 !important;
-    }
-
-    /* ============================================================
-       PRODUCT
-       Image | Description | Price
-       ============================================================ */
-
-    .hm-product {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .hm-product > div[data-testid="stHorizontalBlock"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        gap: 5px !important;
-        align-items: flex-start !important;
-    }
-
-    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        min-width: 0 !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
-        flex: 0 0 31% !important;
-        width: 31% !important;
-    }
-
-    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
-        flex: 0 0 41% !important;
-        width: 41% !important;
-    }
-
-    .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
-        flex: 0 0 28% !important;
-        width: 28% !important;
-    }
-
-    .hm-product p,
-    .hm-product span,
-    .hm-product label {
-        max-width: 100% !important;
-        overflow-wrap: anywhere !important;
-        word-break: break-word !important;
-        line-height: 1.3 !important;
-    }
-
-    .hm-product img {
-        display: block !important;
-        max-width: 100% !important;
-        height: auto !important;
-        object-fit: contain !important;
-    }
-
-    .hm-product hr {
-        margin: 7px 0 !important;
-    }
-
-    .hm-product div.stButton > button,
-    .hm-product input {
-        min-width: 0 !important;
-        max-width: 100% !important;
-    }
-
-    /* ============================================================
-       CART
-       ============================================================ */
-
-    .hm-cart {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: hidden !important;
-    }
-
-    /* ============================================================
-       MOBILE - purpose-built spacing
-       ============================================================ */
-
-    @media (max-width: 600px) {
-
-        .block-container {
-            padding: 3px 3px 7px 3px !important;
-        }
-
-        /* LOGIN */
-        .hm-login-title {
-            margin: 2px auto 6px auto !important;
-        }
-
-        .hm-login-title h1 {
-            font-size: 23px !important;
-        }
-
-        .hm-login-title p {
-            font-size: 10px !important;
-            line-height: 1.2 !important;
-        }
-
-        div[data-testid="stForm"] {
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        /* BRAND */
-        .hm-brand {
-            padding: 7px 3px !important;
-            margin-bottom: 3px !important;
-            border-radius: 6px !important;
-        }
-
-        .hm-brand-title {
-            font-size: 13px !important;
-        }
-
-        /* NAV - carefully sized for a phone */
-        .hm-nav div[data-testid="stHorizontalBlock"] {
-            gap: 2px !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
-            flex: 0 0 40% !important;
-            width: 40% !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
-            flex: 0 0 19% !important;
-            width: 19% !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
-            flex: 0 0 21% !important;
-            width: 21% !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) {
-            flex: 0 0 20% !important;
-            width: 20% !important;
-        }
-
-        .hm-nav p {
-            font-size: 10px !important;
-            line-height: 1.2 !important;
-        }
-
-        .hm-nav div.stButton > button {
-            min-height: 29px !important;
-            font-size: 9px !important;
-            padding: 3px 1px !important;
-        }
-
-        /* MAIN MENU | PRODUCT */
-        .hm-main > div[data-testid="stHorizontalBlock"] {
-            gap: 3px !important;
-        }
-
-        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
-            flex-basis: 25% !important;
-            width: 25% !important;
-        }
-
-        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
-            flex-basis: 75% !important;
-            width: 75% !important;
-        }
-
-        .hm-main h3 {
-            font-size: 13px !important;
-            line-height: 1.15 !important;
-            margin: 1px 0 4px 0 !important;
-        }
-
-        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child div.stButton > button {
-            min-height: 28px !important;
-            font-size: 9px !important;
-            padding: 3px 1px !important;
-        }
-
-        /* PRODUCT IMAGE | DESCRIPTION | PRICE */
-        .hm-product > div[data-testid="stHorizontalBlock"] {
-            gap: 2px !important;
-        }
-
-        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) {
-            flex-basis: 30% !important;
-            width: 30% !important;
-        }
-
-        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
-            flex-basis: 43% !important;
-            width: 43% !important;
-        }
-
-        .hm-product > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) {
-            flex-basis: 27% !important;
-            width: 27% !important;
-        }
-
-        .hm-product p,
-        .hm-product span,
-        .hm-product label {
-            font-size: 9px !important;
-            line-height: 1.2 !important;
-        }
-
-        .hm-product h3 {
-            font-size: 12px !important;
-            line-height: 1.1 !important;
-            margin: 0 !important;
-        }
-
-        .hm-product h4 {
-            font-size: 10px !important;
-            line-height: 1.1 !important;
-        }
-
-        .hm-product img {
-            max-height: 82px !important;
-        }
-
-        .hm-product div.stButton > button {
-            min-height: 26px !important;
-            font-size: 8px !important;
-            padding: 2px 1px !important;
-        }
-
-        .hm-product input {
-            min-height: 26px !important;
-            font-size: 9px !important;
-            padding: 2px !important;
-        }
-
-        /* CART */
-        .hm-cart div[data-testid="stHorizontalBlock"] {
-            gap: 3px !important;
-        }
-    }
-
-    /* Extra-small phones */
-    @media (max-width: 380px) {
-
-        .block-container {
-            padding-left: 2px !important;
-            padding-right: 2px !important;
-        }
-
-        .hm-brand-title {
-            font-size: 11px !important;
-        }
-
-        .hm-nav p,
-        .hm-nav div.stButton > button {
-            font-size: 8px !important;
-        }
-
-        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
-            flex-basis: 24% !important;
-            width: 24% !important;
-        }
-
-        .hm-main > div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:last-child {
-            flex-basis: 76% !important;
-            width: 76% !important;
-        }
-
-        .hm-product p,
-        .hm-product span,
-        .hm-product label {
-            font-size: 8px !important;
-        }
-
-        .hm-product div.stButton > button {
-            font-size: 7px !important;
-        }
-    }
-        /* ========================================================
-           FINAL MOBILE SINGLE-WINDOW OVERRIDE
-           ======================================================== */
-
-        html, body, [data-testid="stApp"],
-        [data-testid="stAppViewContainer"],
-        [data-testid="stMain"],
-        [data-testid="stMainBlockContainer"] {
-            width: 100% !important;
-            max-width: 100vw !important;
-            min-width: 0 !important;
-            overflow-x: hidden !important;
-        }
-
-        .block-container {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            padding: 8px 7px 18px 7px !important;
-            margin: 0 !important;
-        }
-
-        /* Header exactly as a mobile-width box */
-        .hm-brand {
-            width: 100% !important;
-            min-width: 0 !important;
-            min-height: 146px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 20px 10px !important;
-            margin: 0 0 8px 0 !important;
-            background: #dff1ff !important;
-            border: 1px solid #69b9f4 !important;
-            border-radius: 7px !important;
-        }
-
-        .hm-brand-title {
-            width: 100% !important;
-            color: #071b35 !important;
-            font-size: 34px !important;
-            line-height: 1.35 !important;
-            font-weight: 500 !important;
-            text-align: center !important;
-            overflow-wrap: normal !important;
-        }
-
-        /* Navigation: welcome on left, buttons on right */
-        .hm-nav {
-            width: 100% !important;
-            overflow: hidden !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] {
-            width: 100% !important;
-            display: flex !important;
-            flex-wrap: nowrap !important;
-            gap: 10px !important;
-            align-items: center !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            min-width: 0 !important;
-            overflow: hidden !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child {
-            flex: 1 1 auto !important;
-            width: auto !important;
-        }
-
-        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:not(:first-child) {
-            flex: 0 0 auto !important;
-            width: auto !important;
-        }
-
-        .hm-nav p {
-            font-size: 11px !important;
-            white-space: nowrap !important;
-        }
-
-        .hm-nav div.stButton > button {
-            min-height: 36px !important;
-            width: auto !important;
-            min-width: 68px !important;
-            padding: 5px 10px !important;
-            font-size: 11px !important;
-            white-space: nowrap !important;
-        }
-
-        /* Category buttons */
-        .hm-category-bar {
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow: hidden !important;
-        }
-
-        .hm-category-bar div[data-testid="stHorizontalBlock"] {
-            width: 100% !important;
-            max-width: 100% !important;
-            flex-wrap: nowrap !important;
-            gap: 14px !important;
-            margin-bottom: 8px !important;
-        }
-
-        .hm-category-bar div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            min-width: 0 !important;
-            flex: 1 1 0 !important;
-            width: 0 !important;
-            overflow: hidden !important;
-        }
-
-        .hm-category-bar div.stButton > button {
-            width: 100% !important;
-            min-width: 0 !important;
-            min-height: 51px !important;
-            padding: 6px 5px !important;
-            font-size: 11px !important;
-            line-height: 1.25 !important;
-            white-space: normal !important;
-        }
-
-        .hm-divider {
-            width: 100% !important;
-            border-top: 1px solid #d7d7d7 !important;
-            margin: 10px 0 11px 0 !important;
-        }
-
-        .hm-category-title {
-            width: 100% !important;
-            font-size: 14px !important;
-            line-height: 1.25 !important;
-            font-weight: 600 !important;
-            margin: 0 0 17px 0 !important;
-        }
-
-        /* Full-width product card */
-        .hm-product-card {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            overflow: hidden !important;
-            border: 1px solid #d5d5d5 !important;
-            border-radius: 8px !important;
-            padding: 14px !important;
-            margin: 0 0 14px 0 !important;
-            background: #ffffff !important;
-        }
-
-        .hm-product-card div[data-testid="stHorizontalBlock"] {
-            width: 100% !important;
-            max-width: 100% !important;
-            flex-wrap: nowrap !important;
-            gap: 7px !important;
-        }
-
-        .hm-product-card div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            min-width: 0 !important;
-            overflow: hidden !important;
-        }
-
-        .hm-product-card img {
-            width: 100% !important;
-            max-width: 100% !important;
-            height: auto !important;
-            max-height: 82px !important;
-            object-fit: contain !important;
-            display: block !important;
-        }
-
-        .hm-no-image {
-            height: 100px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: #888 !important;
-            font-size: 12px !important;
-        }
-
-        .hm-card-divider {
-            width: 100% !important;
-            border-top: 1px solid #d8d8d8 !important;
-            margin: 13px 0 11px 0 !important;
-        }
-
-        .hm-product-name {
-            font-size: 14px !important;
-            line-height: 1.25 !important;
-            font-weight: 500 !important;
-            margin-bottom: 16px !important;
-            color: #101010 !important;
-        }
-
-        .hm-product-price {
-            font-size: 14px !important;
-            line-height: 1.2 !important;
-            margin-bottom: 18px !important;
-            color: #101010 !important;
-        }
-
-        .hm-product-description {
-            font-size: 11px !important;
-            line-height: 1.3 !important;
-            color: #888 !important;
-            min-height: 28px !important;
-            margin-bottom: 9px !important;
-            overflow-wrap: anywhere !important;
-        }
-
-        /* Quantity and Add button */
-        .hm-product-card .stNumberInput,
-        .hm-product-card .stButton {
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        .hm-product-card input {
-            min-width: 0 !important;
-            width: 100% !important;
-            min-height: 36px !important;
-            font-size: 11px !important;
-        }
-
-        .hm-product-card div.stButton > button {
-            width: 100% !important;
-            min-height: 36px !important;
-            font-size: 11px !important;
-            padding: 5px 8px !important;
-        }
-
-        /* Streamlit vertical spacing reduction */
-        .hm-product-card [data-testid="stVerticalBlock"] {
-            gap: 0.35rem !important;
-        }
-
-        @media (max-width: 600px) {
-            .block-container {
-                padding-left: 7px !important;
-                padding-right: 7px !important;
-            }
-
-            .hm-brand-title {
-                font-size: 34px !important;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .hm-brand {
-                min-height: 130px !important;
-            }
-
-            .hm-brand-title {
-                font-size: 29px !important;
-            }
-
-            .hm-nav div[data-testid="stHorizontalBlock"] {
-                gap: 5px !important;
-            }
-
-            .hm-nav div.stButton > button {
-                min-width: 60px !important;
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-                font-size: 10px !important;
-            }
-
-            .hm-category-bar div[data-testid="stHorizontalBlock"] {
-                gap: 7px !important;
-            }
-
-            .hm-category-bar div.stButton > button {
-                font-size: 10px !important;
-            }
-        }
     </style>
-
     """,
     unsafe_allow_html=True,
 )
