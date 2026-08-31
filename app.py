@@ -32,30 +32,11 @@ html, body, [class*="css"] {
     font-family: 'Inter', sans-serif !important;
 }
 
-
-/* ============================================================
-   HIDE STREAMLIT DEFAULT UI
-   ============================================================ */
-
-#MainMenu {
-    visibility: hidden;
-}
-
-header {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-div[data-testid="stToolbar"] {
-    display: none !important;
-}
-
-section[data-testid="stStatusWidget"] {
-    display: none !important;
-}
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+div[data-testid="stToolbar"] {display: none !important;}
+section[data-testid="stStatusWidget"] {display: none !important;}
 
 
 /* ============================================================
@@ -73,10 +54,7 @@ div[data-testid="stMainBlockContainer"],
     max-width: 100% !important;
 }
 
-
-label,
-.stTextInput label,
-p {
+label, .stTextInput label, p {
     font-weight: 600 !important;
 }
 
@@ -101,7 +79,6 @@ p {
     box-shadow:
         0 2px 4px rgba(168, 85, 247, 0.25);
 }
-
 
 .brand-title {
     color: white !important;
@@ -135,13 +112,11 @@ p {
     box-shadow: none !important;
 }
 
-
 .hm-nav-box [data-testid="stRadio"] {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
 }
-
 
 .hm-nav-box [data-testid="stRadio"] > div {
     display: flex !important;
@@ -153,7 +128,6 @@ p {
     justify-content: center !important;
     align-items: center !important;
 }
-
 
 .hm-nav-box [data-testid="stRadio"] > div > label {
     flex: 1 1 0 !important;
@@ -179,11 +153,9 @@ p {
     box-sizing: border-box !important;
 }
 
-
 .hm-nav-box [data-testid="stRadio"] > div > label > div:first-child {
     display: none !important;
 }
-
 
 .hm-nav-box [data-testid="stRadio"] > div > label p {
     color: #9333ea !important;
@@ -196,7 +168,6 @@ p {
 
     white-space: nowrap !important;
 }
-
 
 .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) {
     background: linear-gradient(
@@ -211,7 +182,6 @@ p {
         0 1px 3px rgba(236, 72, 153, 0.3);
 }
 
-
 .hm-nav-box [data-testid="stRadio"] > div > label:has(input:checked) p {
     color: white !important;
 }
@@ -225,7 +195,6 @@ p {
     margin-top: 0 !important;
     margin-bottom: 2px !important;
 }
-
 
 .category-area div[data-baseweb="select"] > div {
     min-height: 24px !important;
@@ -259,7 +228,6 @@ p {
     box-shadow:
         0 1px 3px rgba(0,0,0,0.03);
 }
-
 
 [data-testid="stImageCaption"] {
     display: none !important;
@@ -348,7 +316,6 @@ div.stButton > button {
         0 1px 2px rgba(99, 102, 241, 0.2);
 }
 
-
 div.stButton > button:hover {
     background: linear-gradient(
         135deg,
@@ -362,78 +329,6 @@ div.stButton > button:hover {
         0 2px 4px rgba(219, 39, 119, 0.3);
 }
 
-
-/* ============================================================
-   IMAGE AREA
-   ============================================================ */
-
-.product-image-area {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* ============================================================
-   FAILED IMAGE TEXT
-   ============================================================ */
-
-.failed-image {
-    font-size: 9px;
-    text-align: center;
-
-    color: #ef4444;
-
-    margin: 0;
-}
-
-
-/* ============================================================
-   NO IMAGE TEXT
-   ============================================================ */
-
-.no-image {
-    font-size: 9px;
-    text-align: center;
-
-    color: #94a3b8;
-
-    margin: 0;
-}
-
-
-/* ============================================================
-   CART
-   ============================================================ */
-
-.cart-item {
-    padding: 5px;
-
-    border-bottom: 1px solid #e2e8f0;
-}
-
-
-/* ============================================================
-   MOBILE SAFETY
-   ============================================================ */
-
-@media (max-width: 600px) {
-
-    .block-container {
-        padding-left: 0.3rem !important;
-        padding-right: 0.3rem !important;
-    }
-
-    .product-card {
-        padding: 3px 4px !important;
-    }
-
-    .brand-banner {
-        margin-bottom: 2px !important;
-    }
-
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -445,14 +340,11 @@ div.stButton > button:hover {
 if "logged_in_user" not in st.session_state:
     st.session_state.logged_in_user = None
 
-
 if "user_phone" not in st.session_state:
     st.session_state.user_phone = None
 
-
 if "cart" not in st.session_state:
     st.session_state.cart = []
-
 
 if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
@@ -689,24 +581,127 @@ product_records = []
 # GITHUB SETTINGS
 # ============================================================
 
+GITHUB_USER = "Balumahendran"
+REPO_NAME = "python-project1"
+
+
+# ============================================================
+# IMAGE URL BUILDER
+# ============================================================
+
+def build_github_image_url(image_name):
+
+    """
+    Converts:
+
+        Headset 1 1.jpg
+
+    into:
+
+        https://raw.githubusercontent.com/
+        Balumahendran/python-project1/main/
+        images/Headset%201%201.jpg
+    """
+
+    image_name = str(image_name).strip()
+
+    if not image_name:
+        return None
+
+    if image_name.lower() == "nan":
+        return None
+
+    # --------------------------------------------------------
+    # Already a full URL
+    # --------------------------------------------------------
+
+    if (
+        image_name.startswith("http://")
+        or image_name.startswith("https://")
+    ):
+
+        return image_name
+
+
+    # --------------------------------------------------------
+    # Remove unwanted leading slashes
+    # --------------------------------------------------------
+
+    image_name = image_name.lstrip("/")
+
+
+    # --------------------------------------------------------
+    # Your sheet contains only:
+    #
+    # Headset 1 1.jpg
+    #
+    # So add images/ here.
+    #
+    # If somebody later puts:
+    #
+    # images/Headset 1 1.jpg
+    #
+    # don't add images/ twice.
+    # --------------------------------------------------------
+
+    if image_name.lower().startswith("images/"):
+
+        github_path = image_name
+
+    else:
+
+        github_path = (
+            f"images/{image_name}"
+        )
+
+
+    # --------------------------------------------------------
+    # Encode filename spaces correctly
+    # --------------------------------------------------------
+
+    encoded_parts = []
+
+    for part in github_path.split("/"):
+
+        encoded_parts.append(
+            quote(
+                part,
+                safe=""
+            )
+        )
+
+
+    encoded_path = "/".join(
+        encoded_parts
+    )
+
+
+    # --------------------------------------------------------
+    # FINAL RAW GITHUB URL
+    # --------------------------------------------------------
+
+    return (
+        "https://raw.githubusercontent.com/"
+        f"{GITHUB_USER}/"
+        f"{REPO_NAME}/"
+        f"main/"
+        f"{encoded_path}"
+    )
+
+
+# ============================================================
+# READ PRODUCT DATA
+# ============================================================
+
 if not inv_df.empty:
 
     try:
 
-        GITHUB_USER = "Balumahendran"
-
-        REPO_NAME = "python-project1"
-
-
-        # ====================================================
-        # READ EACH PRODUCT
-        # ====================================================
-
         for _, row in inv_df.iterrows():
 
-            # ------------------------------------------------
+            # =================================================
             # IMAGE COLUMN
-            # ------------------------------------------------
+            # =================================================
 
             raw_img = (
                 str(row.iloc[6]).strip()
@@ -719,22 +714,22 @@ if not inv_df.empty:
             img_list = []
 
 
-            # ------------------------------------------------
-            # IMPORTANT IMAGE FIX
+            # =================================================
+            # IMPORTANT
             #
-            # Your Google Sheet contains:
+            # Google Sheet value:
             #
-            # images/Headset 1 1.jpg \
-            # images/Headset 1 2.jpg \
-            # images/Headset 1 3.jpg
+            # Headset 1 1.jpg \
+            # Headset 1 2.jpg \
+            # Headset 1 3.jpg
             #
-            # So we support:
+            # Split by:
             #   \
             #   ,
             #   newline
-            # ------------------------------------------------
+            # =================================================
 
-            image_parts = (
+            image_values = (
                 raw_img
                 .replace("\\", "\n")
                 .replace(",", "\n")
@@ -742,107 +737,38 @@ if not inv_df.empty:
             )
 
 
-            for img in image_parts:
+            for image_value in image_values:
 
-                img_path = img.strip()
+                image_value = (
+                    image_value.strip()
+                )
 
 
-                # Ignore empty values
-
-                if (
-                    not img_path
-                    or img_path.lower() == "nan"
-                ):
+                if not image_value:
                     continue
 
 
-                # ------------------------------------------------
-                # IF IT IS ALREADY A FULL URL
-                # ------------------------------------------------
+                if image_value.lower() == "nan":
+                    continue
 
-                if (
-                    img_path.startswith("http://")
-                    or img_path.startswith("https://")
-                ):
+
+                image_url = (
+                    build_github_image_url(
+                        image_value
+                    )
+                )
+
+
+                if image_url:
 
                     img_list.append(
-                        img_path
-                    )
-
-                    continue
-
-
-                # ------------------------------------------------
-                # REMOVE STARTING SLASH
-                # ------------------------------------------------
-
-                img_path = img_path.lstrip("/")
-
-
-                # ------------------------------------------------
-                # DO NOT ADD images/ TWICE
-                # ------------------------------------------------
-
-                if img_path.lower().startswith(
-                    "images/"
-                ):
-
-                    github_path = img_path
-
-                else:
-
-                    github_path = (
-                        f"images/{img_path}"
+                        image_url
                     )
 
 
-                # ------------------------------------------------
-                # ENCODE EACH PATH PART
-                #
-                # This allows filenames like:
-                #
-                # Headset 1 1.jpg
-                #
-                # to work correctly.
-                # ------------------------------------------------
-
-                encoded_parts = []
-
-                for part in github_path.split("/"):
-
-                    encoded_parts.append(
-                        quote(
-                            part,
-                            safe=""
-                        )
-                    )
-
-
-                encoded_github_path = "/".join(
-                    encoded_parts
-                )
-
-
-                # ------------------------------------------------
-                # FINAL GITHUB RAW IMAGE URL
-                # ------------------------------------------------
-
-                final_image_url = (
-                    "https://raw.githubusercontent.com/"
-                    f"{GITHUB_USER}/"
-                    f"{REPO_NAME}/main/"
-                    f"{encoded_github_path}"
-                )
-
-
-                img_list.append(
-                    final_image_url
-                )
-
-
-            # ====================================================
+            # =================================================
             # PRODUCT RECORD
-            # ====================================================
+            # =================================================
 
             product_records.append({
 
@@ -946,7 +872,7 @@ def get_compressed_image(url):
 
         response = requests.get(
             url,
-            timeout=6
+            timeout=8
         )
 
 
@@ -969,7 +895,6 @@ def get_compressed_image(url):
                 )
 
 
-            # Small image for mobile
             img.thumbnail(
                 (90, 90)
             )
@@ -1207,24 +1132,17 @@ if st.session_state.current_view == "Home":
 
                                     st.markdown(
                                         """
-                                        <p class="failed-image">
+                                        <p style="
+                                            font-size:9px;
+                                            text-align:center;
+                                            color:#ef4444;
+                                            margin:0;
+                                        ">
                                             Failed
                                         </p>
                                         """,
                                         unsafe_allow_html=True
                                     )
-
-
-                            else:
-
-                                st.markdown(
-                                    """
-                                    <p class="no-image">
-                                        No image
-                                    </p>
-                                    """,
-                                    unsafe_allow_html=True
-                                )
 
 
                         # ====================================================
