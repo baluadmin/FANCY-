@@ -37,10 +37,22 @@ st.markdown("""
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         
+        /* Universal Fluid Container for All Windows */
+        .block-container {
+            padding-top: 0.5rem !important;
+            padding-bottom: 1rem !important;
+            padding-left: 3% !important;
+            padding-right: 3% !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            margin: auto;
+        }
+        
         /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
             font-weight: 500 !important;
+            font-size: clamp(12px, 1.5vw, 15px) !important;
         }
         
         /* Input boxes styling supporting both modes */
@@ -51,21 +63,22 @@ st.markdown("""
             font-size: 14px !important;
             font-weight: 400 !important;
             border-radius: 6px !important;
+            width: 100% !important;
         }
 
         /* Professional Light Blue Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
-            padding: 10px 14px;
+            padding: 12px;
             border-radius: 8px;
             color: #0f172a !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             border: 1.5px solid #7dd3fc;
         }
         .brand-title {
-            font-size: 18px;
+            font-size: clamp(16px, 2.5vw, 22px);
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #0f172a !important;
@@ -80,7 +93,7 @@ st.markdown("""
             font-weight: 600 !important;
             font-size: 13px !important;
             border-radius: 6px !important;
-            padding: 0.3rem 0.4rem !important;
+            padding: 0.4rem !important;
             width: 100% !important;
             display: block !important;
         }
@@ -90,8 +103,8 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* PORTRAIT MOBILE APP RESPONSIVE OVERRIDES */
-        @media (max-width: 768px) {
+        /* RESPONSIVE FLUID OVERRIDES FOR ALL WINDOW SIZES */
+        @media (max-width: 900px) {
             div[data-testid="stHorizontalBlock"] {
                 flex-direction: column !important;
                 flex-wrap: wrap !important;
@@ -100,17 +113,8 @@ st.markdown("""
                 width: 100% !important;
                 flex: 1 1 100% !important;
                 min-width: 100% !important;
-                padding: 2px 0px !important;
+                padding: 4px 0px !important;
             }
-        }
-
-        .block-container {
-            padding-top: 0.5rem;
-            padding-bottom: 0rem;
-            padding-left: 0.6rem;
-            padding-right: 0.6rem;
-            max-width: 480px !important;
-            margin: auto;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -304,7 +308,6 @@ if st.session_state.current_view == "Home":
                         img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                         valid_paths = [p for p in img_paths if os.path.exists(p)]
                         if valid_paths:
-                            # Render up to 6 images cleanly divided into 2 distinct columns (3 images per column)
                             display_paths = valid_paths[:6]
                             half_len = (len(display_paths) + 1) // 2
                             col1_imgs = display_paths[:half_len]
