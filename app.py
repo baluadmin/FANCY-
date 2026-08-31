@@ -2,9 +2,6 @@ from datetime import datetime
 import csv
 import os
 import random
-import chromadb
-from google import genai
-from google.genai import types
 import pandas as pd
 import requests
 import streamlit as st
@@ -18,11 +15,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         /* Apply Professional Font Family Globally */
         html, body, [class*="css"] {
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'Poppins', sans-serif !important;
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -43,7 +40,7 @@ st.markdown("""
         /* Automatically adapt text color based on Streamlit's active theme (Dark/Light Mode) */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: var(--text-color) !important;
-            font-weight: 600 !important;
+            font-weight: 500 !important;
         }
         
         /* Input boxes styling supporting both modes */
@@ -52,47 +49,49 @@ st.markdown("""
             color: var(--text-color) !important;
             border: 1.5px solid #cbd5e1 !important;
             font-size: 14px !important;
-            font-weight: 500 !important;
+            font-weight: 400 !important;
             border-radius: 6px !important;
         }
 
-        /* Light Blue Header Banner with White Text */
+        /* Professional Light Blue Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #0284c7 100%, #38bdf8 0%);
-            padding: 18px;
-            border-radius: 10px;
-            color: #ffffff !important;
+            background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
+            padding: 14px 18px;
+            border-radius: 8px;
+            color: #0f172a !important;
             text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 12px;
+            border: 1.5px solid #7dd3fc;
         }
         .brand-title {
-            font-size: 24px;
-            font-weight: 800;
+            font-size: 20px;
+            font-weight: 700;
             letter-spacing: 0.5px;
-            color: #ffffff !important;
+            color: #0f172a !important;
             margin: 0;
         }
 
-        /* Action Buttons Styling */
+        /* Compact, Full-Width Buttons tightly fitted inside columns */
         div.stButton > button {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
-            border: 1px solid #bae6fd !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
+            border: 1.5px solid #cbd5e1 !important;
+            font-weight: 600 !important;
+            font-size: 15px !important;
             border-radius: 6px !important;
-            padding: 0.4rem 1rem !important;
+            padding: 0.4rem 0.5rem !important;
+            width: 100% !important;
+            display: block !important;
         }
         div.stButton > button:hover {
-            background-color: #bae6fd !important;
-            color: #0c4a6e !important;
-            border: 1px solid #7dd3fc !important;
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            border: 1px solid #94a3b8 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
         @media (max-width: 900px) {
-            /* Keep top nav buttons horizontal */
             .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
@@ -104,7 +103,6 @@ st.markdown("""
                 padding: 0px 2px !important;
             }
 
-            /* Stack body content sections vertically on mobile */
             div[data-testid="stHorizontalBlock"]:not(:first-of-type) {
                 flex-direction: column !important;
                 flex-wrap: wrap !important;
@@ -118,11 +116,102 @@ st.markdown("""
         }
 
         .block-container {
-            padding-top: 1rem;
+            padding-top: 0.8rem;
             padding-bottom: 0rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            padding-left: 1.2rem;
+            padding-right: 1.2rem;
             max-width: 100% !important;
+        }
+
+        /* Compact login screen for Android landscape */
+        .login-title {
+            text-align: center;
+            margin: 2px 0 4px 0;
+        }
+
+        .login-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 2px 0;
+        }
+
+        .login-title p {
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .login-card {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 9px 16px 10px 16px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .login-card h3 {
+            margin: 0 0 3px 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        div[data-testid="stForm"] {
+            border: none !important;
+            padding: 6px 0 0 0 !important;
+        }
+
+        @media (orientation: landscape) and (max-height: 700px) {
+            .block-container {
+                padding-top: 0.15rem !important;
+                padding-bottom: 0rem !important;
+                padding-left: 0.8rem !important;
+                padding-right: 0.8rem !important;
+            }
+
+            .login-title {
+                margin: 0 0 1px 0;
+            }
+
+            .login-title h1 {
+                font-size: 20px;
+                margin-bottom: 0;
+            }
+
+            .login-title p {
+                font-size: 9px;
+            }
+
+            .login-card {
+                max-width: 680px;
+                padding: 5px 14px 6px 14px;
+            }
+
+            .login-card h3 {
+                font-size: 14px;
+                margin-bottom: 1px;
+            }
+
+            div[data-testid="stForm"] {
+                padding-top: 2px !important;
+            }
+
+            div[data-testid="stTextInput"] {
+                margin-bottom: -5px !important;
+            }
+
+            button[kind="primaryFormSubmit"] {
+                min-height: 36px !important;
+                padding: 0.2rem 0.5rem !important;
+                font-size: 13px !important;
+            }
+        }
+
+        @media (max-width: 700px) and (orientation: portrait) {
+            .login-card {
+                max-width: 100%;
+                padding: 10px;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -158,89 +247,103 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Professional Compact Customer Login Screen (Before Login)
+# 2. Compact landscape-friendly Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
+
     st.markdown("""
-        <div style='text-align: center; margin-top: 30px; margin-bottom: 15px;'>
-            <h1 style='font-size: 30px; font-weight: 800; margin-bottom: 4px;'>HM MOBILES</h1>
-            <p style='font-size: 14px; font-weight: 500;'>Thiruverkadu - Premium Mobile Accessories & Service</p>
+        <div class="login-title">
+            <h1>HM MOBILES</h1>
+            <p>Thiruverkadu - Premium Mobile Accessories & Service</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    _, mid_col, _ = st.columns([1.3, 1, 1.3])
-    
-    with mid_col:
-        with st.container():
-            st.markdown("""
-                <div style='padding: 25px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); text-align: center;'>
-                    <h3 style='margin-top: 0; margin-bottom: 15px; font-size: 18px; font-weight: 750;'>Customer Portal Login</h3>
-            """, unsafe_allow_html=True)
-            
-            with st.form("customer_direct_login_center"):
+
+    # Center the login card while using the available landscape width
+    _, login_col, _ = st.columns([1, 2.4, 1])
+
+    with login_col:
+
+        st.markdown("""
+            <div class="login-card">
+                <h3>Customer Portal Login</h3>
+            </div>
+        """, unsafe_allow_html=True)
+
+        with st.form("customer_direct_login_center"):
+
+            # Side-by-side fields keep the complete login form
+            # visible on a landscape phone screen.
+            name_col, phone_col = st.columns(2, gap="small")
+
+            with name_col:
                 cust_name = st.text_input("Your Name:")
-                cust_phone = st.text_input("Mobile Number:", max_chars=10)
-                login_btn = st.form_submit_button("Secure Login", use_container_width=True)
 
-                if login_btn:
-                    if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-                        st.session_state.logged_in_user = cust_name.strip()
-                        st.session_state.user_phone = cust_phone.strip()
-                        st.session_state.user_role = "Customer"
-                        st.session_state.selected_menu = "Headset"
-                        
-                        log_login_to_sheet(cust_name.strip(), cust_phone.strip())
+            with phone_col:
+                cust_phone = st.text_input(
+                    "Mobile Number:",
+                    max_chars=10
+                )
 
-                        st.success("✅ Login Successful!")
-                        st.rerun()
-                    else:
-                        st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
-            
-            st.markdown("</div>", unsafe_allow_html=True)
-    
+            login_btn = st.form_submit_button(
+                "Secure Login",
+                use_container_width=True
+            )
+
+            if login_btn:
+                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+
+                    st.session_state.logged_in_user = cust_name.strip()
+                    st.session_state.user_phone = cust_phone.strip()
+                    st.session_state.user_role = "Customer"
+                    st.session_state.selected_menu = "Headset"
+
+                    log_login_to_sheet(
+                        cust_name.strip(),
+                        cust_phone.strip()
+                    )
+
+                    st.success("✅ Login Successful!")
+                    st.rerun()
+
+                else:
+                    st.warning(
+                        "⚠️ Please provide a valid name and 10-digit mobile number."
+                    )
+
     st.stop()
 
 
-# --- AFTER LOGIN: MODERN PROFESSIONAL HEADER & NAVIGATION ---
+# --- AFTER LOGIN: COMPACT PROFESSIONAL HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
     </div>
 """, unsafe_allow_html=True)
 
-top_c1, top_c2, top_c3, top_c4 = st.columns([2, 1, 1, 1])
-with top_c1:
+# Commercial banner area on the left and right-aligned navigation buttons on the right
+top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.8, 1.4, 0.8, 0.8, 0.8], gap="small")
+with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
-with top_c2:
+with top_space:
+    st.empty()
+with top_c1:
     if st.button("Home", use_container_width=True):
         st.session_state.current_view = "Home"
         st.rerun()
-with top_c3:
+with top_c2:
     cart_count = len(st.session_state.cart)
     if st.button(f"Cart ({cart_count})", use_container_width=True):
         st.session_state.current_view = "Cart"
         st.rerun()
-with top_c4:
+with top_c3:
     if st.button("Logout", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
 st.markdown("---")
 
-# 3. Gemini API Configuration & Database Setup
-db_path = "./chroma_db"
 
-try:
-    api_key_input = st.secrets["GOOGLE_API_KEY"]
-    client = genai.Client(api_key=api_key_input)
-    chroma_client = chromadb.PersistentClient(path=db_path)
-    collection = chroma_client.get_or_create_collection(name="my_inventory_library")
-except Exception as e:
-    st.error(f"Error connecting to Database or API Key missing: {e}")
-    st.stop()
-
-
-# Load Inventory Directly from Google Sheets CSV Link with Cache Bypass
-@st.cache_data(ttl=5)
+# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
+@st.cache_data(ttl=2)
 def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
@@ -256,86 +359,41 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-def load_inventory_to_chroma():
-    file_name = "inventory.csv"
-    if not os.path.exists(file_name):
-        return
-    try:
-        df = pd.read_csv(file_name)
-        file_text = df.to_string(index=False)
-        if file_text.strip():
-            existing = collection.get(ids=[file_name])
-            if existing and existing["ids"]:
-                collection.update(documents=[file_text], ids=[file_name])
-            else:
-                collection.add(documents=[file_text], ids=[file_name])
-    except Exception:
-        pass
-
-
-load_inventory_to_chroma()
-
-
-# Load Product Records from Google Sheet Data dynamically with correct index mapping
+# Load Product Records from Google Sheet Data dynamically with correct index mapping (Description is Column F -> Index 5, Image is Column G -> Index 6)
 product_records = []
 if not inv_df.empty:
     try:
         for _, row in inv_df.iterrows():
             product_records.append({
                 "id": str(row.iloc[0]),
-                "name": str(row.iloc[1]),  # Product Name is at column index 1
+                "name": str(row.iloc[1]),
                 "category": str(row.iloc[2]),
                 "stock": str(row.iloc[3]),
-                "price": str(row.iloc[4])   # Price is at column index 4
+                "price": str(row.iloc[4]),
+                "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
+                "image": str(row.iloc[6]).strip() if len(row) > 6 and pd.notna(row.iloc[6]) else ""
             })
     except Exception:
         product_records = []
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset"},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset"},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger"},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger"},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable"},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable"},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic"},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic"},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery"},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered"},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod"},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "images/Headset 1 1.jpg \\ images/Headset 1 2.jpg \\ images/Headset 1 3.jpg", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
+        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "ewdftgdsgdfgdfgfdg"},
     ]
 
 
-# 4. Define Tools
-def search_knowledge_base(query: str) -> str:
-    """Search inventory data, stock details, and products from the vector database."""
-    try:
-        results = collection.query(query_texts=[query], n_results=1)
-        if results["documents"] and len(results["documents"][0]) > 0:
-            return results["documents"][0][0]
-        return "No relevant information found."
-    except Exception as e:
-        return f"Error during search: {e}"
-
-
-def add_to_cart(product_name: str, quantity: str = "1 Unit") -> str:
-    """Add a product or service item into the shopping cart with custom quantity/weight."""
-    st.session_state.cart.append({"product": product_name, "quantity": str(quantity)})
-    st.session_state.last_booked_item = product_name
-    return f"Added '{product_name}' (Qty: {quantity}) to your cart successfully!"
-
-
-def calculate_total_price(price: float, quantity: int, discount_percentage: float = 0.0) -> str:
-    """Calculate total price including quantity and optional discount."""
-    subtotal = price * quantity
-    discount_amount = subtotal * (discount_percentage / 100)
-    final_total = subtotal - discount_amount
-    return f"Calculation Result: Subtotal = ₹{subtotal}, Discount = ₹{discount_amount}, Final Total = ₹{final_total}"
-
-
-def process_cart_checkout(address: str, secondary_phone: str, description: str, payment_method: str, location_link: str) -> str:
-    """Checkout all items currently in the cart with delivery and payment details, and send to Google Sheet 'HM Mobiles Orders'."""
+def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
+    """Checkout all items currently in the cart with delivery details, and send to Google Sheet 'HM Mobiles Orders'."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -356,8 +414,7 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
             "Items": cart_summary,
             "Address": address,
             "Secondary_Phone": secondary_phone,
-            "Description": description,
-            "Live_Location": location_link
+            "Description": description
         }
         requests.post(GOOGLE_SCRIPT_URL, json=order_data)
     except Exception as e:
@@ -367,37 +424,21 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str, 
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description", "Live Location"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description, location_link])
+            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description"])
+        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description])
 
     st.session_state.cart = []
-    return f"Checkout complete! Order placed for: {cart_summary}. Payment via {payment_method} successful (TXN ID: {txn_id})."
-
-
-def add_product_review(rating: int, review_comment: str) -> str:
-    """Submit a product review and rating (1 to 5 stars)."""
-    item = st.session_state.get("last_booked_item", "General Products")
-    customer_name = st.session_state.logged_in_user
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    file_exists = os.path.isfile("reviews.csv")
-    with open("reviews.csv", mode="a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Product", "Rating", "Comment"])
-        writer.writerow([timestamp, customer_name, item, rating, review_comment])
-
-    return f"Thank you, {customer_name}! Your review ({rating}/5 stars) has been saved."
+    return f"Checkout complete! Order placed for: {cart_summary}. Order successful (TXN ID: {txn_id})."
 
 
 # View Switching: Home View vs Cart/Checkout View
 if st.session_state.current_view == "Home":
-    col_menu, col_items, col_ai = st.columns([0.8, 1.2, 1.5], gap="small")
+    col_menu, col_items = st.columns([1, 2.5], gap="small")
 
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=500, border=True):
+        with st.container(height=480, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -408,120 +449,97 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=500, border=True):
+        with st.container(height=480, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
                 for idx, prod in enumerate(filtered_items):
-                    p_info_col, p_qty_col, p_btn_col = st.columns([1.5, 1, 1], gap="small")
+                    slide_key = f"slide_{current_cat}_{idx}"
                     
-                    with p_info_col:
+                    if slide_key not in st.session_state:
+                        st.session_state[slide_key] = 0
+
+                    p_img_col, p_div1_col, p_desc_col, p_div2_col, p_details_col = st.columns([2.5, 0.05, 2.2, 0.05, 1.8], gap="small")
+                    
+                    with p_img_col:
+                        raw_img = prod.get("image", "")
+                        if raw_img:
+                            img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                            valid_paths = [p for p in img_paths if os.path.exists(p)]
+                            if valid_paths:
+                                total_imgs = len(valid_paths)
+                                current_idx = st.session_state[slide_key]
+                                
+                                l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
+                                
+                                with l_btn:
+                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                                    if st.button("‹", key=f"prev_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] > 0:
+                                            st.session_state[slide_key] -= 1
+                                        else:
+                                            st.session_state[slide_key] = total_imgs - 1
+                                        st.rerun()
+                                        
+                                with img_display:
+                                    if total_imgs >= 2:
+                                        sub_col1, sub_col2 = st.columns(2, gap="small")
+                                        with sub_col1:
+                                            _, center_sub1, _ = st.columns([1, 4, 1])
+                                            with center_sub1:
+                                                st.image(valid_paths[current_idx], width=95)
+                                        with sub_col2:
+                                            _, center_sub2, _ = st.columns([1, 4, 1])
+                                            with center_sub2:
+                                                next_idx = (current_idx + 1) % total_imgs
+                                                st.image(valid_paths[next_idx], width=95)
+                                    else:
+                                        _, center_img_col, _ = st.columns([1, 4, 1])
+                                        with center_img_col:
+                                            st.image(valid_paths[0], width=95)
+                                        
+                                with r_btn:
+                                    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                                    if st.button("›", key=f"next_{current_cat}_{idx}"):
+                                        if st.session_state[slide_key] + 1 < total_imgs:
+                                            st.session_state[slide_key] += 1
+                                        else:
+                                            st.session_state[slide_key] = 0
+                                        st.rerun()
+                            else:
+                                st.caption("No Image")
+                        else:
+                            st.caption("No Image")
+                            
+                    with p_div1_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
+                    with p_desc_col:
+                        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+                        st.markdown("**Description:**")
+                        st.caption(prod.get('description', ''))
+
+                    with p_div2_col:
+                        st.markdown("<div style='border-left: 1px solid #cbd5e1; height: 130px; margin-top: 5px;'></div>", unsafe_allow_html=True)
+
+                    with p_details_col:
+                        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
                         st.markdown(f"**{prod['name']}**")
-                        st.caption(f"₹{prod['price']}")
+                        st.markdown(f"₹{prod['price']}")
                         
-                    with p_qty_col:
-                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
-                        
-                    with p_btn_col:
-                        if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
-                            full_q_str = f"{int(q_val)} Units"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                            st.success(f"Added!")
-                            st.rerun()
-                    st.markdown("---")
+                        q_col, b_col = st.columns([1, 1], gap="small")
+                        with q_col:
+                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                        with b_col:
+                            if st.button("Add", key=f"add_btn_{current_cat}_{idx}", use_container_width=True):
+                                full_q_str = f"{int(q_val)} Units"
+                                st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                                st.success(f"Added!")
+                                st.rerun()
+                                    
+                    st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 1px solid #cbd5e1;'>", unsafe_allow_html=True)
             else:
                 st.info("No items found.")
-
-    # --- SECTION 3: AI ASSISTANT SEARCH & CHAT ---
-    with col_ai:
-        st.markdown("AI Assistant")
-        user_prompt = st.text_input("Ask AI:", placeholder="Type here...", key="top_ai_search_input", label_visibility="collapsed")
-        
-        if user_prompt:
-            msg_id = len(st.session_state.get("messages", []))
-            if "messages" not in st.session_state:
-                st.session_state.messages = []
-            
-            st.session_state.messages.append({"role": "user", "content": user_prompt, "id": msg_id})
-            
-            with st.spinner("Processing..."):
-                try:
-                    context_memory = f" [Context - User: {st.session_state.logged_in_user}, Phone: {st.session_state.user_phone}]"
-                    full_prompt = user_prompt + context_memory
-
-                    response = client.models.generate_content(
-                        model="gemini-3.6-flash",
-                        contents=full_prompt,
-                        config=types.GenerateContentConfig(
-                            tools=[
-                                search_knowledge_base,
-                                add_to_cart,
-                                calculate_total_price,
-                                process_cart_checkout,
-                                add_product_review,
-                            ],
-                            temperature=0.3,
-                            system_instruction=(
-                                "You are an advanced multi-lingual enterprise e-commerce AI assistant. "
-                                "1. Detect user language and ALWAYS respond in that same language. "
-                                "2. When listing products, mention their exact names clearly."
-                            ),
-                        ),
-                    )
-
-                    final_reply = ""
-                    if response.function_calls:
-                        for function_call in response.function_calls:
-                            tool_name = function_call.name
-                            tool_args = function_call.args
-
-                            if tool_name == "search_knowledge_base":
-                                tool_result = search_knowledge_base(**tool_args)
-                            elif tool_name == "add_to_cart":
-                                tool_result = add_to_cart(**tool_args)
-                                st.rerun()
-                            elif tool_name == "calculate_total_price":
-                                tool_result = calculate_total_price(**tool_args)
-                            elif tool_name == "process_cart_checkout":
-                                tool_result = process_cart_checkout(**tool_args)
-                            elif tool_name == "add_product_review":
-                                tool_result = add_product_review(**tool_args)
-                            else:
-                                tool_result = "Tool not found."
-
-                            followup_prompt = f"The tool '{tool_name}' returned: '{tool_result}'. Respond naturally to user request: '{user_prompt}' in user's language."
-                            final_response = client.models.generate_content(
-                                model="gemini-3.6-flash", contents=followup_prompt
-                            )
-                            final_reply = final_response.text
-                    else:
-                        final_reply = response.text
-
-                    st.session_state.messages.append({"role": "assistant", "content": final_reply, "id": msg_id + 1})
-                except Exception as e:
-                    st.error(f"Error: {e}")
-
-        # Chat container
-        with st.container(height=410, border=Type if 'Type' in locals() else True):
-            if "messages" in st.session_state:
-                for message in st.session_state.messages:
-                    with st.chat_message(message["role"]):
-                        st.markdown(message["content"])
-                        
-                        if message["role"] == "assistant":
-                            for p_idx, prod in enumerate(product_records):
-                                if prod['name'].lower() in message["content"].lower():
-                                    with st.container():
-                                        st.markdown(f"👉 **Quick Add: {prod['name']}**")
-                                        ai_q_col, ai_b_col = st.columns([1, 1])
-                                        with ai_q_col:
-                                            aq_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"ai_q_{message.get('id', 0)}_{p_idx}", label_visibility="collapsed")
-                                        with ai_b_col:
-                                            if st.button("Add", key=f"ai_btn_{message.get('id', 0)}_{p_idx}", use_container_width=True):
-                                                full_aq_str = f"{int(aq_val)} Units"
-                                                st.session_state.cart.append({"product": prod['name'], "quantity": full_aq_str})
-                                                st.success(f"Added!")
-                                                st.rerun()
 
 else:
     st.subheader("🛒 Your Shopping Cart & Checkout")
@@ -541,14 +559,12 @@ else:
             checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
-            payment_method = st.selectbox("Payment Method", ["UPI / GPay", "Credit/Debit Card", "Cash on Delivery"])
-            live_location = st.text_input("Live Location Link (Google Maps Share URL):")
             
-            submit_checkout = st.form_submit_button("Complete Order & Pay")
+            submit_checkout = st.form_submit_button("Complete Order")
             if submit_checkout:
                 if checkout_address and secondary_phone:
                     result_msg = process_cart_checkout(
-                        checkout_address, secondary_phone, product_desc, payment_method, live_location
+                        checkout_address, secondary_phone, product_desc
                     )
                     st.success(result_msg)
                     st.session_state.current_view = "Home"
@@ -556,4 +572,7 @@ else:
                 else:
                     st.warning("⚠️ Please provide delivery address and secondary contact number.")
     else:
-        st.info("Your cart is empty. Click **Home** above to browse and add products.")
+    # Centering container for the cart empty state message and button alignment
+        _, center_msg_col, _ = st.columns([1, 2, 1])
+        with center_msg_col:
+            st.info("Your cart is empty. Click **Home** above to browse and add products.")
