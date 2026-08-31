@@ -15,11 +15,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@700;800;900&display=swap');
 
-        /* Apply Font Family Globally */
+        /* Apply Font Family Globally to match the clean rounded e-commerce typography */
         html, body, [class*="css"] {
-            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-family: 'Mulish', sans-serif !important;
             font-size: 20px !important;
         }
 
@@ -46,7 +46,7 @@ st.markdown("""
         /* Automatically adapt text color for high contrast */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #0f172a !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
             font-size: 18px !important;
         }
         
@@ -56,12 +56,12 @@ st.markdown("""
             color: #0f172a !important;
             border: 2px solid #cbd5e1 !important;
             font-size: 18px !important;
-            font-weight: 500 !important;
+            font-weight: 600 !important;
             border-radius: 12px !important;
         }
         input:focus, textarea:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+            border-color: #ec4899 !important;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15) !important;
         }
 
         /* Pink Gradient Header Banner with Contact Info */
@@ -76,15 +76,17 @@ st.markdown("""
             border: 1px solid #db2777;
         }
         .brand-banner .brand-title {
-            font-size: 34px !important;
-            font-weight: 800 !important;
-            letter-spacing: 1px;
+            font-family: 'Mulish', sans-serif !important;
+            font-size: 36px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.5px;
             color: #ffffff !important;
             margin: 0 0 6px 0;
+            text-transform: lowercase;
         }
         .brand-banner .brand-phone {
             font-size: 18px !important;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
             letter-spacing: 0.5px;
             color: #fdf2f8 !important;
             margin: 0;
@@ -98,7 +100,7 @@ st.markdown("""
             background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
             color: #ffffff !important;
             border: none !important;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
             font-size: 18px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
@@ -121,7 +123,7 @@ st.markdown("""
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
             color: #0f172a !important;
             border: 2px solid #cbd5e1 !important;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
             font-size: 18px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
@@ -177,10 +179,12 @@ st.markdown("""
         }
 
         .login-title h1 {
-            font-size: 34px !important;
-            font-weight: 800 !important;
+            font-family: 'Mulish', sans-serif !important;
+            font-size: 36px !important;
+            font-weight: 900 !important;
             margin: 0 0 5px 0;
             color: #0f172a !important;
+            text-transform: lowercase;
         }
 
         .login-title p {
@@ -203,7 +207,7 @@ st.markdown("""
         .login-card h3 {
             margin: 0 0 10px 0;
             font-size: 22px !important;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
             color: #1e293b !important;
         }
 
@@ -254,7 +258,7 @@ if not st.session_state.logged_in_user:
 
     st.markdown("""
         <div class="login-title">
-            <h1>HM MOBILES</h1>
+            <h1>hm mobiles</h1>
             <p>Thiruverkadu - Premium Mobile Accessories & Service | 📞 9840450113</p>
         </div>
     """, unsafe_allow_html=True)
@@ -315,7 +319,7 @@ if not st.session_state.logged_in_user:
 # --- AFTER LOGIN: PROPERLY ARRANGED HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
-        <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
+        <h1 class="brand-title">hm mobiles thiruverkadu</h1>
         <p class="brand-phone">📞 Mobile: 9840450113</p>
     </div>
 """, unsafe_allow_html=True)
@@ -520,7 +524,7 @@ if st.session_state.current_view == "Home":
                                     st.session_state.quantities[qty_key] -= 1
                                     st.rerun()
                         with q_display:
-                            st.markdown(f"<div style='text-align: center; padding-top: 6px; font-weight: 700;'>{st.session_state.quantities[qty_key]}</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='text-align: center; padding-top: 6px; font-weight: 800;'>{st.session_state.quantities[qty_key]}</div>", unsafe_allow_html=True)
                         with q_plus:
                             if st.button("+", key=f"plus_{current_cat}_{global_idx}", use_container_width=True):
                                 st.session_state.quantities[qty_key] += 1
