@@ -450,7 +450,7 @@ if st.session_state.current_view == "Home":
     # --- SECTION 1: MENU ---
     with col_menu:
         st.markdown("Menu")
-        with st.container(height=1150, border=True):
+        with st.container(height=1450, border=True):
             categories = list(set([p['category'] for p in product_records]))
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
@@ -462,12 +462,12 @@ if st.session_state.current_view == "Home":
     with col_items:
         current_cat = st.session_state.get("selected_menu", "Headset")
         st.markdown(f"{current_cat}")
-        with st.container(height=1150, border=True):
+        with st.container(height=1450, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
             
             if filtered_items:
-                # Increased pagination limit to 14 items per page
-                items_per_page = 14
+                # Increased pagination limit to exactly 18 items per page
+                items_per_page = 18
                 total_items = len(filtered_items)
                 total_pages = max(1, (total_items + items_per_page - 1) // items_per_page)
                 
@@ -500,7 +500,7 @@ if st.session_state.current_view == "Home":
                                 l_btn, img_display, r_btn = st.columns([0.3, 3.4, 0.3])
                                 
                                 with l_btn:
-                                    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
                                     if st.button("‹", key=f"prev_{current_cat}_{global_idx}"):
                                         if st.session_state[slide_key] > 0:
                                             st.session_state[slide_key] -= 1
@@ -515,21 +515,21 @@ if st.session_state.current_view == "Home":
                                             _, center_sub1, _ = st.columns([1, 4, 1])
                                             with center_sub1:
                                                 st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                                st.image(valid_paths[current_idx], width=60)
+                                                st.image(valid_paths[current_idx], width=50)
                                         with sub_col2:
                                             _, center_sub2, _ = st.columns([1, 4, 1])
                                             with center_sub2:
                                                 st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
                                                 next_idx = (current_idx + 1) % total_imgs
-                                                st.image(valid_paths[next_idx], width=60)
+                                                st.image(valid_paths[next_idx], width=50)
                                     else:
                                         _, center_img_col, _ = st.columns([1, 4, 1])
                                         with center_img_col:
                                             st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
-                                            st.image(valid_paths[0], width=70)
+                                            st.image(valid_paths[0], width=60)
                                         
                                 with r_btn:
-                                    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+                                    st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
                                     if st.button("›", key=f"next_{current_cat}_{global_idx}"):
                                         if st.session_state[slide_key] + 1 < total_imgs:
                                             st.session_state[slide_key] += 1
@@ -537,14 +537,14 @@ if st.session_state.current_view == "Home":
                                             st.session_state[slide_key] = 0
                                         st.rerun()
                             else:
-                                st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
+                                st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
                                 st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 10px;'>No Image</p>", unsafe_allow_html=True)
                         else:
-                            st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
+                            st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
                             st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 10px;'>No Image</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 1px solid #fde047; height: 50px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #fde047; height: 38px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_desc_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -552,7 +552,7 @@ if st.session_state.current_view == "Home":
                         st.caption(prod.get('description', ''))
 
                     with p_div2_col:
-                        st.markdown("<div style='border-left: 1px solid #fde047; height: 50px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 1px solid #fde047; height: 38px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -569,7 +569,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 2px; margin-bottom: 2px; border: none; border-top: 1px solid #fde047;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 1px; margin-bottom: 1px; border: none; border-top: 1px solid #fde047;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
