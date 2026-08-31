@@ -438,26 +438,26 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 2 images (Max 4 images total: 2 per line across 2 lines)
+                        # Row 1: 2 images (Max 4 images total: 2 per line across 2 lines) - Larger image width set to 150px
                         img_cols_1 = st.columns(2, gap="small")
                         for i in range(2):
                             with img_cols_1[i]:
                                 if i < len(valid_paths):
-                                    st.image(valid_paths[i], width=95)
+                                    st.image(valid_paths[i], width=150)
                                 else:
-                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 2 images
+                        # Row 2: 2 images - Larger image width set to 150px
                         img_cols_2 = st.columns(2, gap="small")
                         for i in range(2, 4):
                             with img_cols_2[i - 2]:
                                 if i < len(valid_paths):
-                                    st.image(valid_paths[i], width=95)
+                                    st.image(valid_paths[i], width=150)
                                 else:
-                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 135px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 260px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
