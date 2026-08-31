@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. Streamlit Page Configuration & Professional High-End E-Commerce Styling CSS
+# 1. Streamlit Page Configuration & Professional E-Commerce Styling CSS
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
@@ -23,9 +23,9 @@ st.markdown("""
             font-size: 20px !important;
         }
 
-        /* Set App Background to Ultra-Clean Modern Off-White */
+        /* Set App Background to Light/Clean White */
         .stApp {
-            background-color: #f8fafc !important; 
+            background-color: #ffffff !important; 
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -45,57 +45,54 @@ st.markdown("""
         
         /* Automatically adapt text color for high contrast */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-            color: #1e293b !important;
+            color: #0f172a !important;
             font-weight: 600 !important;
             font-size: 18px !important;
         }
         
-        /* Input boxes styling supporting light blue accents */
+        /* Input boxes styling supporting light theme */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
+            background-color: #f8fafc !important;
             color: #0f172a !important;
-            border: 2px solid #bae6fd !important;
+            border: 2px solid #cbd5e1 !important;
             font-size: 18px !important;
             font-weight: 500 !important;
             border-radius: 12px !important;
         }
         input:focus, textarea:focus {
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
         }
 
-        /* Premium Luxury Gradient Header Banner with Integrated Contact Info */
+        /* Light & Clean Premium Gradient Header Banner with Contact Info */
         .brand-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             padding: 22px 30px;
             border-radius: 16px;
-            color: #ffffff !important;
+            color: #0f172a !important;
             text-align: center;
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid #cbd5e1;
         }
         .brand-title {
             font-size: 34px !important;
             font-weight: 800 !important;
             letter-spacing: 1px;
-            color: #ffffff !important;
+            color: #0f172a !important;
             margin: 0 0 6px 0;
-            background: linear-gradient(to right, #ffffff, #e0e7ff, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
         .brand-phone {
             font-size: 18px !important;
             font-weight: 700 !important;
             letter-spacing: 0.5px;
-            color: #fde047 !important;
+            color: #0284c7 !important;
             margin: 0;
         }
 
-        /* Specific Vibrant Pink Styling for Menu Column Buttons */
+        /* Specific Pink Styling for Menu Column Buttons */
         div[data-testid="column"]:first-of-type div.stButton > button {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
             color: #ffffff !important;
             border: none !important;
             font-weight: 700 !important;
@@ -104,34 +101,34 @@ st.markdown("""
             padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25) !important;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
             transition: all 0.2s ease-in-out;
         }
         div[data-testid="column"]:first-of-type div.stButton > button:hover {
-            background: linear-gradient(135deg, #db2777 0%, #be185d 100%) !important;
-            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.4) !important;
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
             transform: translateY(-1px);
         }
 
-        /* Compact, Full-Width Light Blue Action Buttons */
+        /* Compact, Full-Width Light Theme Action Buttons */
         div.stButton > button {
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
-            color: #0369a1 !important;
-            border: 2px solid #7dd3fc !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            color: #0f172a !important;
+            border: 2px solid #cbd5e1 !important;
             font-weight: 700 !important;
             font-size: 18px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%) !important;
-            color: #0369a1 !important;
-            border: 2px solid #38bdf8 !important;
-            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.2) !important;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+            color: #0f172a !important;
+            border: 2px solid #94a3b8 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
             transform: translateY(-1px);
         }
 
@@ -192,7 +189,7 @@ st.markdown("""
             padding: 20px 24px;
             border-radius: 16px;
             background-color: #ffffff;
-            border: 2px solid #bae6fd;
+            border: 2px solid #e2e8f0;
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
             text-align: center;
         }
@@ -497,7 +494,7 @@ if st.session_state.current_view == "Home":
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #bae6fd; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #e2e8f0; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -514,7 +511,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #bae6fd;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #e2e8f0;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
