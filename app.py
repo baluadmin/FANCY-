@@ -5,6 +5,7 @@ import random
 import pandas as pd
 import requests
 import streamlit as st
+import streamlit.components.v1 as components
 
 # 1. Streamlit Page Configuration & Professional High-Contrast Styling CSS
 st.set_page_config(
@@ -12,6 +13,16 @@ st.set_page_config(
     page_icon="📱",
     layout="wide",
 )
+
+# Inject Mobile Viewport Meta Tag to enforce single-window fitting on all mobile browsers
+components.html("""
+    <script>
+        const meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        window.parent.document.head.appendChild(meta);
+    </script>
+""", height=0)
 
 st.markdown("""
     <style>
@@ -92,7 +103,6 @@ st.markdown("""
 
         /* FORCE 3-COLUMN IMAGE GRIDS TO REMAIN SIDE-BY-SIDE EVEN ON MOBILE SCREENS */
         @media (max-width: 768px) {
-            /* Force horizontal layout for columns containing images */
             div[data-testid="stHorizontalBlock"] {
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
