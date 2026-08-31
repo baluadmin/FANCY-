@@ -582,14 +582,14 @@ def get_compressed_image(url):
 
     """
     Downloads, compresses, and forces small
-    thumbnail dimensions in-memory.
+    thumbnail dimensions in-memory with error logging.
     """
 
     try:
 
         response = requests.get(
             url,
-            timeout=4
+            timeout=10
         )
 
         if response.status_code == 200:
@@ -615,9 +615,17 @@ def get_compressed_image(url):
 
             return img
 
-    except Exception:
+        else:
 
-        pass
+            print(
+                f"FAILED URL: {url} | Status Code: {response.status_code}"
+            )
+
+    except Exception as e:
+
+        print(
+            f"FAILED URL: {url} | Exception: {e}"
+        )
 
     return None
 
