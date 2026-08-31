@@ -20,7 +20,7 @@ st.markdown("""
         /* Apply Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Plus Jakarta Sans', sans-serif !important;
-            font-size: 18px !important;
+            font-size: 20px !important;
         }
 
         /* Set App Background to Ultra-Clean Modern Off-White */
@@ -47,21 +47,21 @@ st.markdown("""
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #1e293b !important;
             font-weight: 600 !important;
-            font-size: 16px !important;
+            font-size: 18px !important;
         }
         
-        /* Input boxes styling supporting sophisticated slate/indigo theme */
+        /* Input boxes styling supporting light blue accents */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
-            border: 2px solid #e2e8f0 !important;
-            font-size: 16px !important;
+            border: 2px solid #bae6fd !important;
+            font-size: 18px !important;
             font-weight: 500 !important;
             border-radius: 12px !important;
         }
         input:focus, textarea:focus {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
         }
 
         /* Professional Luxury E-Commerce Dark Slate/Indigo Header Banner */
@@ -86,13 +86,13 @@ st.markdown("""
             -webkit-text-fill-color: transparent;
         }
 
-        /* Specific Vibrant Pink/Magenta Styling for Menu Column Buttons */
+        /* Specific Vibrant Pink Styling for Menu Column Buttons */
         div[data-testid="column"]:first-of-type div.stButton > button {
             background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
             color: #ffffff !important;
             border: none !important;
             font-weight: 700 !important;
-            font-size: 16px !important;
+            font-size: 18px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
@@ -106,23 +106,25 @@ st.markdown("""
             transform: translateY(-1px);
         }
 
-        /* Compact, Full-Width Modern Indigo/Purple Action Buttons for other areas */
+        /* Compact, Full-Width Light Blue Buttons for other areas */
         div.stButton > button {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
-            color: #ffffff !important;
-            border: none !important;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
+            color: #0369a1 !important;
+            border: 2px solid #7dd3fc !important;
             font-weight: 700 !important;
-            font-size: 16px !important;
+            font-size: 18px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25) !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1) !important;
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
-            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4) !important;
+            background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%) !important;
+            color: #0369a1 !important;
+            border: 2px solid #38bdf8 !important;
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.2) !important;
             transform: translateY(-1px);
         }
 
@@ -183,7 +185,7 @@ st.markdown("""
             padding: 20px 24px;
             border-radius: 16px;
             background-color: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 2px solid #bae6fd;
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
             text-align: center;
         }
@@ -487,7 +489,7 @@ if st.session_state.current_view == "Home":
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #e2e8f0; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #bae6fd; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -504,7 +506,7 @@ if st.session_state.current_view == "Home":
                                 st.success(f"Added!")
                                 st.rerun()
                                     
-                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #e2e8f0;'>", unsafe_allow_html=True)
+                    st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #bae6fd;'>", unsafe_allow_html=True)
                 
                 # Pagination Controls at the bottom
                 if total_pages > 1:
@@ -540,7 +542,7 @@ else:
         st.subheader("📍 Secure Checkout Form")
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
-            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            secondary_phone = st.text_input("Alternative Contact Number:", max_cards=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
             submit_checkout = st.form_submit_button("Complete Order")
