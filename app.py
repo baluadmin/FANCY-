@@ -90,22 +90,16 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* FORCE IMAGE GRID COLUMNS TO STAY HORIZONTAL ON MOBILE */
+        /* FORCE 3-COLUMN IMAGE GRIDS TO REMAIN SIDE-BY-SIDE EVEN ON MOBILE SCREENS */
         @media (max-width: 768px) {
-            /* Target the specific container holding the 3 image columns */
-            div.element-container:has(img) {
-                display: inline-block !important;
-                width: 33.33% !important;
-            }
-            div[data-testid="stHorizontalBlock"]:has(img) {
+            /* Force horizontal layout for columns containing images */
+            div[data-testid="stHorizontalBlock"] {
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
             }
-            div[data-testid="stHorizontalBlock"]:has(img) > div[data-testid="column"] {
-                width: 33.33% !important;
-                flex: 1 1 33.33% !important;
+            div[data-testid="column"] {
+                flex: 1 1 auto !important;
                 min-width: 0px !important;
-                padding: 0px 1px !important;
             }
         }
 
