@@ -99,14 +99,14 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Specific Pink Styling for Menu Category Buttons & Header Action Buttons (Home, Cart, Logout) */
+        /* Specific Pink Styling for Menu Category Buttons & Header Action Buttons (Home, Cart, Logout) with Black Font */
         div[data-testid="column"]:first-of-type div.stButton > button,
         div[data-testid="column"]:nth-of-type(3) div.stButton > button,
         div[data-testid="column"]:nth-of-type(4) div.stButton > button,
         div[data-testid="column"]:nth-of-type(5) div.stButton > button {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
-            color: #ffffff !important;
-            border: none !important;
+            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
+            color: #000000 !important;
+            border: 1px solid #db2777 !important;
             font-weight: 800 !important;
             font-size: 20px !important;
             border-radius: 12px !important;
@@ -120,16 +120,17 @@ st.markdown("""
         div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover,
         div[data-testid="column"]:nth-of-type(4) div.stButton > button:hover,
         div[data-testid="column"]:nth-of-type(5) div.stButton > button:hover {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+            color: #000000 !important;
             box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
             transform: translateY(-1px);
         }
 
-        /* Specific Pink Styling for "Add to Cart" Buttons inside Product Columns */
+        /* Specific Pink Styling for "Add to Cart" Buttons inside Product Columns with Black Font */
         div[data-testid="column"] div[data-testid="column"]:last-of-type div.stButton > button {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
-            color: #ffffff !important;
-            border: none !important;
+            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
+            color: #000000 !important;
+            border: 1px solid #db2777 !important;
             font-weight: 800 !important;
             font-size: 20px !important;
             border-radius: 12px !important;
@@ -140,7 +141,8 @@ st.markdown("""
             transition: all 0.2s ease-in-out;
         }
         div[data-testid="column"] div[data-testid="column"]:last-of-type div.stButton > button:hover {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+            color: #000000 !important;
             box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
             transform: translateY(-1px);
         }
