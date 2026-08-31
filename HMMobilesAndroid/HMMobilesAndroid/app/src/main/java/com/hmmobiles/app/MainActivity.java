@@ -2,7 +2,7 @@ package com.hmmobiles.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.webkit.CookieManager;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -21,56 +21,44 @@ public class MainActivity extends Activity {
 
         WebSettings settings = webView.getSettings();
 
-        // JavaScript
+        // Enable JavaScript
         settings.setJavaScriptEnabled(true);
 
-        // Storage
+        // Enable storage for Streamlit
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // Cookies / login sessions
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.setAcceptThirdPartyCookies(webView, true);
-
-        // Windows / redirects
+        // Allow Streamlit features
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setSupportMultipleWindows(false);
+        settings.setSupportMultipleWindows(true);
 
-        // Desktop-style layout
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
+        // MOBILE VIEW
+        // Do NOT force a desktop/wide page
+        settings.setUseWideViewPort(false);
+        settings.setLoadWithOverviewMode(false);
 
-        // Zoom
-        settings.setSupportZoom(true);
-        settings.setBuiltInZoomControls(true);
+        // Normal phone zoom
+        settings.setSupportZoom(false);
+        settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
-        // Cache
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-
-        // Important: use a normal Chrome-like User Agent
-        settings.setUserAgentString(
-                "Mozilla/5.0 (Linux; Android 13) " +
-                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                "Chrome/131.0.0.0 Mobile Safari/537.36"
-        );
-
-        // Keep navigation inside WebView
+        // Keep website inside the app
         webView.setWebViewClient(new WebViewClient());
 
-        // Streamlit / JavaScript support
+        // Support Streamlit browser features
         webView.setWebChromeClient(new WebChromeClient());
 
-        // Load Streamlit
-        webView.loadUrl(
-                "https://baluaiproject1.streamlit.app/"
+        // Normal screen layout
+        webView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
+
+        // Open HM Mobiles
+        webView.loadUrl("https://baluaiproject1.streamlit.app/");
     }
 
     @Override
     public void onBackPressed() {
-
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
