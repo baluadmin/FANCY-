@@ -79,7 +79,25 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Compact, Full-Width Light Yellow Buttons tightly fitted inside columns */
+        /* Specific Light Pink Styling for Menu Column Buttons */
+        div[data-testid="column"]:first-of-type div.stButton > button {
+            background-color: #fce7f3 !important; /* Soft light pink */
+            color: #831843 !important;
+            border: 2px solid #fbcfe8 !important;
+            font-weight: 700 !important;
+            font-size: 18px !important;
+            border-radius: 8px !important;
+            padding: 0.6rem 0.8rem !important;
+            width: 100% !important;
+            display: block !important;
+        }
+        div[data-testid="column"]:first-of-type div.stButton > button:hover {
+            background-color: #fbcfe8 !important;
+            color: #831843 !important;
+            border: 2px solid #f472b6 !important;
+        }
+
+        /* Compact, Full-Width Light Yellow Buttons for other areas */
         div.stButton > button {
             background-color: #fefce8 !important;
             color: #713f12 !important;
