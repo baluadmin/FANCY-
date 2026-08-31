@@ -39,11 +39,15 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
-        /* Completely hide header link icons next to section headers and image expand/zoom buttons */
+        /* Completely hide header link icons next to section headers and disable/hide all image full-screen/zoom buttons and toolbars */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         button[kind="header"] {visibility: hidden !important;}
-        [data-testid="stImage"] button {visibility: hidden !important; display: none !important;}
+        [data-testid="stImage"] button, [data-testid="imageToolbar"], button[title*="View fullscreen"], button[title*="Zoom"] {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
         
         /* Automatically adapt text color for high contrast */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
