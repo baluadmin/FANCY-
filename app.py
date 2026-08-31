@@ -90,9 +90,19 @@ st.markdown("""
             border: 1px solid #94a3b8 !important;
         }
 
-        /* DISABLE FORCED COLUMN STACKING ON MOBILE TO KEEP 3-COLUMN IMAGE GRID INTACT */
+        /* FORCE IMAGE ROWS TO REMAIN SIDE-BY-SIDE ON MOBILE DEVICES */
         @media (max-width: 768px) {
-            /* Keep overall block layout clean */
+            /* Keep image rows horizontally aligned instead of stacking vertically */
+            div[data-testid="stHorizontalBlock"]:has(img) {
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            div[data-testid="stHorizontalBlock"]:has(img) > div[data-testid="column"] {
+                width: auto !important;
+                flex: 1 1 33.33% !important;
+                min-width: 0px !important;
+                padding: 0px 1px !important;
+            }
         }
 
         .block-container {
@@ -287,14 +297,12 @@ if st.session_state.current_view == "Home":
     if filtered_items:
         for idx, prod in enumerate(filtered_items):
             with st.container(border=True):
-                # Full width layout stacking images section on top and product info/actions below for compact mobile viewing
                 raw_img = prod.get("image", "")
                 if raw_img:
                     img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                     valid_paths = [p for p in img_paths if os.path.exists(p)]
                     if valid_paths:
                         display_paths = valid_paths[:6]
-                        # Chunk into rows of 3 images matching the target reference layout exactly
                         rows_of_imgs = [display_paths[i:i+3] for i in range(0, len(display_paths), 3)]
                         
                         for row_imgs in rows_of_imgs:
