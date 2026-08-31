@@ -295,12 +295,8 @@ if st.session_state.current_view == "Home":
     
     if filtered_items:
         for idx, prod in enumerate(filtered_items):
-            slide_key = f"slide_{current_cat}_{idx}"
-            if slide_key not in st.session_state:
-                st.session_state[slide_key] = 0
-
             with st.container(border=True):
-                img_col, info_col = st.columns([1, 1.8], gap="small")
+                img_col, info_col = st.columns([1.2, 1.8], gap="small")
                 
                 with img_col:
                     raw_img = prod.get("image", "")
@@ -308,30 +304,18 @@ if st.session_state.current_view == "Home":
                         img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                         valid_paths = [p for p in img_paths if os.path.exists(p)]
                         if valid_paths:
-                            total_imgs = len(valid_paths)
-                            current_img_idx = st.session_state[slide_key]
+                            # Render up to 6 small images in a clean multi-column grid layout
+                            display_paths = valid_paths[:6]
+                            rows_count = (len(display_paths) + 1) // 2
                             
-                            # Centered small image layout with left and right navigation buttons flanking it
-                            if total_imgs > 1:
-                                nav_l, img_c, nav_r = st.columns([0.6, 2.2, 0.6], gap="small")
-                                with nav_l:
-                                    st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
-                                    if st.button("◄", key=f"p_{current_cat}_{idx}"):
-                                        st.session_state[slide_key] = (current_img_idx - 1) % total_imgs
-                                        st.rerun()
-                                with img_c:
-                                    _, center_pic, _ = st.columns([0.5, 3, 0.5])
-                                    with center_pic:
-                                        st.image(valid_paths[current_img_idx], width=85)
-                                with nav_r:
-                                    st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
-                                    if st.button("►", key=f"n_{current_cat}_{idx}"):
-                                        st.session_state[slide_key] = (current_img_idx + 1) % total_imgs
-                                        st.rerun()
-                            else:
-                                _, center_pic, _ = st.columns([1, 3, 1])
-                                with center_pic:
-                                    st.image(valid_paths[0], width=85)
+                            for r in range(rows_count):
+                                row_imgs = display_paths[r*2:(r+1)*2]
+                                cols = st.columns(len(row_imgs))
+                                for c_i, img_path in enumerate(row_imgs):
+                                    with cols[c_i]:
+                                        _, center_img, _ = st.columns([0.5, 3, 0.5])
+                                        with center_img:
+                                            st.image(img_path, width=50)
                         else:
                             st.caption("No Image")
                     else:
