@@ -334,8 +334,7 @@ with top_c3:
         st.session_state.clear()
         st.rerun()
 
-# Professional blue divider line replacing the highlighted yellow area
-st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px; border: none; border-top: 3px solid #1e3a8a;'>", unsafe_allow_html=True)
+st.markdown("---")
 
 
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
@@ -507,7 +506,7 @@ if st.session_state.current_view == "Home":
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
-                        # Clean layout with properly aligned quantity controls & Add to Cart button below
+                        # Perfect - / + Quantity Stepper Controls
                         q_minus, q_display, q_plus = st.columns([1, 1.2, 1], gap="small")
                         with q_minus:
                             if st.button("-", key=f"minus_{current_cat}_{global_idx}", use_container_width=True):
@@ -521,7 +520,7 @@ if st.session_state.current_view == "Home":
                                 st.session_state.quantities[qty_key] += 1
                                 st.rerun()
                         
-                        st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
                         
                         if st.button("Add to Cart", key=f"add_btn_{current_cat}_{global_idx}", use_container_width=True):
                             qty_val = st.session_state.quantities[qty_key]
