@@ -223,6 +223,8 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 if "product_page" not in st.session_state:
     st.session_state.product_page = 0
+if "quantities" not in st.session_state:
+    st.session_state.quantities = {}
 
 # Google Apps Script Web App Endpoint URL Updated
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
@@ -464,6 +466,9 @@ if st.session_state.current_view == "Home":
 
                 for idx, prod in enumerate(current_page_items):
                     global_idx = start_idx + idx
+                    qty_key = f"qty_val_{current_cat}_{global_idx}"
+                    if qty_key not in st.session_state.quantities:
+                        st.session_state.quantities[qty_key] = 1
 
                     p_imgs_col, p_div1_col, p_details_col = st.columns([5.2, 0.05, 1.8], gap="small")
                     
@@ -501,15 +506,28 @@ if st.session_state.current_view == "Home":
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
-                        q_col, b_col = st.columns([1, 1], gap="small")
-                        with q_col:
-                            q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{global_idx}", label_visibility="collapsed")
-                        with b_col:
-                            if st.button("Add", key=f"add_btn_{current_cat}_{global_idx}", use_container_width=True):
-                                full_q_str = f"{int(q_val)} Units"
-                                st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
-                                st.success(f"Added!")
+                        # Perfect - / + Quantity Stepper Controls
+                        q_minus, q_display, q_plus = st.columns([1, 1.2, 1], gap="small")
+                        with q_minus:
+                            if st.button("-", key=f"minus_{current_cat}_{global_idx}", use_container_width=True):
+                                if st.session_state.quantities[qty_key] > 1:
+                                    st.session_state.quantities[qty_key] -= 1
+                                    st.rerun()
+                        with q_display:
+                            st.markdown(f"<div style='text-align: center; padding-top: 6px; font-weight: 700;'>{st.session_state.quantities[qty_key]}</div>", unsafe_allow_html=True)
+                        with q_plus:
+                            if st.button("+", key=f"plus_{current_cat}_{global_idx}", use_container_width=True):
+                                st.session_state.quantities[qty_key] += 1
                                 st.rerun()
+                        
+                        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
+                        
+                        if st.button("Add to Cart", key=f"add_btn_{current_cat}_{global_idx}", use_container_width=True):
+                            qty_val = st.session_state.quantities[qty_key]
+                            full_q_str = f"{qty_val} Units"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success(f"Added!")
+                            st.rerun()
                                     
                     st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #e2e8f0;'>", unsafe_allow_html=True)
                 
