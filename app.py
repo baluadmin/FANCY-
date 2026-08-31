@@ -304,18 +304,23 @@ if st.session_state.current_view == "Home":
                         img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
                         valid_paths = [p for p in img_paths if os.path.exists(p)]
                         if valid_paths:
-                            # Render up to 6 small images in a clean multi-column grid layout
+                            # Render up to 6 images cleanly divided into 2 distinct columns (3 images per column)
                             display_paths = valid_paths[:6]
-                            rows_count = (len(display_paths) + 1) // 2
+                            half_len = (len(display_paths) + 1) // 2
+                            col1_imgs = display_paths[:half_len]
+                            col2_imgs = display_paths[half_len:]
                             
-                            for r in range(rows_count):
-                                row_imgs = display_paths[r*2:(r+1)*2]
-                                cols = st.columns(len(row_imgs))
-                                for c_i, img_path in enumerate(row_imgs):
-                                    with cols[c_i]:
-                                        _, center_img, _ = st.columns([0.5, 3, 0.5])
-                                        with center_img:
-                                            st.image(img_path, width=50)
+                            sub_c1, sub_c2 = st.columns(2, gap="small")
+                            with sub_c1:
+                                for img_path in col1_imgs:
+                                    _, center_img, _ = st.columns([0.5, 3, 0.5])
+                                    with center_img:
+                                        st.image(img_path, width=45)
+                            with sub_c2:
+                                for img_path in col2_imgs:
+                                    _, center_img, _ = st.columns([0.5, 3, 0.5])
+                                    with center_img:
+                                        st.image(img_path, width=45)
                         else:
                             st.caption("No Image")
                     else:
