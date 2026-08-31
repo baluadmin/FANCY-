@@ -92,7 +92,6 @@ st.markdown("""
 
         /* PORTRAIT MOBILE APP RESPONSIVE OVERRIDES */
         @media (max-width: 768px) {
-            /* Force product cards to stack vertically on portrait mobiles */
             div[data-testid="stHorizontalBlock"] {
                 flex-direction: column !important;
                 flex-wrap: wrap !important;
@@ -110,7 +109,7 @@ st.markdown("""
             padding-bottom: 0rem;
             padding-left: 0.6rem;
             padding-right: 0.6rem;
-            max-width: 480px !important; /* Forces optimal mobile container width on desktop browsers */
+            max-width: 480px !important;
             margin: auto;
         }
     </style>
@@ -130,7 +129,6 @@ if "current_view" not in st.session_state:
 if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 
-# Google Apps Script Web App Endpoint URL Updated
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
 def log_login_to_sheet(name, phone):
@@ -144,7 +142,7 @@ def log_login_to_sheet(name, phone):
     except Exception as e:
         print(f"Login sheet error: {e}")
 
-# 2. Centered Professional Compact Customer Login Screen (Before Login)
+# Customer Login Screen
 if not st.session_state.logged_in_user:
     st.markdown("""
         <div style='text-align: center; margin-top: 30px; margin-bottom: 10px;'>
@@ -176,7 +174,7 @@ if not st.session_state.logged_in_user:
                         st.warning("⚠️ Please provide a valid name and 10-digit mobile number.")
     st.stop()
 
-# --- AFTER LOGIN: COMPACT MOBILE HEADER & NAVIGATION ---
+# Header & Navigation
 st.markdown("""
     <div class="brand-banner">
         <h1 class="brand-title">HM MOBILES THIRUVERKADU</h1>
@@ -312,18 +310,28 @@ if st.session_state.current_view == "Home":
                         if valid_paths:
                             total_imgs = len(valid_paths)
                             current_img_idx = st.session_state[slide_key]
-                            st.image(valid_paths[current_img_idx], width=110)
                             
+                            # Centered small image layout with left and right navigation buttons flanking it
                             if total_imgs > 1:
-                                prev_b, next_b = st.columns(2)
-                                with prev_b:
+                                nav_l, img_c, nav_r = st.columns([0.6, 2.2, 0.6], gap="small")
+                                with nav_l:
+                                    st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
                                     if st.button("◄", key=f"p_{current_cat}_{idx}"):
                                         st.session_state[slide_key] = (current_img_idx - 1) % total_imgs
                                         st.rerun()
-                                with next_b:
+                                with img_c:
+                                    _, center_pic, _ = st.columns([0.5, 3, 0.5])
+                                    with center_pic:
+                                        st.image(valid_paths[current_img_idx], width=85)
+                                with nav_r:
+                                    st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
                                     if st.button("►", key=f"n_{current_cat}_{idx}"):
                                         st.session_state[slide_key] = (current_img_idx + 1) % total_imgs
                                         st.rerun()
+                            else:
+                                _, center_pic, _ = st.columns([1, 3, 1])
+                                with center_pic:
+                                    st.image(valid_paths[0], width=85)
                         else:
                             st.caption("No Image")
                     else:
