@@ -103,13 +103,6 @@ st.markdown("""
                 min-width: 100% !important;
                 padding: 2px 0px !important;
             }
-            /* Make Category selection buttons stack or display as a tight horizontal scrollable row */
-            .category-container {
-                display: flex;
-                overflow-x: auto;
-                gap: 6px;
-                padding-bottom: 8px;
-            }
         }
 
         .block-container {
@@ -214,12 +207,18 @@ def load_inventory_from_sheet():
     sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
         df = pd.read_csv(sheet_csv_url)
-        df.to_csv("inventory.csv", index=False)
-        return df
-    except Exception as e:
-        if os.path.exists("inventory.csv"):
+        if not df.empty:
+            return df
+    except Exception:
+        pass
+    
+    if os.path.exists("inventory.csv"):
+        try:
             return pd.read_csv("inventory.csv")
-        return pd.DataFrame()
+        except Exception:
+            pass
+            
+    return pd.DataFrame()
 
 inv_df = load_inventory_from_sheet()
 
@@ -241,8 +240,10 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High bass wireless headset."},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Quick charge adapter."},
+        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": "High bass wireless headset with long battery life."},
+        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": "Immersive sound with noise cancellation mic."},
+        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": "Quick charge wall adapter for smartphones."},
+        {"id": "ITM004", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": "True wireless stereo earbuds."}
     ]
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
@@ -250,4 +251,128 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str) 
         return "Your cart is empty."
     
     customer_name = st.session_state.logged_in_user
-    primary_phone = st.session_state.user_
+    primary_phone = st.session_state.user_phone
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
+
+    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
+
+    try:
+        order_data = {
+            "Type": "Order",
+            "Timestamp": timestamp,
+            "Customer_Name": customer_name,
+            "Primary_Phone": primary_phone,
+            "Items": cart_summary,
+            "Address": address,
+            "Secondary_Phone": secondary_phone,
+            "Description": description
+        }
+        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
+    except Exception as e:
+        print(f"Order sheet error: {e}")
+
+    st.session_state.cart = []
+    return f"Order placed successfully! (TXN ID: {txn_id})"
+
+# View Switching: Home View vs Cart/Checkout View
+if st.session_state.current_view == "Home":
+    categories = list(set([p['category'] for p in product_records]))
+    
+    cat_cols = st.columns(len(categories) if len(categories) > 0 else 1, gap="small")
+    for idx, cat in enumerate(categories):
+        with cat_cols[idx % len(cat_cols)]:
+            is_selected = st.session_state.selected_menu == cat
+            btn_label = f"📌 {cat}" if is_selected else cat
+            if st.button(btn_label, key=f"cat_tab_{cat}", use_container_width=True):
+                st.session_state.selected_menu = cat
+                st.rerun()
+
+    st.markdown("<hr style='margin: 6px 0px;'>", unsafe_allow_html=True)
+
+    current_cat = st.session_state.get("selected_menu", categories[0] if categories else "Headset")
+    st.markdown(f"**Category: {current_cat}**")
+    
+    filtered_items = [p for p in product_records if p['category'] == current_cat]
+    
+    if filtered_items:
+        for idx, prod in enumerate(filtered_items):
+            slide_key = f"slide_{current_cat}_{idx}"
+            if slide_key not in st.session_state:
+                st.session_state[slide_key] = 0
+
+            with st.container(border=True):
+                img_col, info_col = st.columns([1, 1.8], gap="small")
+                
+                with img_col:
+                    raw_img = prod.get("image", "")
+                    if raw_img:
+                        img_paths = [img.strip() for img in raw_img.replace("\\", ",").split(",") if img.strip()]
+                        valid_paths = [p for p in img_paths if os.path.exists(p)]
+                        if valid_paths:
+                            total_imgs = len(valid_paths)
+                            current_img_idx = st.session_state[slide_key]
+                            st.image(valid_paths[current_img_idx], width=110)
+                            
+                            if total_imgs > 1:
+                                prev_b, next_b = st.columns(2)
+                                with prev_b:
+                                    if st.button("◄", key=f"p_{current_cat}_{idx}"):
+                                        st.session_state[slide_key] = (current_img_idx - 1) % total_imgs
+                                        st.rerun()
+                                with next_b:
+                                    if st.button("►", key=f"n_{current_cat}_{idx}"):
+                                        st.session_state[slide_key] = (current_img_idx + 1) % total_imgs
+                                        st.rerun()
+                        else:
+                            st.caption("No Image")
+                    else:
+                        st.caption("No Image")
+
+                with info_col:
+                    st.markdown(f"**{prod['name']}**")
+                    st.markdown(f"<span style='color: #0284c7; font-weight: 700;'>₹{prod['price']}</span>", unsafe_allow_html=True)
+                    st.caption(prod.get('description', ''))
+                    
+                    q_col, b_col = st.columns([1, 1.2], gap="small")
+                    with q_col:
+                        q_val = st.number_input("Qty", min_value=1.0, value=1.0, step=1.0, key=f"qty_{current_cat}_{idx}", label_visibility="collapsed")
+                    with b_col:
+                        if st.button("Add to Cart", key=f"add_{current_cat}_{idx}", use_container_width=True):
+                            full_q_str = f"{int(q_val)} Units"
+                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            st.success("Added!")
+                            st.rerun()
+    else:
+        st.info("No items found in this category.")
+
+else:
+    st.subheader("🛒 Shopping Cart")
+    if st.session_state.cart:
+        for c_idx, item in enumerate(st.session_state.cart):
+            cc1, cc2 = st.columns([3, 1])
+            with cc1:
+                st.markdown(f"- **{item['product']}** ({item['quantity']})")
+            with cc2:
+                if st.button("Remove", key=f"rem_{c_idx}"):
+                    st.session_state.cart.pop(c_idx)
+                    st.rerun()
+        
+        st.markdown("---")
+        st.subheader("📍 Delivery Details")
+        with st.form("checkout_form_main_view"):
+            checkout_address = st.text_area("Delivery Address:")
+            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            product_desc = st.text_area("Notes / Custom Request (Optional):")
+            
+            submit_checkout = st.form_submit_button("Complete Order", use_container_width=True)
+            if submit_checkout:
+                if checkout_address and secondary_phone:
+                    result_msg = process_cart_checkout(checkout_address, secondary_phone, product_desc)
+                    st.success(result_msg)
+                    st.session_state.current_view = "Home"
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Please provide address and alternative contact number.")
+    else:
+        st.info("Your cart is empty. Click **Home** to browse products.")
