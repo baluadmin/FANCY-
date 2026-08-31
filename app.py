@@ -187,6 +187,8 @@ if "selected_menu" not in st.session_state:
     st.session_state.selected_menu = "Headset"
 if "product_page" not in st.session_state:
     st.session_state.product_page = 0
+if "zoomed_image" not in st.session_state:
+    st.session_state.zoomed_image = None
 
 # Google Apps Script Web App Endpoint URL Updated
 GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
@@ -296,6 +298,24 @@ with top_c3:
         st.rerun()
 
 st.markdown("---")
+
+# --- ZOOM OVERLAY MODAL ---
+if st.session_state.zoomed_image:
+    st.markdown("---")
+    zoom_box = st.container(border=True)
+    with zoom_box:
+        z_col1, z_col2 = st.columns([10, 1])
+        with z_col1:
+            st.markdown("### 🔍 Image Preview")
+        with z_col2:
+            if st.button("❌", key="close_zoom_btn"):
+                st.session_state.zoomed_image = None
+                st.rerun()
+        
+        _, img_center, _ = st.columns([1, 2, 1])
+        with img_center:
+            st.image(st.session_state.zoomed_image, width=400)
+    st.markdown("---")
 
 
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
@@ -444,6 +464,9 @@ if st.session_state.current_view == "Home":
                             with img_cols_1[i]:
                                 if i < len(valid_paths):
                                     st.image(valid_paths[i], width=75)
+                                    if st.button("Zoom", key=f"zoom_r1_{current_cat}_{global_idx}_{i}", use_container_width=True):
+                                        st.session_state.zoomed_image = valid_paths[i]
+                                        st.rerun()
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                         
@@ -453,11 +476,14 @@ if st.session_state.current_view == "Home":
                             with img_cols_2[i - 3]:
                                 if i < len(valid_paths):
                                     st.image(valid_paths[i], width=75)
+                                    if st.button("Zoom", key=f"zoom_r2_{current_cat}_{global_idx}_{i}", use_container_width=True):
+                                        st.session_state.zoomed_image = valid_paths[i]
+                                        st.rerun()
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
-                        st.markdown("<div style='border-left: 2px solid #fde047; height: 135px; margin-top: 1px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='border-left: 2px solid #fde047; height: 165px; margin-top: 1px;'></div>", unsafe_allow_html=True)
 
                     with p_details_col:
                         st.markdown("<div style='height: 1px;'></div>", unsafe_allow_html=True)
@@ -502,7 +528,7 @@ else:
             with cc1:
                 st.markdown(f"- **{item['product']}** ({item['quantity']})")
             with cc2:
-                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}"):
+                if st.button("Remove Item", key=f"rem_cart_view_{c_idx}__"):
                     st.session_state.cart.pop(c_idx)
                     st.rerun()
         
