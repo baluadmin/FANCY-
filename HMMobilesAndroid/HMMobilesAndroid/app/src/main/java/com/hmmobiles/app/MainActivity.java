@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -16,32 +15,31 @@ public class MainActivity extends Activity {
     private WebView webView;
     private Handler handler = new Handler();
 
-    private boolean isLandscape = false;
+    private boolean landscapeMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Start application in PORTRAIT
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // App starts in PORTRAIT
+        setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        );
 
         webView = new WebView(this);
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
 
-        // Enable JavaScript
+        // Streamlit requires JavaScript
         settings.setJavaScriptEnabled(true);
-
-        // Enable Streamlit storage
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // Streamlit support
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(true);
 
-        // Desktop-style WebView
+        // Desktop-style website
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
 
@@ -50,36 +48,31 @@ public class MainActivity extends Activity {
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
-        // Keep website inside app
+        // Keep website inside the app
         webView.setWebViewClient(new WebViewClient());
-
-        // Support website features
         webView.setWebChromeClient(new WebChromeClient());
 
-        // Connect JavaScript with Android
+        // Android JavaScript bridge
         webView.addJavascriptInterface(
                 new AndroidBridge(),
                 "AndroidBridge"
         );
 
-        // Keep normal system UI
-        webView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        );
-
-        // Open HM Mobiles
+        // Load HM Mobiles
         webView.loadUrl(
                 "https://baluaiproject1.streamlit.app/"
         );
 
-        // Start checking login status
-        startLoginChecker();
+        // Start monitoring Streamlit buttons
+        startButtonMonitor();
     }
 
-    /**
-     * Check whether user has logged in.
-     */
-    private void startLoginChecker() {
+
+    // ============================================================
+    // MONITOR STREAMLIT BUTTONS
+    // ============================================================
+
+    private void startButtonMonitor() {
 
         handler.postDelayed(new Runnable() {
 
@@ -88,59 +81,85 @@ public class MainActivity extends Activity {
 
                 if (webView != null) {
 
-                    webView.evaluateJavascript(
+                    String javascript =
                             "(function() {" +
 
-                            // Login page detection
-                            "var text = document.body.innerText || '';" +
+                            "var buttons = document.querySelectorAll('button');" +
 
-                            // Login form is visible
-                            "var loginPage = " +
-                            "text.includes('Customer Portal Login') || " +
-                            "text.includes('Secure Login');" +
+                            "for (var i = 0; i < buttons.length; i++) {" +
 
-                            "if (loginPage) {" +
+                            "var text = (buttons[i].innerText || " +
+                            "buttons[i].textContent || '').trim();" +
 
-                            // User is NOT logged in
-                            "window.AndroidBridge.userLoggedOut();" +
+                            // LOGIN BUTTON
+                            "if (text === 'Secure Login' && " +
+                            "!buttons[i].dataset.androidLoginHooked) {" +
 
-                            "} else {" +
+                            "buttons[i].dataset.androidLoginHooked = 'true';" +
 
-                            // Login page disappeared
-                            // User is logged in
-                            "window.AndroidBridge.userLoggedIn();" +
+                            "buttons[i].addEventListener('click', function() {" +
+
+                            "if (window.AndroidBridge) {" +
+                            "window.AndroidBridge.loginClicked();" +
+                            "}" +
+
+                            "});" +
 
                             "}" +
 
-                            "})();",
+                            // LOGOUT BUTTON
+                            "if (text === 'Logout' && " +
+                            "!buttons[i].dataset.androidLogoutHooked) {" +
+
+                            "buttons[i].dataset.androidLogoutHooked = 'true';" +
+
+                            "buttons[i].addEventListener('click', function() {" +
+
+                            "if (window.AndroidBridge) {" +
+                            "window.AndroidBridge.logoutClicked();" +
+                            "}" +
+
+                            "});" +
+
+                            "}" +
+
+                            "}" +
+
+                            "})();";
+
+                    webView.evaluateJavascript(
+                            javascript,
                             null
                     );
                 }
 
-                // Check again after 1 second
-                handler.postDelayed(this, 1000);
+                // Check every 500 milliseconds
+                handler.postDelayed(this, 500);
             }
 
-        }, 3000);
+        }, 2000);
     }
 
-    /**
-     * JavaScript -> Android bridge
-     */
+
+    // ============================================================
+    // ANDROID BRIDGE
+    // ============================================================
+
     public class AndroidBridge {
 
         @JavascriptInterface
-        public void userLoggedIn() {
+        public void loginClicked() {
 
             runOnUiThread(new Runnable() {
+
                 @Override
                 public void run() {
 
-                    if (!isLandscape) {
+                    if (!landscapeMode) {
 
-                        isLandscape = true;
+                        landscapeMode = true;
 
-                        // Change to LANDSCAPE
+                        // CHANGE TO LANDSCAPE
                         setRequestedOrientation(
                                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                         );
@@ -149,18 +168,20 @@ public class MainActivity extends Activity {
             });
         }
 
+
         @JavascriptInterface
-        public void userLoggedOut() {
+        public void logoutClicked() {
 
             runOnUiThread(new Runnable() {
+
                 @Override
                 public void run() {
 
-                    if (isLandscape) {
+                    if (landscapeMode) {
 
-                        isLandscape = false;
+                        landscapeMode = false;
 
-                        // Return to PORTRAIT
+                        // RETURN TO PORTRAIT
                         setRequestedOrientation(
                                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                         );
@@ -169,6 +190,11 @@ public class MainActivity extends Activity {
             });
         }
     }
+
+
+    // ============================================================
+    // BACK BUTTON
+    // ============================================================
 
     @Override
     public void onBackPressed() {
@@ -182,6 +208,11 @@ public class MainActivity extends Activity {
             super.onBackPressed();
         }
     }
+
+
+    // ============================================================
+    // CLEANUP
+    // ============================================================
 
     @Override
     protected void onDestroy() {
