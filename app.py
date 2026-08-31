@@ -64,31 +64,31 @@ st.markdown("""
             box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15) !important;
         }
 
-        /* Pink Gradient Header Banner with Contact Info */
+        /* Soft Light Pink Gradient Header Banner with Contact Info */
         .brand-banner {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
-            padding: 22px 30px;
+            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%);
+            padding: 28px 30px;
             border-radius: 16px;
-            color: #ffffff !important;
+            color: #831843 !important;
             text-align: center;
-            box-shadow: 0 4px 15px -3px rgba(236, 72, 153, 0.2);
+            box-shadow: 0 4px 15px -3px rgba(244, 114, 182, 0.2);
             margin-bottom: 20px;
-            border: 1px solid #db2777;
+            border: 1px solid #f472b6;
         }
         .brand-banner .brand-title {
             font-family: 'Mulish', sans-serif !important;
-            font-size: 36px !important;
+            font-size: 38px !important;
             font-weight: 900 !important;
             letter-spacing: 0.5px;
-            color: #ffffff !important;
+            color: #831843 !important;
             margin: 0 0 6px 0;
             text-transform: lowercase;
         }
         .brand-banner .brand-phone {
-            font-size: 18px !important;
+            font-size: 19px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
-            color: #fdf2f8 !important;
+            color: #9d174d !important;
             margin: 0;
         }
 
