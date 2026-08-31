@@ -15,11 +15,12 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap');
 
-        /* Apply Professional Font Family Globally (Roboto) */
+        /* Apply Larger, Bold Font Family Globally (Montserrat) */
         html, body, [class*="css"] {
-            font-family: 'Roboto', sans-serif !important;
+            font-family: 'Montserrat', sans-serif !important;
+            font-size: 17px !important;
         }
 
         /* Set App Background to Light Yellow */
@@ -45,33 +46,34 @@ st.markdown("""
         /* Automatically adapt text color based on Streamlit's active theme */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #1e293b !important;
-            font-weight: 500 !important;
+            font-weight: 600 !important;
+            font-size: 16px !important;
         }
         
         /* Input boxes styling supporting light yellow theme */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #1e293b !important;
-            border: 1.5px solid #fde047 !important;
-            font-size: 14px !important;
-            font-weight: 400 !important;
-            border-radius: 6px !important;
+            border: 2px solid #fde047 !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            border-radius: 8px !important;
         }
 
         /* Professional Warm Yellow Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #fef08a 100%, #fde047 0%);
-            padding: 14px 18px;
-            border-radius: 8px;
+            padding: 18px 22px;
+            border-radius: 10px;
             color: #713f12 !important;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 12px;
-            border: 1.5px solid #facc15;
+            margin-bottom: 15px;
+            border: 2px solid #facc15;
         }
         .brand-title {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 26px !important;
+            font-weight: 800 !important;
             letter-spacing: 0.5px;
             color: #713f12 !important;
             margin: 0;
@@ -81,18 +83,18 @@ st.markdown("""
         div.stButton > button {
             background-color: #fef08a !important;
             color: #713f12 !important;
-            border: 1.5px solid #facc15 !important;
-            font-weight: 600 !important;
-            font-size: 15px !important;
-            border-radius: 6px !important;
-            padding: 0.4rem 0.5rem !important;
+            border: 2px solid #facc15 !important;
+            font-weight: 700 !important;
+            font-size: 16px !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.6rem !important;
             width: 100% !important;
             display: block !important;
         }
         div.stButton > button:hover {
             background-color: #fde047 !important;
             color: #713f12 !important;
-            border: 1px solid #eab308 !important;
+            border: 2px solid #eab308 !important;
         }
 
         /* Responsive Mobile Handling: Keep Top Navigation Row Horizontal */
@@ -135,32 +137,32 @@ st.markdown("""
         }
 
         .login-title h1 {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 28px !important;
+            font-weight: 800 !important;
             margin: 0 0 2px 0;
             color: #713f12 !important;
         }
 
         .login-title p {
-            font-size: 11px;
+            font-size: 13px !important;
             margin: 0;
         }
 
         .login-card {
             max-width: 620px;
             margin: 0 auto;
-            padding: 9px 16px 10px 16px;
+            padding: 12px 18px 14px 18px;
             border-radius: 10px;
             background-color: #ffffff;
-            border: 1.5px solid #fde047;
+            border: 2px solid #fde047;
             box-shadow: 0 4px 12px -3px rgba(0,0,0,0.05);
             text-align: center;
         }
 
         .login-card h3 {
-            margin: 0 0 3px 0;
-            font-size: 15px;
-            font-weight: 600;
+            margin: 0 0 5px 0;
+            font-size: 18px !important;
+            font-weight: 700 !important;
         }
 
         div[data-testid="stForm"] {
@@ -181,12 +183,12 @@ st.markdown("""
             }
 
             .login-title h1 {
-                font-size: 20px;
+                font-size: 22px !important;
                 margin-bottom: 0;
             }
 
             .login-title p {
-                font-size: 9px;
+                font-size: 10px !important;
             }
 
             .login-card {
@@ -195,7 +197,7 @@ st.markdown("""
             }
 
             .login-card h3 {
-                font-size: 14px;
+                font-size: 15px !important;
                 margin-bottom: 1px;
             }
 
@@ -208,9 +210,9 @@ st.markdown("""
             }
 
             button[kind="primaryFormSubmit"] {
-                min-height: 36px !important;
+                min-height: 38px !important;
                 padding: 0.2rem 0.5rem !important;
-                font-size: 13px !important;
+                font-size: 15px !important;
             }
         }
 
