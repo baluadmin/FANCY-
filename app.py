@@ -275,13 +275,11 @@ def log_login_to_sheet(name, phone):
             "Customer_Name": name,
             "Primary_Phone": phone
         }
-
         requests.post(
             GOOGLE_SCRIPT_URL,
             json=payload,
             timeout=3
         )
-
     except Exception:
         pass
 
@@ -301,52 +299,35 @@ if not st.session_state.logged_in_user:
     _, mid_col, _ = st.columns([1, 2, 1])
 
     with mid_col:
-
         with st.form("login_form"):
-
             st.markdown("### Customer Portal Login")
-
             cust_name = st.text_input("Your Name:")
-
             cust_phone = st.text_input(
                 "Mobile Number (10 digits):",
                 max_chars=10
             )
-
             login_btn = st.form_submit_button(
                 "Secure Login",
                 use_container_width=True
             )
 
             if login_btn:
-
                 if (
                     cust_name.strip()
                     and len(cust_phone) == 10
                     and cust_phone.isdigit()
                 ):
-
-                    st.session_state.logged_in_user = (
-                        cust_name.strip()
-                    )
-
-                    st.session_state.user_phone = (
-                        cust_phone.strip()
-                    )
-
+                    st.session_state.logged_in_user = cust_name.strip()
+                    st.session_state.user_phone = cust_phone.strip()
                     log_login_to_sheet(
                         cust_name.strip(),
                         cust_phone.strip()
                     )
-
                     st.rerun()
-
                 else:
-
                     st.warning(
                         "⚠️ Enter a valid name and 10-digit mobile number."
                     )
-
     st.stop()
 
 
@@ -354,10 +335,7 @@ if not st.session_state.logged_in_user:
 # HEADER
 # ============================================================
 
-st.markdown(
-    '<div class="sticky-header-container">',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="sticky-header-container">', unsafe_allow_html=True)
 
 st.markdown("""
     <div class="brand-banner">
@@ -370,10 +348,7 @@ st.markdown("""
 # STORE / CART
 # ============================================================
 
-st.markdown(
-    '<div class="hm-nav-box">',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="hm-nav-box">', unsafe_allow_html=True)
 
 nav_choice = st.radio(
     "Navigation",
@@ -398,20 +373,11 @@ new_view = (
 )
 
 if st.session_state.current_view != new_view:
-
     st.session_state.current_view = new_view
-
     st.rerun()
 
-st.markdown(
-    "</div>",
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    "</div>",
-    unsafe_allow_html=True
-)
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ============================================================
@@ -420,71 +386,45 @@ st.markdown(
 
 @st.cache_data(ttl=0)
 def load_inventory_from_sheet():
-
     sheet_csv_url = (
         "https://docs.google.com/spreadsheets/d/"
         "1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/"
         "export?format=csv"
     )
-
     try:
-
-        df = pd.read_csv(
-            sheet_csv_url
-        )
-
+        df = pd.read_csv(sheet_csv_url)
         return df
-
     except Exception:
-
         return pd.DataFrame()
 
 
 inv_df = load_inventory_from_sheet()
-
 product_records = []
 
 
 # ============================================================
-# READ PRODUCT DATA (UPDATE USERNAME & REPO NAME HERE)
+# READ PRODUCT DATA
 # ============================================================
 
 if not inv_df.empty:
-
     try:
-
         GITHUB_USER = "Balumahendran"
-
         REPO_NAME = "python-project1"
 
         for _, row in inv_df.iterrows():
-
             raw_img = (
                 str(row.iloc[6]).strip()
-                if len(row) > 6
-                and pd.notna(row.iloc[6])
+                if len(row) > 6 and pd.notna(row.iloc[6])
                 else ""
             )
 
             img_list = []
-
             for img in raw_img.replace(",", "\n").split("\n"):
-
                 img_name = img.strip()
-
-                if (
-                    img_name
-                    and img_name.lower() != "nan"
-                ):
-
+                if img_name and img_name.lower() != "nan":
                     if img_name.startswith("http"):
-
-                        img_list.append(
-                            img_name
-                        )
-
+                        img_list.append(img_name)
                     else:
-
                         img_list.append(
                             f"https://raw.githubusercontent.com/"
                             f"{GITHUB_USER}/"
@@ -494,58 +434,16 @@ if not inv_df.empty:
                         )
 
             product_records.append({
-
-                "id": (
-                    str(row.iloc[0])
-                    if len(row) > 0
-                    and pd.notna(row.iloc[0])
-                    else "N/A"
-                ),
-
-                "name": (
-                    str(row.iloc[1])
-                    if len(row) > 1
-                    and pd.notna(row.iloc[1])
-                    else "Unknown"
-                ),
-
-                "category": (
-                    str(row.iloc[2]).strip()
-                    if len(row) > 2
-                    and pd.notna(row.iloc[2])
-                    else "General"
-                ),
-
-                "stock": (
-                    str(row.iloc[3])
-                    if len(row) > 3
-                    and pd.notna(row.iloc[3])
-                    else "0"
-                ),
-
-                "price": (
-                    str(row.iloc[4])
-                    if len(row) > 4
-                    and pd.notna(row.iloc[4])
-                    else "0"
-                ),
-
-                "description": (
-                    str(row.iloc[5]).strip()
-                    if len(row) > 5
-                    and pd.notna(row.iloc[5])
-                    else ""
-                ),
-
+                "id": str(row.iloc[0]) if len(row) > 0 and pd.notna(row.iloc[0]) else "N/A",
+                "name": str(row.iloc[1]) if len(row) > 1 and pd.notna(row.iloc[1]) else "Unknown",
+                "category": str(row.iloc[2]).strip() if len(row) > 2 and pd.notna(row.iloc[2]) else "General",
+                "stock": str(row.iloc[3]) if len(row) > 3 and pd.notna(row.iloc[3]) else "0",
+                "price": str(row.iloc[4]) if len(row) > 4 and pd.notna(row.iloc[4]) else "0",
+                "description": str(row.iloc[5]).strip() if len(row) > 5 and pd.notna(row.iloc[5]) else "",
                 "images": img_list
-
             })
-
     except Exception as e:
-
-        print(
-            f"Parsing error: {e}"
-        )
+        print(f"Parsing error: {e}")
 
 
 # ============================================================
@@ -553,72 +451,37 @@ if not inv_df.empty:
 # ============================================================
 
 if not product_records:
-
     product_records = [
-
         {
-
             "id": "ITM001",
-
             "name": "Bluetooth Wireless Headset",
-
             "price": "1200",
-
             "stock": "50",
-
             "category": "Headset",
-
             "images": [],
-
             "description": "High performance audio"
-
         }
-
     ]
 
 
 @st.cache_data
 def get_compressed_image(url):
-
     """
     Downloads, compresses, and forces small
-    thumbnail dimensions in-memory.
+    thumbnail dimensions in-memory with error logging.
     """
-
     try:
-
-        response = requests.get(
-            url,
-            timeout=4
-        )
-
+        response = requests.get(url, timeout=10)
         if response.status_code == 200:
-
-            img = Image.open(
-                BytesIO(
-                    response.content
-                )
-            )
-
-            if img.mode in (
-                "RGBA",
-                "P"
-            ):
-
-                img = img.convert(
-                    "RGB"
-                )
-
-            img.thumbnail(
-                (90, 90)
-            )
-
+            img = Image.open(BytesIO(response.content))
+            if img.mode in ("RGBA", "P"):
+                img = img.convert("RGB")
+            img.thumbnail((90, 90))
             return img
-
-    except Exception:
-
-        pass
-
+        else:
+            print(f"HTTP Error {response.status_code} for URL: {url}")
+    except Exception as e:
+        print(f"Image Load Exception for {url}: {e}")
     return None
 
 
@@ -628,280 +491,100 @@ def get_compressed_image(url):
 
 if st.session_state.current_view == "Home":
 
-    categories = sorted(
-        list(
-            set(
-                [
-                    p["category"]
-                    for p in product_records
-                ]
-            )
-        )
-    )
+    categories = sorted(list(set([p["category"] for p in product_records])))
 
-    st.markdown(
-        '<div class="category-area">',
-        unsafe_allow_html=True
-    )
-
+    st.markdown('<div class="category-area">', unsafe_allow_html=True)
     selected_cat = st.selectbox(
         "Select Product Category:",
         categories,
         key="category_selector"
     )
-
-    st.markdown(
-        "</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
     filtered_items = [
-
-        p
-
-        for p in product_records
-
-        if (
-            p["category"].strip().lower()
-            ==
-            selected_cat.strip().lower()
-        )
-
+        p for p in product_records
+        if p["category"].strip().lower() == selected_cat.strip().lower()
     ]
 
     if filtered_items:
-
-        for i in range(
-            0,
-            len(filtered_items),
-            2
-        ):
-
+        for i in range(0, len(filtered_items), 2):
             cols = st.columns(2)
-
             for col_idx in range(2):
-
-                item_index = (
-                    i + col_idx
-                )
-
-                if item_index < len(
-                    filtered_items
-                ):
-
-                    prod = filtered_items[
-                        item_index
-                    ]
-
+                item_index = i + col_idx
+                if item_index < len(filtered_items):
+                    prod = filtered_items[item_index]
                     with cols[col_idx]:
-
-                        st.markdown(
-                            '<div class="product-card">',
-                            unsafe_allow_html=True
-                        )
+                        st.markdown('<div class="product-card">', unsafe_allow_html=True)
 
                         left_col, image_col, right_col = st.columns(
                             [0.3, 5, 0.3],
                             vertical_alignment="center"
                         )
 
-                        img_key = (
-                            f"img_idx_"
-                            f"{selected_cat}_"
-                            f"{item_index}"
-                        )
-
+                        img_key = f"img_idx_{selected_cat}_{item_index}"
                         if img_key not in st.session_state:
+                            st.session_state[img_key] = 0
 
-                            st.session_state[
-                                img_key
-                            ] = 0
-
-                        total_imgs = len(
-                            prod["images"]
-                        )
+                        total_imgs = len(prod["images"])
 
                         with left_col:
-
-                            if st.button(
-                                "◀",
-                                key=(
-                                    f"prev_"
-                                    f"{selected_cat}_"
-                                    f"{item_index}"
-                                )
-                            ):
-
+                            if st.button("◀", key=f"prev_{selected_cat}_{item_index}"):
                                 if total_imgs > 0:
-
-                                    st.session_state[
-                                        img_key
-                                    ] = (
-
-                                        st.session_state[
-                                            img_key
-                                        ] - 1
+                                    st.session_state[img_key] = (
+                                        st.session_state[img_key] - 1
                                     ) % total_imgs
-
                                     st.rerun()
 
                         with image_col:
-
                             if total_imgs > 0:
-
-                                current_idx = (
-                                    st.session_state[
-                                        img_key
-                                    ] % total_imgs
+                                current_idx = st.session_state[img_key] % total_imgs
+                                compressed_img = get_compressed_image(
+                                    prod["images"][current_idx]
                                 )
-
-                                compressed_img = (
-                                    get_compressed_image(
-                                        prod["images"][
-                                            current_idx
-                                        ]
-                                    )
-                                )
-
                                 if compressed_img:
-
-                                    st.image(
-                                        compressed_img,
-                                        width=80
-                                    )
-
+                                    st.image(compressed_img, width=80)
                                 else:
-
                                     st.markdown(
-                                        """
-                                        <p style="
-                                            font-size:9px;
-                                            text-align:center;
-                                            color:#ef4444;
-                                            margin:0;
-                                        ">
-                                            Failed
-                                        </p>
-                                        """,
+                                        '<p style="font-size:9px; text-align:center; color:#ef4444; margin:0;">Failed</p>',
                                         unsafe_allow_html=True
                                     )
-
                             else:
-
                                 st.markdown(
-                                    """
-                                    <p style="
-                                        font-size:9px;
-                                        text-align:center;
-                                        color:#94a3b8;
-                                        margin:0;
-                                    ">
-                                        No image
-                                    </p>
-                                    """,
+                                    '<p style="font-size:9px; text-align:center; color:#94a3b8; margin:0;">No image</p>',
                                     unsafe_allow_html=True
                                 )
 
                         with right_col:
-
-                            if st.button(
-                                "▶",
-                                key=(
-                                    f"next_"
-                                    f"{selected_cat}_"
-                                    f"{item_index}"
-                                )
-                            ):
-
+                            if st.button("▶", key=f"next_{selected_cat}_{item_index}"):
                                 if total_imgs > 0:
-
-                                    st.session_state[
-                                        img_key
-                                    ] = (
-
-                                        st.session_state[
-                                            img_key
-                                        ] + 1
+                                    st.session_state[img_key] = (
+                                        st.session_state[img_key] + 1
                                     ) % total_imgs
-
                                     st.rerun()
 
-                        st.markdown(
-                            f'<div class="product-name">'
-                            f'{prod["name"]}'
-                            f'</div>',
-                            unsafe_allow_html=True
-                        )
-
-                        st.markdown(
-                            f'<div class="product-price">'
-                            f'₹{prod["price"]} | '
-                            f'Stk: {prod["stock"]}'
-                            f'</div>',
-                            unsafe_allow_html=True
-                        )
+                        st.markdown(f'<div class="product-name">{prod["name"]}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="product-price">₹{prod["price"]} | Stk: {prod["stock"]}</div>', unsafe_allow_html=True)
 
                         q_val = st.number_input(
-
                             "Quantity",
-
                             min_value=1.0,
-
                             value=1.0,
-
                             step=1.0,
-
-                            key=(
-                                f"qty_"
-                                f"{selected_cat}_"
-                                f"{item_index}"
-                            ),
-
+                            key=f"qty_{selected_cat}_{item_index}",
                             label_visibility="collapsed"
-
                         )
 
-                        if st.button(
-
-                            "Add to Cart",
-
-                            key=(
-                                f"add_"
-                                f"{selected_cat}_"
-                                f"{item_index}"
-                            ),
-
-                            use_container_width=True
-
-                        ):
-
+                        if st.button("Add to Cart", key=f"add_{selected_cat}_{item_index}", use_container_width=True):
                             st.session_state.cart.append({
-
                                 "product": prod["name"],
-
-                                "quantity": (
-                                    f"{int(q_val)} Units"
-                                )
-
+                                "quantity": f"{int(q_val)} Units"
                             })
-
-                            st.success(
-                                "Added!"
-                            )
-
+                            st.success("Added!")
                             st.rerun()
 
-                        st.markdown(
-                            '</div>',
-                            unsafe_allow_html=True
-                        )
-
+                        st.markdown('</div>', unsafe_allow_html=True)
     else:
-
-        st.info(
-            f"No items found under category "
-            f"'{selected_cat}'."
-        )
+        st.info(f"No items found under category '{selected_cat}'.")
 
 
 # ============================================================
@@ -909,154 +592,49 @@ if st.session_state.current_view == "Home":
 # ============================================================
 
 else:
-
-    st.subheader(
-        "🛒 Shopping Cart & Checkout"
-    )
+    st.subheader("🛒 Shopping Cart & Checkout")
 
     if st.session_state.cart:
-
-        for i, item in enumerate(
-            st.session_state.cart
-        ):
-
-            col_item_name, col_item_remove = (
-                st.columns([3, 1])
-            )
-
+        for i, item in enumerate(st.session_state.cart):
+            col_item_name, col_item_remove = st.columns([3, 1])
             with col_item_name:
-
-                st.write(
-                    f"• {item['product']} "
-                    f"({item['quantity']})"
-                )
-
+                st.write(f"• {item['product']} ({item['quantity']})")
             with col_item_remove:
-
-                if st.button(
-                    "Remove",
-                    key=f"remove_cart_{i}"
-                ):
-
-                    st.session_state.cart.pop(
-                        i
-                    )
-
+                if st.button("Remove", key=f"remove_cart_{i}"):
+                    st.session_state.cart.pop(i)
                     st.rerun()
 
-        st.markdown(
-            "---"
-        )
+        st.markdown("---")
 
-        with st.form(
-            "checkout_form"
-        ):
+        with st.form("checkout_form"):
+            address = st.text_area("Delivery Address:")
+            sec_phone = st.text_input("Alternative Phone Number:", max_chars=10)
+            pay_method = st.selectbox("Payment Gateway", ["UPI / GPay", "Cash on Delivery"])
 
-            address = st.text_area(
-                "Delivery Address:"
-            )
-
-            sec_phone = st.text_input(
-                "Alternative Phone Number:",
-                max_chars=10
-            )
-
-            pay_method = st.selectbox(
-                "Payment Gateway",
-                [
-                    "UPI / GPay",
-                    "Cash on Delivery"
-                ]
-            )
-
-            checkout_button = (
-                st.form_submit_button(
-                    "Confirm & Dispatch Order",
-                    use_container_width=True
-                )
-            )
+            checkout_button = st.form_submit_button("Confirm & Dispatch Order", use_container_width=True)
 
             if checkout_button:
-
-                if (
-                    address.strip()
-                    and len(sec_phone) == 10
-                    and sec_phone.isdigit()
-                ):
-
+                if address.strip() and len(sec_phone) == 10 and sec_phone.isdigit():
                     try:
-
                         order_payload = {
-
                             "Type": "Order",
-
-                            "Timestamp": (
-                                datetime.now()
-                                .strftime(
-                                    "%Y-%m-%d %H:%M:%S"
-                                )
-                            ),
-
-                            "Customer_Name": (
-                                st.session_state
-                                .logged_in_user
-                            ),
-
-                            "Primary_Phone": (
-                                st.session_state
-                                .user_phone
-                            ),
-
-                            "Items": str(
-                                st.session_state.cart
-                            ),
-
-                            "Address": (
-                                address.strip()
-                            ),
-
-                            "Secondary_Phone": (
-                                sec_phone.strip()
-                            ),
-
-                            "Payment_Method": (
-                                pay_method
-                            )
-
+                            "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "Customer_Name": st.session_state.logged_in_user,
+                            "Primary_Phone": st.session_state.user_phone,
+                            "Items": str(st.session_state.cart),
+                            "Address": address.strip(),
+                            "Secondary_Phone": sec_phone.strip(),
+                            "Payment_Method": pay_method
                         }
-
-                        requests.post(
-                            GOOGLE_SCRIPT_URL,
-                            json=order_payload,
-                            timeout=5
-                        )
-
+                        requests.post(GOOGLE_SCRIPT_URL, json=order_payload, timeout=5)
                     except Exception:
-
                         pass
 
-                    st.success(
-                        "🎉 Order successfully placed "
-                        "and synced with Google Sheets!"
-                    )
-
+                    st.success("🎉 Order successfully placed and synced with Google Sheets!")
                     st.session_state.cart = []
-
-                    st.session_state.current_view = (
-                        "Home"
-                    )
-
+                    st.session_state.current_view = "Home"
                     st.rerun()
-
                 else:
-
-                    st.error(
-                        "Please provide a delivery address "
-                        "and valid 10-digit alternative phone."
-                    )
-
+                    st.error("Please provide a delivery address and valid 10-digit alternative phone.")
     else:
-
-        st.info(
-            "Your cart is empty."
-        )
+        st.info("Your cart is empty.")
