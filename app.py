@@ -99,73 +99,24 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Specific Pink Styling for Menu Category Buttons & Header Action Buttons (Home, Cart, Logout) with Black Font */
-        div[data-testid="column"]:first-of-type div.stButton > button,
-        div[data-testid="column"]:nth-of-type(3) div.stButton > button,
-        div[data-testid="column"]:nth-of-type(4) div.stButton > button,
-        div[data-testid="column"]:nth-of-type(5) div.stButton > button {
-            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
-            color: #000000 !important;
-            border: 1px solid #db2777 !important;
-            font-weight: 800 !important;
-            font-size: 20px !important;
-            border-radius: 12px !important;
-            padding: 0.7rem 1rem !important;
-            width: 100% !important;
-            display: block !important;
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
-            transition: all 0.2s ease-in-out;
-        }
-        div[data-testid="column"]:first-of-type div.stButton > button:hover,
-        div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover,
-        div[data-testid="column"]:nth-of-type(4) div.stButton > button:hover,
-        div[data-testid="column"]:nth-of-type(5) div.stButton > button:hover {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
-            color: #000000 !important;
-            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
-            transform: translateY(-1px);
-        }
-
-        /* Specific Pink Styling for "Add to Cart" Buttons inside Product Columns with Black Font */
-        div[data-testid="column"] div[data-testid="column"]:last-of-type div.stButton > button {
-            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
-            color: #000000 !important;
-            border: 1px solid #db2777 !important;
-            font-weight: 800 !important;
-            font-size: 20px !important;
-            border-radius: 12px !important;
-            padding: 0.7rem 1rem !important;
-            width: 100% !important;
-            display: block !important;
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
-            transition: all 0.2s ease-in-out;
-        }
-        div[data-testid="column"] div[data-testid="column"]:last-of-type div.stButton > button:hover {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
-            color: #000000 !important;
-            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
-            transform: translateY(-1px);
-        }
-
-        /* Compact, Full-Width Light Theme Action Buttons */
+        /* Force Pink Background and Black Font for ALL Streamlit Buttons (Menu, Header Actions, Add to Cart) */
         div.stButton > button {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-            color: #0f172a !important;
-            border: 2px solid #cbd5e1 !important;
+            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
+            color: #000000 !important;
+            border: 1px solid #db2777 !important;
             font-weight: 800 !important;
             font-size: 20px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
-            color: #0f172a !important;
-            border: 2px solid #94a3b8 !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+            color: #000000 !important;
+            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
             transform: translateY(-1px);
         }
 
