@@ -15,7 +15,7 @@ import streamlit as st
 st.set_page_config(
     page_title="HM Mobiles Thiruverkadu",
     page_icon="📱",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed",
 )
 
@@ -39,9 +39,9 @@ st.markdown(
 
     .block-container {
         width: 100% !important;
-        max-width: 1050px !important;
-        margin: 0 auto !important;
-        padding: 10px 14px 24px !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 10px 12px 24px !important;
     }
 
     #MainMenu, header, footer, div[data-testid="stToolbar"],
@@ -70,7 +70,7 @@ st.markdown(
     /* HEADER */
     .hm-brand {
         width:100% !important;
-        min-height:146px !important;
+        min-height:0 !important;
         display:flex !important; align-items:center !important; justify-content:center !important;
         padding:20px 12px !important; margin:0 0 8px !important;
         background:#dff1ff !important; border:1px solid #69b9f4 !important; border-radius:7px !important;
@@ -127,12 +127,18 @@ st.markdown(
 
     /* PHONE */
     @media (max-width:600px) {
-        .block-container { max-width:100% !important; padding:8px 7px 20px !important; }
-        .hm-brand { min-height:146px !important; padding:18px 10px !important; }
+        .block-container { max-width:100% !important; width:100% !important; padding:8px 7px 20px !important; }
+        .hm-brand { min-height:0 !important; padding:18px 10px !important; }
         .hm-brand-title { font-size:32px !important; line-height:1.35 !important; }
-        .hm-nav div[data-testid="stHorizontalBlock"] { gap:8px !important; }
+        .hm-nav { width:100% !important; max-width:100% !important; overflow:visible !important; }
+        .hm-nav div[data-testid="stHorizontalBlock"] { gap:6px !important; width:100% !important; overflow:visible !important; }
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"] { min-width:0 !important; overflow:visible !important; }
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:first-child { flex:1 1 0 !important; width:0 !important; }
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2),
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3),
+        .hm-nav div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) { flex:0 0 22% !important; width:22% !important; }
         .hm-nav p { font-size:10px !important; }
-        .hm-nav div.stButton > button { min-width:64px !important; min-height:36px !important; padding:5px 8px !important; font-size:10px !important; }
+        .hm-nav div.stButton > button { width:100% !important; min-width:0 !important; min-height:36px !important; padding:5px 4px !important; font-size:10px !important; }
         .hm-category-bar div[data-testid="stHorizontalBlock"] { gap:14px !important; }
         .hm-category-bar div.stButton > button { min-height:51px !important; font-size:11px !important; }
         .hm-divider { margin:20px 0 11px !important; }
@@ -145,10 +151,10 @@ st.markdown(
 
     @media (max-width:380px) {
         .block-container { padding-left:6px !important; padding-right:6px !important; }
-        .hm-brand { min-height:132px !important; }
+        .hm-brand { min-height:0 !important; }
         .hm-brand-title { font-size:28px !important; }
         .hm-nav div[data-testid="stHorizontalBlock"] { gap:5px !important; }
-        .hm-nav div.stButton > button { min-width:59px !important; padding:5px 6px !important; font-size:9px !important; }
+        .hm-nav div.stButton > button { min-width:0 !important; padding:5px 3px !important; font-size:9px !important; }
         .hm-category-bar div[data-testid="stHorizontalBlock"] { gap:7px !important; }
         .hm-category-bar div.stButton > button { font-size:10px !important; }
         .hm-product-card { padding:11px !important; }
