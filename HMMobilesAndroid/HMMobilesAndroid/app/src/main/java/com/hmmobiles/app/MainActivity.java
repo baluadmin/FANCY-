@@ -1,4 +1,4 @@
-package com.hmmobiles.app;
+package com.baveshstationery.app;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
