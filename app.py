@@ -39,7 +39,7 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
-        /* Aggressive CSS to hide all overlay elements, toolbars, buttons, and icons from st.image */
+        /* Completely HIDE "Press Enter to submit form" tooltip & instruction popups */
         [data-testid="InputInstructions"],
         div[data-testid="InputInstructions"],
         span[data-testid="InputInstructions"],
@@ -50,6 +50,7 @@ st.markdown("""
             height: 0px !important;
         }
 
+        /* Hide header link icons and full-screen tools */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         button[kind="header"] {visibility: hidden !important;}
@@ -301,7 +302,10 @@ if not st.session_state.logged_in_user:
 
         with st.form("customer_direct_login_center", clear_on_submit=False):
             cust_name = st.text_input("Your Name:")
-            cust_phone = st.text_input("Mobile Number:", max_chars=10)
+            
+            # Raw string input for mobile number to filter out non-digits automatically
+            raw_phone = st.text_input("Mobile Number:", max_chars=10)
+            cust_phone = "".join([char for char in raw_phone if char.isdigit()])
 
             login_btn = st.form_submit_button(
                 "Secure Login",
@@ -309,7 +313,7 @@ if not st.session_state.logged_in_user:
             )
 
             if login_btn:
-                if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
+                if cust_name.strip() and len(cust_phone) == 10:
                     st.session_state.logged_in_user = cust_name.strip()
                     st.session_state.user_phone = cust_phone.strip()
                     st.session_state.user_role = "Customer"
@@ -325,7 +329,7 @@ if not st.session_state.logged_in_user:
                     st.rerun()
                 else:
                     st.warning(
-                        "⚠️ Please provide a valid name and 10-digit mobile number."
+                        "⚠️ Please provide a valid name and exact 10-digit numeric mobile number."
                     )
 
     st.markdown('</div>', unsafe_allow_html=True)
@@ -506,7 +510,7 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 3 images with pointer-events blocked on wrapper to completely prevent hover tools/zoom symbols
+                        # Row 1: 3 images
                         img_cols_1 = st.columns(3, gap="small")
                         for i in range(3):
                             with img_cols_1[i]:
@@ -515,7 +519,7 @@ if st.session_state.current_view == "Home":
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 3 images with pointer-events blocked
+                        # Row 2: 3 images
                         img_cols_2 = st.columns(3, gap="small")
                         for i in range(3, 6):
                             with img_cols_2[i - 3]:
@@ -591,12 +595,16 @@ else:
         st.subheader("📍 Secure Checkout Form")
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
-            secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            
+            # Filter alternative contact number as well to strictly accept digits only
+            raw_sec_phone = st.text_input("Alternative Contact Number:", max_chars=10)
+            secondary_phone = "".join([char for char in raw_sec_phone if char.isdigit()])
+            
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
             submit_checkout = st.form_submit_button("Complete Order")
             if submit_checkout:
-                if checkout_address and secondary_phone:
+                if checkout_address and len(secondary_phone) == 10:
                     result_msg = process_cart_checkout(
                         checkout_address, secondary_phone, product_desc
                     )
@@ -604,7 +612,7 @@ else:
                     st.session_state.current_view = "Home"
                     st.rerun()
                 else:
-                    st.warning("⚠️ Please provide delivery address and secondary contact number.")
+                    st.warning("⚠️ Please provide a delivery address and a valid 10-digit numeric alternative contact number.")
     else:
         _, center_msg_col, _ = st.columns([1, 2, 1])
         with center_msg_col:
