@@ -39,7 +39,7 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
-        /* Completely HIDE "Press Enter to submit form" tooltip & instruction popups */
+        /* Completely HIDE zoom/expand toolbar buttons and overlays overlaying images */
         [data-testid="InputInstructions"],
         div[data-testid="InputInstructions"],
         span[data-testid="InputInstructions"],
@@ -50,25 +50,36 @@ st.markdown("""
             height: 0px !important;
         }
 
-        /* Hide header link icons and full-screen tools */
+        /* Hide header link icons, zoom/fullscreen hover buttons and toolbars */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         button[kind="header"] {visibility: hidden !important;}
-        [data-testid="stImage"] button, [data-testid="imageToolbar"], button[title*="View fullscreen"], button[title*="Zoom"], div[data-testid="StyledFullScreenButton"] {
+        
+        [data-testid="stImage"] button,
+        [data-testid="imageToolbar"],
+        button[title*="View fullscreen"],
+        button[title*="Zoom"],
+        button[aria-label*="Zoom"],
+        div[data-testid="StyledFullScreenButton"],
+        div[class*="imageToolbar"],
+        div[class*="toolbar"] {
             display: none !important;
             visibility: hidden !important;
+            opacity: 0 !important;
             pointer-events: none !important;
         }
         
         /* Enforce full-box filling and edge-to-edge cover sizing for all images */
         [data-testid="stImage"] {
             width: 100% !important;
+            pointer-events: none !important;
         }
         [data-testid="stImage"] img {
             width: 100% !important;
             height: 120px !important;
             object-fit: cover !important;
             border-radius: 8px !important;
+            pointer-events: none !important;
         }
         
         /* High contrast text formatting */
@@ -493,7 +504,7 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 3 images (full box cover fit)
+                        # Row 1: 3 images (full cover fit, zoom symbols suppressed)
                         img_cols_1 = st.columns(3, gap="small")
                         for i in range(3):
                             with img_cols_1[i]:
@@ -502,7 +513,7 @@ if st.session_state.current_view == "Home":
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 3 images (full box cover fit)
+                        # Row 2: 3 images (full cover fit, zoom symbols suppressed)
                         img_cols_2 = st.columns(3, gap="small")
                         for i in range(3, 6):
                             with img_cols_2[i - 3]:
