@@ -23,7 +23,30 @@ st.markdown("""
             font-size: 20px !important;
         }
 
-        /* Set App Background to Light Pink White */
+        /* Enforce Light Pink White Background & Dark Text for Light Mode, and Seamless Dark Mode Support */
+        @media (prefers-color-scheme: light) {
+            .stApp {
+                background-color: #fff5f8 !important;
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            .stApp {
+                background-color: #1e1117 !important;
+            }
+            .login-card {
+                background-color: #2a1520 !important;
+                border: 2px solid #f472b6 !important;
+            }
+            input, textarea, div[data-baseweb="select"] > div {
+                background-color: #1e1117 !important;
+                color: #f8fafc !important;
+            }
+            label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
+                color: #f8fafc !important;
+            }
+        }
+
+        /* Default fallback for App Background */
         .stApp {
             background-color: #fff5f8 !important; 
         }
