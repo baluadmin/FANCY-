@@ -1,13 +1,9 @@
-plugins {
-    id 'com.android.application'
-}
-
 android {
-    namespace 'com.baveshstationery.app'
+    namespace 'com.hmmobiles.app'
     compileSdk 35
 
     defaultConfig {
-        applicationId 'com.baveshstationery.app'
+        applicationId 'com.hmmobiles.app'
         minSdk 23
         targetSdk 35
         versionCode 1
