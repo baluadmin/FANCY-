@@ -1,5 +1,4 @@
-name: Build Bavesh Fancy & Stationery APK
-
+name: Bavesh-Fancy-Stationery-APK
 on:
   workflow_dispatch:
   push:
