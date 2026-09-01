@@ -23,30 +23,7 @@ st.markdown("""
             font-size: 20px !important;
         }
 
-        /* Enforce Light Pink White Background & Dark Text for Light Mode, and Seamless Dark Mode Support */
-        @media (prefers-color-scheme: light) {
-            .stApp {
-                background-color: #fff5f8 !important;
-            }
-        }
-        @media (prefers-color-scheme: dark) {
-            .stApp {
-                background-color: #1e1117 !important;
-            }
-            .login-card {
-                background-color: #2a1520 !important;
-                border: 2px solid #f472b6 !important;
-            }
-            input, textarea, div[data-baseweb="select"] > div {
-                background-color: #1e1117 !important;
-                color: #f8fafc !important;
-            }
-            label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
-                color: #f8fafc !important;
-            }
-        }
-
-        /* Default fallback for App Background */
+        /* Force Consistent Light Pink White Background and Theme across both Light & Dark Browser Modes */
         .stApp {
             background-color: #fff5f8 !important; 
         }
@@ -115,7 +92,7 @@ st.markdown("""
             font-size: 20px !important;
         }
         
-        /* Input boxes styling with larger text for login / fields */
+        /* Input boxes styling with explicit light mode colors to block browser dark mode overrides */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
@@ -247,8 +224,8 @@ st.markdown("""
             margin: 0 auto;
             padding: 28px 32px;
             border-radius: 16px;
-            background-color: #ffffff;
-            border: 2px solid #fbcfe8;
+            background-color: #ffffff !important;
+            border: 2px solid #fbcfe8 !important;
             box-shadow: 0 10px 25px -5px rgba(251, 207, 232, 0.3);
             text-align: center;
         }
