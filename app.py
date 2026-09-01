@@ -23,7 +23,7 @@ st.markdown("""
             font-size: 20px !important;
         }
 
-        /* Set App Background to Pink White (#fff5f8 / #fdf2f8) */
+        /* Set App Background to Light Pink White */
         .stApp {
             background-color: #fff5f8 !important; 
         }
@@ -56,7 +56,7 @@ st.markdown("""
             font-size: 20px !important;
         }
         
-        /* Input boxes styling supporting light pink-white theme */
+        /* Input boxes styling supporting light theme */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
@@ -66,20 +66,20 @@ st.markdown("""
             border-radius: 12px !important;
         }
         input:focus, textarea:focus {
-            border-color: #ec4899 !important;
-            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15) !important;
+            border-color: #f472b6 !important;
+            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.15) !important;
         }
 
-        /* Compact & Enlarged Soft Light Pink Gradient Header Banner */
+        /* Compact & Enlarged Soft Very Light Pink Gradient Header Banner */
         .brand-banner {
-            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%);
+            background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%);
             padding: 14px 20px;
             border-radius: 12px;
             color: #831843 !important;
             text-align: center;
-            box-shadow: 0 3px 10px -2px rgba(244, 114, 182, 0.2);
+            box-shadow: 0 3px 10px -2px rgba(251, 207, 232, 0.3);
             margin-bottom: 12px;
-            border: 1px solid #f472b6;
+            border: 1px solid #fbcfe8;
             max-width: 100%;
         }
         .brand-banner .brand-title {
@@ -99,24 +99,24 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Force Pink Background and Black Font for ALL Streamlit Buttons (Menu, Header Actions, Add to Cart) */
+        /* Force Softer Light Pink Background and Black Font for ALL Streamlit Buttons (Menu, Header Actions, Add to Cart) */
         div.stButton > button {
-            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
+            background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%) !important;
             color: #000000 !important;
-            border: 1px solid #db2777 !important;
+            border: 1px solid #f472b6 !important;
             font-weight: 800 !important;
             font-size: 20px !important;
             border-radius: 12px !important;
             padding: 0.7rem 1rem !important;
             width: 100% !important;
             display: block !important;
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(251, 207, 232, 0.4) !important;
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
             color: #000000 !important;
-            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.35) !important;
+            box-shadow: 0 6px 15px rgba(244, 114, 182, 0.5) !important;
             transform: translateY(-1px);
         }
 
@@ -180,7 +180,7 @@ st.markdown("""
             border-radius: 16px;
             background-color: #ffffff;
             border: 2px solid #fbcfe8;
-            box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(251, 207, 232, 0.2);
             text-align: center;
         }
 
