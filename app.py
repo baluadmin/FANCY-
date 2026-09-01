@@ -135,10 +135,10 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Light Pink Streamlit Buttons */
-        div.stButton > button {
+        /* Light Pink Streamlit Buttons - Fixed text visibility by forcing pink gradient background and dark text explicitly */
+        div.stButton > button, div[data-testid="stFormSubmitButton"] > button {
             background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%) !important;
-            color: #000000 !important;
+            color: #0f172a !important;
             border: 1px solid #f472b6 !important;
             font-weight: 800 !important;
             font-size: 22px !important;
@@ -149,9 +149,9 @@ st.markdown("""
             box-shadow: 0 4px 12px rgba(251, 207, 232, 0.4) !important;
             transition: all 0.2s ease-in-out;
         }
-        div.stButton > button:hover {
-            background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%) !important;
-            color: #000000 !important;
+        div.stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
+            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
+            color: #0f172a !important;
             box-shadow: 0 6px 15px rgba(244, 114, 182, 0.5) !important;
             transform: translateY(-1px);
         }
