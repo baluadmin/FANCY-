@@ -262,8 +262,8 @@ if "product_page" not in st.session_state:
 if "quantities" not in st.session_state:
     st.session_state.quantities = {}
 
-# Google Apps Script Web App Endpoint URL Updated
-GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
+# Google Apps Script Web App Endpoint URL (Updated)
+GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwlRs4ETgISSHQDXVw6soMapNqfx-n_AgtXvDKcInMcKtcgco9XsAYpPfPjkCO1QrOaA/exec"
 
 
 # Function to log customer login into the "LOGIN" tab
@@ -303,7 +303,6 @@ if not st.session_state.logged_in_user:
         with st.form("customer_direct_login_center", clear_on_submit=False):
             cust_name = st.text_input("Your Name:")
             
-            # Raw string input for mobile number to filter out non-digits automatically
             raw_phone = st.text_input("Mobile Number:", max_chars=10)
             cust_phone = "".join([char for char in raw_phone if char.isdigit()])
 
@@ -344,7 +343,6 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Adjusted column ratios to ensure Home, Cart, and Logout fit neatly in a single horizontal row without wrapping
 top_comm, top_space, top_c1, top_c2, top_c3 = st.columns([2.2, 0.4, 1.3, 1.3, 1.3], gap="small")
 with top_comm:
     st.markdown(f"👋 Welcome, **{st.session_state.logged_in_user}**!")
@@ -384,7 +382,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from New Google Sheet Data dynamically matching columns: ITEM ID, ITEM NAME, CATEGORY, STOCK, PRICE, DESCRIPTION, IMAGES
+# Load Product Records from New Google Sheet Data dynamically
 product_records = []
 if not inv_df.empty:
     try:
@@ -497,7 +495,6 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 3 images
                         img_cols_1 = st.columns(3, gap="small")
                         for i in range(3):
                             with img_cols_1[i]:
@@ -506,7 +503,6 @@ if st.session_state.current_view == "Home":
                                 else:
                                     st.markdown(f"<p style='text-align: center; color: #94a3b8; font-size: 13px;'>{raw_img if i == 0 and raw_img else 'No Img'}</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 3 images
                         img_cols_2 = st.columns(3, gap="small")
                         for i in range(3, 6):
                             with img_cols_2[i - 3]:
@@ -523,7 +519,6 @@ if st.session_state.current_view == "Home":
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
-                        # - / + Quantity Stepper Controls
                         q_minus, q_display, q_plus = st.columns([1, 1.2, 1], gap="small")
                         with q_minus:
                             if st.button("-", key=f"minus_{current_cat}_{global_idx}", use_container_width=True):
@@ -558,7 +553,6 @@ if st.session_state.current_view == "Home":
                                     
                     st.markdown("<hr style='margin-top: 4px; margin-bottom: 4px; border: none; border-top: 2px solid #e2e8f0;'>", unsafe_allow_html=True)
                 
-                # Pagination Controls at the bottom
                 if total_pages > 1:
                     pg_prev, pg_info, pg_next = st.columns([1, 2, 1], gap="small")
                     with pg_prev:
