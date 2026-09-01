@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 
         // HM Mobiles
         webView.loadUrl(
-                "https://baluaiproject1.streamlit.app/"
+                "https://baveshfancy.streamlit.app/"
         );
     }
 
