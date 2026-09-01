@@ -16,38 +16,49 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Portrait mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        // Create WebView
         webView = new WebView(this);
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
 
+        // Enable JavaScript
         settings.setJavaScriptEnabled(true);
+
+        // Enable DOM storage for Streamlit
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
+        // WebView settings
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(true);
 
+        // Mobile-width rendering
         settings.setUseWideViewPort(false);
         settings.setLoadWithOverviewMode(false);
 
+        // Disable zoom
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
+        // Text/rendering
         settings.setDefaultTextEncodingName("UTF-8");
         settings.setTextZoom(100);
 
         webView.setInitialScale(100);
 
+        // Keep navigation inside the app
         webView.setWebViewClient(new WebViewClient());
+
+        // Support JavaScript dialogs/popups
         webView.setWebChromeClient(new WebChromeClient());
 
-        webView.loadUrl(
-                "https://baveshfancy.streamlit.app/"
-        );
+        // Load Bavesh Fancy & Stationery Streamlit website
+        webView.loadUrl("https://baveshfancy.streamlit.app/");
     }
 
     @Override
@@ -66,6 +77,7 @@ public class MainActivity extends Activity {
         if (webView != null) {
             webView.stopLoading();
             webView.destroy();
+            webView = null;
         }
 
         super.onDestroy();
