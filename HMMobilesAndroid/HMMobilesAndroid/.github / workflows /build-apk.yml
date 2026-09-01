@@ -1,4 +1,4 @@
-name: Build HM Mobiles APK
+name: Build Bavesh Fancy & Stationery APK
 
 on:
   workflow_dispatch:
