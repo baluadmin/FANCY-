@@ -263,7 +263,7 @@ if "quantities" not in st.session_state:
     st.session_state.quantities = {}
 
 # Google Apps Script Web App Endpoint URL Updated
-GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwlRs4ETgISSHQDXVw6soMapNqfx-n_AgtXvDKcInMcKtcgco9XsAYpPfPjkCO1QrOaA/exec"
+GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq1vB7RSGZA8aM5QOOxpSKxN06vEpYs14Yupx687pWZ4KNa0bkvAEO12QJQZ_v88DT/exec"
 
 
 # Function to log customer login into the "LOGIN" tab
@@ -370,7 +370,7 @@ st.markdown("---")
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
 @st.cache_data(ttl=2)
 def load_inventory_from_sheet():
-    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1dFIdwBrYJ0x25bGXGGXD5FyGM5VP0y7lGyvCSJ9c9C8/export?format=csv"
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
     try:
         df = pd.read_csv(sheet_csv_url)
         df.to_csv("inventory.csv", index=False)
