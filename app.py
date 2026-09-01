@@ -60,11 +60,15 @@ st.markdown("""
             pointer-events: none !important;
         }
         
-        /* Enforce full-cover display size for all product images across 6-image grid */
+        /* Enforce full-box filling and edge-to-edge cover sizing for all images */
+        [data-testid="stImage"] {
+            width: 100% !important;
+        }
         [data-testid="stImage"] img {
             width: 100% !important;
-            height: 110px !important;
+            height: 120px !important;
             object-fit: cover !important;
+            border-radius: 8px !important;
         }
         
         /* High contrast text formatting */
@@ -489,7 +493,7 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 3 images (full box zoom)
+                        # Row 1: 3 images (full box cover fit)
                         img_cols_1 = st.columns(3, gap="small")
                         for i in range(3):
                             with img_cols_1[i]:
@@ -498,7 +502,7 @@ if st.session_state.current_view == "Home":
                                 else:
                                     st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 3 images (full box zoom)
+                        # Row 2: 3 images (full box cover fit)
                         img_cols_2 = st.columns(3, gap="small")
                         for i in range(3, 6):
                             with img_cols_2[i - 3]:
