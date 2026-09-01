@@ -256,7 +256,7 @@ if "cart" not in st.session_state:
 if "current_view" not in st.session_state:
     st.session_state.current_view = "Home"
 if "selected_menu" not in st.session_state:
-    st.session_state.selected_menu = "Headset"
+    st.session_state.selected_menu = "ANU"
 if "product_page" not in st.session_state:
     st.session_state.product_page = 0
 if "quantities" not in st.session_state:
@@ -317,7 +317,7 @@ if not st.session_state.logged_in_user:
                     st.session_state.logged_in_user = cust_name.strip()
                     st.session_state.user_phone = cust_phone.strip()
                     st.session_state.user_role = "Customer"
-                    st.session_state.selected_menu = "Headset"
+                    st.session_state.selected_menu = "ANU"
                     st.session_state.product_page = 0
 
                     log_login_to_sheet(
@@ -367,10 +367,10 @@ with top_c3:
 st.markdown("---")
 
 
-# Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
+# Load Inventory Directly from New Google Sheets CSV Link with Short TTL Cache
 @st.cache_data(ttl=2)
 def load_inventory_from_sheet():
-    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1e7oTXReFpcXxCn5tdX4NixyhRryjQXlAdHP43jFBt0U/export?format=csv"
     try:
         df = pd.read_csv(sheet_csv_url)
         df.to_csv("inventory.csv", index=False)
@@ -384,7 +384,7 @@ def load_inventory_from_sheet():
 inv_df = load_inventory_from_sheet()
 
 
-# Load Product Records from Google Sheet Data dynamically with correct index mapping
+# Load Product Records from New Google Sheet Data dynamically matching columns: ITEM ID, ITEM NAME, CATEGORY, STOCK, PRICE, DESCRIPTION, IMAGES
 product_records = []
 if not inv_df.empty:
     try:
@@ -403,26 +403,12 @@ if not inv_df.empty:
 
 if not product_records:
     product_records = [
-        {"id": "ITM001", "name": "Bluetooth Wireless Headset", "price": "1200", "stock": "50", "category": "Headset", "image": "", "description": ""},
-        {"id": "ITM002", "name": "Over-Ear Gaming Headset", "price": "1800", "stock": "40", "category": "Headset", "image": "", "description": ""},
-        {"id": "ITM003", "name": "Fast Type-C Charger 33W", "price": "650", "stock": "120", "category": "Charger", "image": "", "description": ""},
-        {"id": "ITM004", "name": "Dual Port Fast Wall Charger", "price": "500", "stock": "90", "category": "Charger", "image": "", "description": ""},
-        {"id": "ITM005", "name": "Braided Micro USB Cable", "price": "250", "stock": "200", "category": "Cable", "image": "", "description": ""},
-        {"id": "ITM006", "name": "Type-C Fast Charging Cable", "price": "300", "stock": "150", "category": "Cable", "image": "", "description": ""},
-        {"id": "ITM007", "name": "Professional Studio Mic", "price": "2500", "stock": "30", "category": "Mic", "image": "", "description": ""},
-        {"id": "ITM008", "name": "Mini Lavalier Clip-on Mic", "price": "450", "stock": "80", "category": "Mic", "image": "", "description": ""},
-        {"id": "ITM009", "name": "Lithium Mobile Replacement Battery", "price": "800", "stock": "45", "category": "Battery", "image": "", "description": ""},
-        {"id": "ITM010", "name": "Edge-to-Edge Tempered Glass", "price": "200", "stock": "300", "category": "Tempered", "image": "", "description": ""},
-        {"id": "ITM011", "name": "Wireless Bluetooth Ear Pods", "price": "1500", "stock": "75", "category": "Ear pod", "image": "", "description": ""},
-        {"id": "ITM012", "name": "MagSafe Wireless Power Bank", "price": "2200", "stock": "60", "category": "Charger", "image": "", "description": ""},
-        {"id": "ITM013", "name": "RGB Phone Cooler Fan", "price": "950", "stock": "85", "category": "Headset", "image": "", "description": ""},
-        {"id": "ITM014", "name": "Heavy Duty Phone Stand", "price": "350", "stock": "110", "category": "Headset", "image": "", "description": ""},
-        {"id": "ITM015", "name": "Bluetooth Camera Shutter Remote", "price": "180", "stock": "150", "category": "Headset", "image": "", "description": ""},
+        {"id": "1", "name": "BALU", "price": "100", "stock": "ANUBALU", "category": "ANU", "image": "hello", "description": "hi"},
     ]
 
 
 def process_cart_checkout(address: str, secondary_phone: str, description: str) -> str:
-    """Checkout all items currently in the cart with delivery details, and send to Google Sheet 'HM Mobiles Orders'."""
+    """Checkout all items currently in the cart and send to Google Sheet 'ORDERS' tab."""
     if not st.session_state.cart:
         return "Your cart is empty. Please add products first."
     
@@ -431,31 +417,30 @@ def process_cart_checkout(address: str, secondary_phone: str, description: str) 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     txn_id = "TXN" + datetime.now().strftime("%Y%m%d%H%M%S")
 
-    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
-    st.session_state.last_booked_item = cart_summary
-
-    try:
-        order_data = {
-            "Type": "Order",
-            "Timestamp": timestamp,
-            "Customer_Name": customer_name,
-            "Primary_Phone": primary_phone,
-            "Items": cart_summary,
-            "Address": address,
-            "Secondary_Phone": secondary_phone,
-            "Description": description
-        }
-        requests.post(GOOGLE_SCRIPT_URL, json=order_data)
-    except Exception as e:
-        print(f"Order sheet error: {e}")
+    for item in st.session_state.cart:
+        try:
+            order_data = {
+                "Type": "Order",
+                "Timestamp": timestamp,
+                "Primary_Phone": primary_phone,
+                "Item_ID": item.get('id', ''),
+                "Item_Name": item['product'],
+                "Quantity": item['quantity'],
+                "Total_Cost": item.get('total_cost', '')
+            }
+            requests.post(GOOGLE_SCRIPT_URL, json=order_data)
+        except Exception as e:
+            print(f"Order sheet error: {e}")
 
     file_exists = os.path.isfile("orders.csv")
     with open("orders.csv", mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
-            writer.writerow(["Timestamp", "Customer Name", "Primary Phone", "Items", "Address", "Secondary Phone", "Description"])
-        writer.writerow([timestamp, customer_name, primary_phone, cart_summary, address, secondary_phone, description])
+            writer.writerow(["Timestamp", "Primary Phone", "Item ID", "Item Name", "Quantity", "Total Cost"])
+        for item in st.session_state.cart:
+            writer.writerow([timestamp, primary_phone, item.get('id', ''), item['product'], item['quantity'], item.get('total_cost', '')])
 
+    cart_summary = ", ".join([f"{item['quantity']} of {item['product']}" for item in st.session_state.cart])
     st.session_state.cart = []
     return f"Checkout complete! Order placed for: {cart_summary}. Order successful (TXN ID: {txn_id})."
 
@@ -468,7 +453,9 @@ if st.session_state.current_view == "Home":
     with col_menu:
         st.markdown("Menu")
         with st.container(height=2400, border=True):
-            categories = list(set([p['category'] for p in product_records]))
+            categories = list(set([p['category'] for p in product_records if p['category'] and p['category'] != 'nan']))
+            if not categories:
+                categories = ["ANU"]
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                     st.session_state.selected_menu = cat
@@ -477,7 +464,7 @@ if st.session_state.current_view == "Home":
 
     # --- SECTION 2: ITEMS ---
     with col_items:
-        current_cat = st.session_state.get("selected_menu", "Headset")
+        current_cat = st.session_state.get("selected_menu", categories[0] if categories else "ANU")
         st.markdown(f"{current_cat}")
         with st.container(height=2400, border=True):
             filtered_items = [p for p in product_records if p['category'] == current_cat]
@@ -517,7 +504,7 @@ if st.session_state.current_view == "Home":
                                 if i < len(valid_paths):
                                     st.image(valid_paths[i], use_container_width=True)
                                 else:
-                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
+                                    st.markdown(f"<p style='text-align: center; color: #94a3b8; font-size: 13px;'>{raw_img if i == 0 and raw_img else 'No Img'}</p>", unsafe_allow_html=True)
                         
                         # Row 2: 3 images
                         img_cols_2 = st.columns(3, gap="small")
@@ -554,8 +541,18 @@ if st.session_state.current_view == "Home":
                         
                         if st.button("Add to Cart", key=f"add_btn_{current_cat}_{global_idx}", use_container_width=True):
                             qty_val = st.session_state.quantities[qty_key]
-                            full_q_str = f"{qty_val} Units"
-                            st.session_state.cart.append({"product": prod['name'], "quantity": full_q_str})
+                            try:
+                                unit_price = float(prod['price'])
+                                total_cost = unit_price * qty_val
+                            except:
+                                total_cost = 0.0
+                            
+                            st.session_state.cart.append({
+                                "id": prod['id'],
+                                "product": prod['name'],
+                                "quantity": qty_val,
+                                "total_cost": total_cost
+                            })
                             st.success(f"Added!")
                             st.rerun()
                                     
@@ -585,7 +582,7 @@ else:
         for c_idx, item in enumerate(st.session_state.cart):
             cc1, cc2 = st.columns([4, 1])
             with cc1:
-                st.markdown(f"- **{item['product']}** ({item['quantity']})")
+                st.markdown(f"- **{item['product']}** (Qty: {item['quantity']} | Total: ₹{item.get('total_cost', 0)})")
             with cc2:
                 if st.button("Remove Item", key=f"rem_cart_view_{c_idx}__"):
                     st.session_state.cart.pop(c_idx)
