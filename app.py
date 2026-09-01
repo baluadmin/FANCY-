@@ -125,13 +125,13 @@ st.markdown("""
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 100%) !important;
+            background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%) !important;
             color: #000000 !important;
             box-shadow: 0 6px 15px rgba(244, 114, 182, 0.5) !important;
             transform: translateY(-1px);
         }
 
-        /* 6cm down positioning wrapper */
+        /* Exactly 6cm down positioning wrapper */
         .login-wrapper {
             display: flex;
             flex-direction: column;
@@ -254,7 +254,7 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Customer Login Screen (Before Login) with 6cm down spacing
+# 2. Centered Customer Login Screen (Before Login) positioned 6cm down
 if not st.session_state.logged_in_user:
 
     st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
