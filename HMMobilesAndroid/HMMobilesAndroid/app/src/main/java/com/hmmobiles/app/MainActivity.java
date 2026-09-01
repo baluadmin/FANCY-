@@ -3,7 +3,6 @@ package com.hmmobiles.app;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,9 +16,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRequestedOrientation(
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        );
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         webView = new WebView(this);
         setContentView(webView);
@@ -43,9 +40,7 @@ public class MainActivity extends Activity {
         settings.setDefaultTextEncodingName("UTF-8");
         settings.setTextZoom(100);
 
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.setAcceptThirdPartyCookies(webView, true);
+        webView.setInitialScale(100);
 
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
@@ -57,6 +52,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
@@ -66,6 +62,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+
         if (webView != null) {
             webView.stopLoading();
             webView.destroy();
