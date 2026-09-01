@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: HMMobilesAndroid/HMMobilesAndroid
+        working-directory: HMMobilesAndroid/HMMobilesAndroid/app
 
     steps:
       - name: Checkout repository
