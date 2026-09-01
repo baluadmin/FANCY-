@@ -60,10 +60,10 @@ st.markdown("""
             pointer-events: none !important;
         }
         
-        /* Enforce uniform display size for all product images */
+        /* Enforce uniform display size for all product images across 6-image grid */
         [data-testid="stImage"] img {
             width: 100% !important;
-            height: 140px !important;
+            height: 110px !important;
             object-fit: contain !important;
         }
         
@@ -489,23 +489,23 @@ if st.session_state.current_view == "Home":
                         else:
                             valid_paths = []
                         
-                        # Row 1: 2 images
-                        img_cols_1 = st.columns(2, gap="small")
-                        for i in range(2):
+                        # Row 1: 3 images
+                        img_cols_1 = st.columns(3, gap="small")
+                        for i in range(3):
                             with img_cols_1[i]:
                                 if i < len(valid_paths):
                                     st.image(valid_paths[i], use_container_width=True)
                                 else:
-                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                         
-                        # Row 2: 2 images
-                        img_cols_2 = st.columns(2, gap="small")
-                        for i in range(2, 4):
-                            with img_cols_2[i - 2]:
+                        # Row 2: 3 images
+                        img_cols_2 = st.columns(3, gap="small")
+                        for i in range(3, 6):
+                            with img_cols_2[i - 3]:
                                 if i < len(valid_paths):
                                     st.image(valid_paths[i], use_container_width=True)
                                 else:
-                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>No Img</p>", unsafe_allow_html=True)
+                                    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 13px;'>No Img</p>", unsafe_allow_html=True)
                             
                     with p_div1_col:
                         st.markdown("<div style='border-left: 2px solid #e2e8f0; height: 350px; margin-top: 1px;'></div>", unsafe_allow_html=True)
