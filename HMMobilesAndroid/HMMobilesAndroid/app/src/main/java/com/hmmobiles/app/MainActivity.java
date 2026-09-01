@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // PORTRAIT ONLY
+        // Portrait mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         webView = new WebView(this);
@@ -24,54 +24,42 @@ public class MainActivity extends Activity {
 
         WebSettings settings = webView.getSettings();
 
-        // JavaScript
+        // Enable JavaScript
         settings.setJavaScriptEnabled(true);
 
-        // Streamlit storage
+        // Enable Streamlit storage
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // Web pages
+        // Web support
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(true);
 
-        /*
-         * IMPORTANT:
-         * Do NOT use:
-         *
-         * setUseWideViewPort(true)
-         * setLoadWithOverviewMode(true)
-         *
-         * because they can make the Streamlit page behave like
-         * a desktop-width page on a portrait phone.
-         */
-
+        // Mobile layout
         settings.setUseWideViewPort(false);
         settings.setLoadWithOverviewMode(false);
 
-        // Disable user zoom
+        // Zoom
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
-        // Normal WebView rendering
+        // Rendering
         settings.setDefaultTextEncodingName("UTF-8");
         settings.setTextZoom(100);
 
         webView.setInitialScale(100);
 
+        // Keep navigation inside the app
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
-        // HM Mobiles
-        webView.loadUrl(
-                "https://baveshfancy.streamlit.app/"
-        );
+        // BAVESH FANCY & STATIONERY
+        webView.loadUrl("https://baveshfancy.streamlit.app/");
     }
 
     @Override
     public void onBackPressed() {
-
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
@@ -81,10 +69,10 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-
         if (webView != null) {
             webView.stopLoading();
             webView.destroy();
+            webView = null;
         }
 
         super.onDestroy();
