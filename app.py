@@ -92,13 +92,13 @@ st.markdown("""
             font-size: 20px !important;
         }
         
-        /* Input boxes styling */
+        /* Input boxes styling with larger text for login / fields */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
             border: 2px solid #cbd5e1 !important;
-            font-size: 20px !important;
-            font-weight: 600 !important;
+            font-size: 24px !important;
+            font-weight: 700 !important;
             border-radius: 12px !important;
         }
         input:focus, textarea:focus {
@@ -141,9 +141,9 @@ st.markdown("""
             color: #000000 !important;
             border: 1px solid #f472b6 !important;
             font-weight: 800 !important;
-            font-size: 20px !important;
+            font-size: 22px !important;
             border-radius: 12px !important;
-            padding: 0.7rem 1rem !important;
+            padding: 0.8rem 1rem !important;
             width: 100% !important;
             display: block !important;
             box-shadow: 0 4px 12px rgba(251, 207, 232, 0.4) !important;
@@ -205,7 +205,7 @@ st.markdown("""
 
         .login-title h1 {
             font-family: 'Mulish', sans-serif !important;
-            font-size: 38px !important;
+            font-size: 46px !important;
             font-weight: 900 !important;
             margin: 0 0 5px 0;
             color: #0f172a !important;
@@ -213,16 +213,16 @@ st.markdown("""
         }
 
         .login-title p {
-            font-size: 18px !important;
+            font-size: 22px !important;
             color: #64748b !important;
             margin: 0;
         }
 
         .login-card {
             width: 100%;
-            max-width: 520px;
+            max-width: 560px;
             margin: 0 auto;
-            padding: 24px 28px;
+            padding: 28px 32px;
             border-radius: 16px;
             background-color: #ffffff;
             border: 2px solid #fbcfe8;
@@ -232,7 +232,7 @@ st.markdown("""
 
         .login-card h3 {
             margin: 0 0 15px 0;
-            font-size: 24px !important;
+            font-size: 28px !important;
             font-weight: 800 !important;
             color: #1e293b !important;
         }
@@ -279,7 +279,7 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Customer Login Screen (Before Login) positioned 6cm down
+# 2. Centered Customer Login Screen (Before Login) positioned 6cm down with larger fonts
 if not st.session_state.logged_in_user:
 
     st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
@@ -596,7 +596,6 @@ else:
         with st.form("checkout_form_main_view"):
             checkout_address = st.text_area("Delivery Address:")
             
-            # Filter alternative contact number as well to strictly accept digits only
             raw_sec_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             secondary_phone = "".join([char for char in raw_sec_phone if char.isdigit()])
             
