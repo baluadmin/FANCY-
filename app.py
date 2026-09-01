@@ -8,7 +8,7 @@ import streamlit as st
 
 # 1. Streamlit Page Configuration & Professional E-Commerce Styling CSS
 st.set_page_config(
-    page_title="HM Mobiles Thiruverkadu",
+    page_title="Bavesh Fancy and Stationery",
     page_icon="📱",
     layout="wide",
 )
@@ -125,7 +125,7 @@ st.markdown("""
             letter-spacing: 0.5px;
             color: #831843 !important;
             margin: 0 0 2px 0;
-            text-transform: lowercase;
+            text-transform: uppercase;
         }
         .brand-banner .brand-phone {
             font-size: 22px !important;
@@ -209,7 +209,7 @@ st.markdown("""
             font-weight: 900 !important;
             margin: 0 0 5px 0;
             color: #0f172a !important;
-            text-transform: lowercase;
+            text-transform: uppercase;
         }
 
         .login-title p {
@@ -286,8 +286,8 @@ if not st.session_state.logged_in_user:
 
     st.markdown("""
         <div class="login-title">
-            <h1>hm mobiles</h1>
-            <p>Thiruverkadu - Premium Mobile Accessories & Service | 📞 9840450113</p>
+            <h1>BAVESH FANCY AND STATIONERY MOBILE</h1>
+            <p>📞 7397441783</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -339,8 +339,8 @@ if not st.session_state.logged_in_user:
 # --- AFTER LOGIN: PROPERLY ARRANGED HEADER & NAVIGATION ---
 st.markdown("""
     <div class="brand-banner">
-        <h1 class="brand-title">hm mobiles thiruverkadu</h1>
-        <p class="brand-phone">📞 Mobile: 9840450113</p>
+        <h1 class="brand-title">BAVESH FANCY AND STATIONERY MOBILE</h1>
+        <p class="brand-phone">📞 Mobile: 7397441783</p>
     </div>
 """, unsafe_allow_html=True)
 
