@@ -125,8 +125,8 @@ st.markdown("""
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 75vh;
+            justify-content: flex-start;
+            padding-top: 4vh;
             width: 100%;
         }
 
@@ -555,7 +555,7 @@ else:
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form")
         with st.form("checkout_form_main_view"):
-            checkout_address = st.text_area("Delivery Address:")
+            checkout_address = st.text_area("DeliveryAddress:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
