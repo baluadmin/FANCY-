@@ -99,7 +99,7 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Force Softer Light Pink Background and Black Font for ALL Streamlit Buttons (Menu, Header Actions, Add to Cart) */
+        /* Force Softer Light Pink Background and Black Font for ALL Streamlit Buttons */
         div.stButton > button {
             background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%) !important;
             color: #000000 !important;
@@ -120,7 +120,16 @@ st.markdown("""
             transform: translateY(-1px);
         }
 
-        /* Responsive Mobile Handling: Fix Header Buttons Wrapping */
+        /* Responsive Mobile Handling: Center Login Card Vertically and Horizontally */
+        .login-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 75vh;
+            width: 100%;
+        }
+
         @media (max-width: 900px) {
             .stMainBlockContainer div[data-testid="stHorizontalBlock"]:first-of-type {
                 flex-direction: row !important;
@@ -174,18 +183,19 @@ st.markdown("""
         }
 
         .login-card {
-            max-width: 620px;
+            width: 100%;
+            max-width: 520px;
             margin: 0 auto;
-            padding: 20px 24px;
+            padding: 24px 28px;
             border-radius: 16px;
             background-color: #ffffff;
             border: 2px solid #fbcfe8;
-            box-shadow: 0 10px 25px -5px rgba(251, 207, 232, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(251, 207, 232, 0.3);
             text-align: center;
         }
 
         .login-card h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
             font-size: 24px !important;
             font-weight: 800 !important;
             color: #1e293b !important;
@@ -193,7 +203,7 @@ st.markdown("""
 
         div[data-testid="stForm"] {
             border: none !important;
-            padding: 6px 0 0 0 !important;
+            padding: 0px !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -233,8 +243,10 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Compact landscape-friendly Customer Login Screen (Before Login)
+# 2. Centered Customer Login Screen (Before Login)
 if not st.session_state.logged_in_user:
+
+    st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
 
     st.markdown("""
         <div class="login-title">
@@ -243,10 +255,9 @@ if not st.session_state.logged_in_user:
         </div>
     """, unsafe_allow_html=True)
 
-    _, login_col, _ = st.columns([1, 2.4, 1])
+    _, login_col, _ = st.columns([1, 2.2, 1])
 
     with login_col:
-
         st.markdown("""
             <div class="login-card">
                 <h3>Customer Portal Login</h3>
@@ -254,17 +265,8 @@ if not st.session_state.logged_in_user:
         """, unsafe_allow_html=True)
 
         with st.form("customer_direct_login_center"):
-
-            name_col, phone_col = st.columns(2, gap="small")
-
-            with name_col:
-                cust_name = st.text_input("Your Name:")
-
-            with phone_col:
-                cust_phone = st.text_input(
-                    "Mobile Number:",
-                    max_chars=10
-                )
+            cust_name = st.text_input("Your Name:")
+            cust_phone = st.text_input("Mobile Number:", max_chars=10)
 
             login_btn = st.form_submit_button(
                 "Secure Login",
@@ -273,7 +275,6 @@ if not st.session_state.logged_in_user:
 
             if login_btn:
                 if cust_name.strip() and len(cust_phone) == 10 and cust_phone.isdigit():
-
                     st.session_state.logged_in_user = cust_name.strip()
                     st.session_state.user_phone = cust_phone.strip()
                     st.session_state.user_role = "Customer"
@@ -287,12 +288,12 @@ if not st.session_state.logged_in_user:
 
                     st.success("✅ Login Successful!")
                     st.rerun()
-
                 else:
                     st.warning(
                         "⚠️ Please provide a valid name and 10-digit mobile number."
                     )
 
+    st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
 
