@@ -17,7 +17,7 @@ st.markdown("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@700;800;900&display=swap');
 
-        /* Apply Font Family Globally to match the clean rounded e-commerce typography */
+        /* Apply Font Family Globally */
         html, body, [class*="css"] {
             font-family: 'Mulish', sans-serif !important;
             font-size: 20px !important;
@@ -28,7 +28,7 @@ st.markdown("""
             background-color: #fff5f8 !important; 
         }
 
-        /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
+        /* Hide Streamlit default top header, menu, share, github, and badges */
         #MainMenu {visibility: hidden;}
         header {visibility: hidden;}
         footer {visibility: hidden;}
@@ -39,7 +39,18 @@ st.markdown("""
         div[class*="viewerBadge"] {display: none !important;}
         div[data-testid="stDecoration"] {display: none;}
         
-        /* Completely hide header link icons and disable/hide all image expansion overlays, zoom icons, and full-screen tools */
+        /* Completely HIDE "Press Enter to submit form" tooltip & instruction popups */
+        [data-testid="InputInstructions"],
+        div[data-testid="InputInstructions"],
+        span[data-testid="InputInstructions"],
+        .stTextInput div[data-testid="InputInstructions"],
+        div[data-testid="stFormSubmitButtonInstructions"] {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0px !important;
+        }
+
+        /* Hide header link icons and full-screen tools */
         a.stMarkdownHeaderLink {display: none !important;}
         h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {display: none !important;}
         button[kind="header"] {visibility: hidden !important;}
@@ -49,14 +60,14 @@ st.markdown("""
             pointer-events: none !important;
         }
         
-        /* Automatically adapt text color for high contrast */
+        /* High contrast text formatting */
         label, .stTextInput label, p, span, div[data-testid="stMarkdownContainer"] p {
             color: #0f172a !important;
             font-weight: 700 !important;
             font-size: 20px !important;
         }
         
-        /* Input boxes styling supporting light theme */
+        /* Input boxes styling */
         input, textarea, div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #0f172a !important;
@@ -70,7 +81,7 @@ st.markdown("""
             box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.15) !important;
         }
 
-        /* Compact & Enlarged Soft Very Light Pink Gradient Header Banner */
+        /* Soft Light Pink Gradient Header Banner */
         .brand-banner {
             background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%);
             padding: 14px 20px;
@@ -99,7 +110,7 @@ st.markdown("""
             margin: 0;
         }
 
-        /* Force Softer Light Pink Background and Black Font for ALL Streamlit Buttons */
+        /* Light Pink Streamlit Buttons */
         div.stButton > button {
             background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%) !important;
             color: #000000 !important;
@@ -120,7 +131,7 @@ st.markdown("""
             transform: translateY(-1px);
         }
 
-        /* Position login card precisely with a 6cm down offset */
+        /* 6cm down positioning wrapper */
         .login-wrapper {
             display: flex;
             flex-direction: column;
@@ -264,7 +275,7 @@ if not st.session_state.logged_in_user:
             </div>
         """, unsafe_allow_html=True)
 
-        with st.form("customer_direct_login_center"):
+        with st.form("customer_direct_login_center", clear_on_submit=False):
             cust_name = st.text_input("Your Name:")
             cust_phone = st.text_input("Mobile Number:", max_chars=10)
 
@@ -433,7 +444,7 @@ if st.session_state.current_view == "Home":
             for cat in categories:
                 if st.button(cat, key=f"menu_btn_{cat}", use_container_width=True):
                     st.session_state.selected_menu = cat
-                    st.session_state.product_page = 0  # Reset to page 0 on category change
+                    st.session_state.product_page = 0
                     st.rerun()
 
     # --- SECTION 2: ITEMS ---
@@ -497,7 +508,7 @@ if st.session_state.current_view == "Home":
                         st.markdown(f"**{prod['name']}**")
                         st.markdown(f"₹{prod['price']}")
                         
-                        # Perfect - / + Quantity Stepper Controls
+                        # - / + Quantity Stepper Controls
                         q_minus, q_display, q_plus = st.columns([1, 1.2, 1], gap="small")
                         with q_minus:
                             if st.button("-", key=f"minus_{current_cat}_{global_idx}", use_container_width=True):
