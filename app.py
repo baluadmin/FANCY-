@@ -370,7 +370,7 @@ st.markdown("---")
 # Load Inventory Directly from Google Sheets CSV Link with Short TTL Cache
 @st.cache_data(ttl=2)
 def load_inventory_from_sheet():
-    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1zXy8vwQtv2h5PooBLLEfVHAI_-aNBJK2K44kEMvczLQ/export?format=csv"
+    sheet_csv_url = "https://docs.google.com/spreadsheets/d/1dFIdwBrYJ0x25bGXGGXD5FyGM5VP0y7lGyvCSJ9c9C8/export?format=csv"
     try:
         df = pd.read_csv(sheet_csv_url)
         df.to_csv("inventory.csv", index=False)
