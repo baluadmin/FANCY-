@@ -23,9 +23,9 @@ st.markdown("""
             font-size: 20px !important;
         }
 
-        /* Set App Background to Light/Clean White */
+        /* Set App Background to Pink White (#fff5f8 / #fdf2f8) */
         .stApp {
-            background-color: #ffffff !important; 
+            background-color: #fff5f8 !important; 
         }
 
         /* Hide Streamlit default top header, menu, share, github, and floating badges/links */
@@ -56,9 +56,9 @@ st.markdown("""
             font-size: 20px !important;
         }
         
-        /* Input boxes styling supporting light theme */
+        /* Input boxes styling supporting light pink-white theme */
         input, textarea, div[data-baseweb="select"] > div {
-            background-color: #f8fafc !important;
+            background-color: #ffffff !important;
             color: #0f172a !important;
             border: 2px solid #cbd5e1 !important;
             font-size: 20px !important;
@@ -179,8 +179,8 @@ st.markdown("""
             padding: 20px 24px;
             border-radius: 16px;
             background-color: #ffffff;
-            border: 2px solid #e2e8f0;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 2px solid #fbcfe8;
+            box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.1);
             text-align: center;
         }
 
