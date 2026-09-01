@@ -120,13 +120,13 @@ st.markdown("""
             transform: translateY(-1px);
         }
 
-        /* Responsive Mobile Handling: Center Login Card Vertically and Horizontally */
+        /* Position login card precisely with a 6cm down offset */
         .login-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding-top: 4vh;
+            padding-top: 6cm;
             width: 100%;
         }
 
@@ -243,7 +243,7 @@ def log_login_to_sheet(name, phone):
         print(f"Login sheet error: {e}")
 
 
-# 2. Centered Customer Login Screen (Before Login)
+# 2. Centered Customer Login Screen (Before Login) with 6cm down spacing
 if not st.session_state.logged_in_user:
 
     st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
@@ -555,7 +555,7 @@ else:
         st.markdown("---")
         st.subheader("📍 Secure Checkout Form")
         with st.form("checkout_form_main_view"):
-            checkout_address = st.text_area("DeliveryAddress:")
+            checkout_address = st.text_area("Delivery Address:")
             secondary_phone = st.text_input("Alternative Contact Number:", max_chars=10)
             product_desc = st.text_area("Product Specifications / Custom Description:")
             
